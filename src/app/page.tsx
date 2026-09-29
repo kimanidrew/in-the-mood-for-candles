@@ -16,13 +16,7 @@ const products=[
 {name:"Autumn Glow",mood:"Tropical",priceUSD:19,desc:"Warm botanical notes and glowing candlelight for an inviting escape.",img:"https://images.pexels.com/photos/12480609/pexels-photo-12480609.jpeg?auto=compress&cs=tinysrgb&w=1200"},
 {name:"Ginger & Rose",mood:"Romantic",priceUSD:19,desc:"Warm ginger, candlelight and rose petals for a romantic atmosphere.",img:"https://images.pexels.com/photos/6798396/pexels-photo-6798396.jpeg?auto=compress&cs=tinysrgb&w=1200"}
 ];
-const collections=[
- {name:"Candles",note:"Set the mood",img:"https://images.pexels.com/photos/6755743/pexels-photo-6755743.jpeg?auto=compress&cs=tinysrgb&w=900"},
- {name:"Linen sprays",note:"Freshen your space",img:"https://images.pexels.com/photos/10771904/pexels-photo-10771904.jpeg?auto=compress&cs=tinysrgb&w=900"},
- {name:"Gift sets",note:"Thoughtful. Luxurious.",img:"https://images.pexels.com/photos/5782650/pexels-photo-5782650.jpeg?auto=compress&cs=tinysrgb&w=900"},
- {name:"New arrivals",note:"Fresh scents, new moods.",img:"https://images.pexels.com/photos/6311846/pexels-photo-6311846.jpeg?auto=compress&cs=tinysrgb&w=900"},
- {name:"The edit",note:"Curated beauty",img:"https://images.pexels.com/photos/9765419/pexels-photo-9765419.jpeg?auto=compress&cs=tinysrgb&w=900"},
-];
+
 type Cart=Record<string,number>;
 
 type CurrencyInfo={code:string;locale:string;label:string};
@@ -66,21 +60,21 @@ export default function Home(){
    const msg="Hello In The Mood For! ✨\nI'd like to order:\n"+lines.join("\n")+"\n\nEstimated total: "+formatMoney(total,currency)+".";
    window.open("https://wa.me/"+number+"?text="+encodeURIComponent(msg),"_blank");
  };
- return <main className="grain min-h-screen overflow-hidden"><div aria-hidden="true" className="app-candle-collage" /><div className="app-content">
-  <header className="fixed top-0 z-40 w-full border-b border-black/10 bg-[#f6f1e9]/95 shadow-[0_2px_18px_rgba(33,29,25,0.04)] backdrop-blur-xl">
+ return <main className="grain min-h-screen overflow-hidden"><div className="app-content">
+  <header className={"fixed top-0 z-40 w-full transition-all duration-500 "+(scrolled?"border-b border-black/10 bg-[#f6f1e9]/95 shadow-[0_2px_18px_rgba(33,29,25,0.05)] backdrop-blur-xl":"border-b border-white/15 bg-transparent")}>
    <div className="mx-auto flex h-[80px] max-w-[1440px] items-center justify-between px-5 md:px-14">
     <button aria-label="In The Mood Candles home" onClick={()=>window.scrollTo({top:0,behavior:"smooth"})} className="group flex items-center gap-3 text-left">
       <span className="flex h-12 w-12 items-center justify-center">
         <Image src="/tm-logo.svg" alt="In The Mood Candles TM logo" width={48} height={48} priority className="h-10 w-10 object-contain transition-transform duration-500 group-hover:scale-105" />
       </span>
-      <span className="leading-none text-[#211d19]">
-        <span className="serif block text-[17px] leading-none tracking-[.18em] sm:text-[19px]">IN THE MOOD</span>
-        <span className="mt-1 block text-[8px] font-semibold uppercase tracking-[.42em] text-[#776f67]">FOR CANDLES</span>
+      <span className={"leading-none transition-colors duration-500 "+(scrolled?"text-[#211d19]":"text-white drop-shadow-[0_1px_8px_rgba(0,0,0,.25)]")}>
+        <span className="serif block text-[17px] leading-none tracking-[.12em] sm:text-[20px]">IN THE MOOD</span>
+        <span className={"mt-1 block text-[8px] font-semibold uppercase tracking-[.38em] "+(scrolled?"text-[#776f67]":"text-white/75")}>FOR CANDLES</span>
       </span>
     </button>
     <nav className="hidden items-center gap-1 md:flex">
       {[["home","#top"],["shop","#collection"],["our story","#story"],["journal","#mission"]].map(([label,href])=>
-        <a key={label} href={href} className="relative px-5 py-2.5 text-[9px] font-bold uppercase tracking-[.22em] text-[#211d19] transition-opacity hover:opacity-55">{label}{label==="home"&&<span className="absolute bottom-0 left-5 right-5 h-px bg-[#211d19]"/>}</a>
+        <a key={label} href={href} className={"relative px-5 py-2.5 text-[9px] font-bold uppercase tracking-[.22em] transition-opacity hover:opacity-55 "+(scrolled?"text-[#211d19]":"text-white drop-shadow-[0_1px_8px_rgba(0,0,0,.2)]")}>{label}{label==="home"&&<span className={"absolute bottom-0 left-5 right-5 h-px "+(scrolled?"bg-[#211d19]":"bg-white/80")}/>}</a>
       )}
     </nav>
     <div className="flex items-center gap-1.5">
@@ -97,24 +91,22 @@ export default function Home(){
    </div></motion.div>}</AnimatePresence>
   </header>
 
-  <section id="top" className="relative mt-[80px] flex min-h-[calc(100vh-80px)] items-end overflow-hidden px-5 pb-14 md:min-h-[690px] md:px-14 md:pb-20">
-   <div className="absolute inset-0 overflow-hidden"><Image src="/images/hero-reference.jpg" fill priority sizes="100vw" className="object-cover object-center md:-translate-y-[8%] md:scale-[1.08]" alt="In The Mood candle collection in a warmly lit home"/></div>
-   <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/15 to-black/10"/><div className="absolute left-5 top-28 z-10 md:left-10 md:top-32"><div className="flex items-center justify-center"><Image src="/tm-logo.svg" alt="In The Mood Candles logo" width={80} height={80} className="h-16 w-16 object-contain md:h-20 md:w-20" /></div></div>
-   <motion.div initial={{opacity:0,y:30}} animate={{opacity:1,y:0}} transition={{duration:.9}} className="hidden">
-    <p className="mb-5 text-[10px] font-bold uppercase tracking-[.34em] text-white/75">Luxury candles &amp; home fragrance.</p>
-    <h1 className="serif text-5xl leading-[.96] md:text-7xl lg:text-8xl">Every room has a mood.<br/><span className="italic">Every moment has a feeling.</span><br/>And every memory deserves a signature.</h1>
-    <div className="mt-8 flex items-center gap-4">
-      <span className="h-px w-10 bg-white/50"/>
-      <p className="serif text-2xl italic md:text-3xl">Set the Mood. <span className="not-italic">✨</span></p>
-    </div>
-    <a href="#shop" className="mt-9 inline-flex items-center gap-3 border border-white/70 px-6 py-3 text-[11px] font-bold uppercase tracking-[.18em] transition hover:bg-white hover:text-black">shop the collection <ArrowRight size={15}/></a>
-   </motion.div>
-  </section>
-
-  <section id="collection" className="relative overflow-hidden bg-[#382014] px-5 py-14 text-[#f7f3ec] md:px-14 md:py-16">
-   <div className="absolute inset-0 opacity-35" style={{backgroundImage:"linear-gradient(rgba(31,16,10,.72),rgba(31,16,10,.72)), url('/images/collection-reference.jpg')",backgroundSize:"cover",backgroundPosition:"center"}}/>
-   <div className="relative mx-auto max-w-[1320px]"><div className="mb-7 flex items-end justify-between"><div><p className="mb-2 text-[9px] font-bold uppercase tracking-[.34em] text-white/70">Shop our collection</p><h2 className="serif text-4xl leading-none md:text-5xl">Find your mood.</h2></div><a href="#products" className="hidden items-center gap-2 text-[9px] font-bold uppercase tracking-[.18em] md:inline-flex">View all <ArrowRight size={15}/></a></div>
-    <div className="grid grid-cols-2 gap-x-3 gap-y-7 sm:grid-cols-3 lg:grid-cols-5 lg:gap-4">{collections.map((collection)=><a href="#products" key={collection.name} className="group text-center"><div className="relative aspect-square overflow-hidden border border-white/20 bg-black/20"><Image src={collection.img} alt={collection.name} fill sizes="(max-width: 640px) 50vw, 20vw" unoptimized className="object-cover transition duration-700 group-hover:scale-105"/><div className="absolute inset-0 bg-black/10 transition group-hover:bg-black/0"/></div><h3 className="mt-3 text-[10px] font-bold uppercase tracking-[.22em]">{collection.name}</h3><p className="mt-1 text-[8px] font-semibold uppercase tracking-[.16em] text-white/70">{collection.note}</p></a>)}</div>
+  <section id="top" className="relative flex h-screen min-h-[680px] items-end overflow-hidden px-5 pb-12 pt-24 md:px-14 md:pb-16">
+   <div className="absolute inset-0"><Image src="https://images.unsplash.com/photo-1603006905003-be475563bc59?auto=format&fit=crop&w=2400&q=90" fill priority sizes="100vw" className="object-cover object-center" alt="Warm candlelit interior"/></div>
+   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-black/5"/>
+   <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/25 to-transparent"/>
+   <div className="relative z-10 mx-auto w-full max-w-[1320px] text-white">
+    <motion.div initial={{opacity:0,y:28}} animate={{opacity:1,y:0}} transition={{duration:1,ease:[.22,1,.36,1]}} className="max-w-5xl">
+     <p className="mb-5 text-[9px] font-bold uppercase tracking-[.38em] text-white/75 md:text-[10px]">Luxury candles &amp; home fragrance</p>
+     <h1 className="serif max-w-5xl text-[3.25rem] leading-[.92] md:text-7xl lg:text-[6.4rem]">Every room has a mood.<br/><span className="italic">Every moment has a feeling.</span></h1>
+     <div className="mt-6 flex items-center gap-4 md:mt-7">
+      <span className="h-px w-10 bg-white/50 md:w-14"/><p className="serif text-xl italic md:text-2xl">And every memory deserves a signature.</p>
+     </div>
+     <div className="mt-8 flex flex-wrap items-center gap-5 md:mt-9">
+      <a href="#products" className="inline-flex items-center gap-3 bg-white px-6 py-3.5 text-[10px] font-bold uppercase tracking-[.2em] text-[#211d19] transition hover:bg-[#e9e1d6]">shop the collection <ArrowRight size={15}/></a>
+      <span className="serif text-xl italic md:text-2xl">Set the Mood. ✨</span>
+     </div>
+    </motion.div>
    </div>
   </section>
 
