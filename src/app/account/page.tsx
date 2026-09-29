@@ -93,13 +93,9 @@ export default function AccountPage() {
   if(user) return (
     <main className="min-h-screen bg-[#f6f1e9] px-5 py-10 text-[#211d19] md:px-10 md:py-16">
       <div className="mx-auto max-w-6xl">
-        <header className="flex items-center justify-between gap-4">
-          <Link href="/" className="flex items-center gap-3">
-            <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[#211d19] text-white"><UserRound size={19}/></span>
-            <span><span className="serif block text-2xl leading-none">In The Mood</span><span className="mt-1 block text-[8px] font-bold uppercase tracking-[.3em] text-[#776f67]">Your account</span></span>
-          </Link>
+        <div className="flex justify-end">
           <button onClick={logout} className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-4 py-2.5 text-[10px] font-bold uppercase tracking-[.16em] hover:bg-black/5"><LogOut size={13}/> Sign out</button>
-        </header>
+        </div>
 
         <section className="mt-10 overflow-hidden rounded-[2rem] bg-[#211d19] p-7 text-[#f7f3ec] md:p-12">
           <p className="text-[10px] font-bold uppercase tracking-[.34em] text-[#d2a38c]">Customer account</p>
@@ -184,7 +180,6 @@ export default function AccountPage() {
 
   return <main className="min-h-screen bg-[#f6f1e9] px-5 py-16 text-[#211d19]">
     <div className="mx-auto max-w-md">
-      <Link href="/" className="serif text-3xl">In The Mood</Link>
       <div className="mt-12 rounded-[2rem] bg-white/70 p-7 shadow-sm ring-1 ring-black/5 md:p-10">
         <p className="text-[10px] font-bold uppercase tracking-[.3em] text-[#9c5638]">Your account</p>
         <h1 className="serif mt-3 text-5xl">{mode==="login"?"Welcome back.":"Create your account."}</h1>
