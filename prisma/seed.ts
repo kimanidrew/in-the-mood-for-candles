@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import { Pool } from "pg";
 import { scryptSync, randomBytes } from "node:crypto";
 
@@ -43,7 +43,7 @@ async function main() {
     });
   }
 
-  const content = [
+  const content: Prisma.SiteContentUncheckedCreateInput[] = [
     {key:"hero",type:"HERO",title:"Set the mood. Leave a scent worth remembering.",eyebrow:"Candles • Linen sprays • Memories",body:"Beautifully scented candles and linen sprays designed to transform your space, creating a feeling that stays with you.",imageUrl:"/hero.webp",imageAlt:"Warm candlelit room with a scented candle",buttonText:"explore the collection",buttonUrl:"#collection"},
     {key:"story",type:"STORY",title:"More than a candle. It’s a feeling.",body:"It started with a simple love for beautiful scents and the magic they create.\n\nThere’s something special about lighting a candle and watching a space transform. The soft glow, the warmth, and most importantly, the scent that slowly fills the room and becomes part of the moment.\n\nAt In The Mood For Candles, we believe fragrance has the power to create memories. A scent can welcome you into a room, make you feel at home, remind you of someone you love, or take you back to a moment you thought you had forgotten.\n\nBecause when everything else fades, a scent can stay with you.\n\nWe created In The Mood For Candles to bring beautiful fragrances into everyday moments, whether you’re unwinding after a long day, setting the tone for a date night, celebrating yourself, or simply making your home feel a little more like you.\n\nOur candles are made to be experienced, remembered, and associated with the moments that matter.\n\nLight it. Feel it. Remember it."},
     {key:"mission",type:"MISSION",title:"Our mission",body:"To create beautifully scented candles that transform everyday spaces into memorable experiences, bringing warmth, comfort and a little luxury into every moment."},
