@@ -15,7 +15,7 @@ body {
   margin: 0;
   background: var(--cream);
   color: var(--ink);
-  font-family: "Cormorant Garamond", serif;
+  font-family: "Manrope", sans-serif;
   letter-spacing: -.01em;
 }
 button, a { font-family: inherit; }
