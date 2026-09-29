@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -12,6 +12,17 @@ export default function AccountPage() {
   const [password,setPassword]=useState("");
   const [error,setError]=useState("");
   const [loading,setLoading]=useState(false);
+  const [checking,setChecking]=useState(true);
+
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((res) => res.ok ? res.json() : null)
+      .then((data) => {
+        if (data?.user?.role === "ADMIN") router.replace("/admin");
+        else setChecking(false);
+      })
+      .catch(() => setChecking(false));
+  }, [router]);
 
   async function submit(e:FormEvent){
     e.preventDefault(); setError(""); setLoading(true);
@@ -23,6 +34,8 @@ export default function AccountPage() {
     router.push(data.user.role==="ADMIN"?"/admin":"/");
     router.refresh();
   }
+
+  if (checking) return <main className="grid min-h-screen place-items-center bg-[#f6f1e9] text-[#211d19]"><p className="serif text-3xl">Checking your account…</p></main>;
 
   return <main className="min-h-screen bg-[#f6f1e9] px-5 py-16 text-[#211d19]">
     <div className="mx-auto max-w-md">
