@@ -2,7 +2,7 @@
 import Image from "next/image";
 import {useEffect,useMemo,useState} from "react";
 import {AnimatePresence,motion} from "framer-motion";
-import {ArrowRight,ChevronDown,Heart,Instagram,Menu,Minus,Plus,ShoppingBag,X} from "lucide-react";
+import {ArrowRight,Heart,Instagram,Menu,Minus,Plus,Search,ShoppingBag,UserRound,X} from "lucide-react";
 
 const products=[
 {name:"Lavender",mood:"Relaxing",priceUSD:19,desc:"Soft lavender and herbal notes made for quiet evenings and slow rituals.",img:"https://images.pexels.com/photos/6755743/pexels-photo-6755743.jpeg?auto=compress&cs=tinysrgb&w=1200"},
@@ -15,6 +15,13 @@ const products=[
 {name:"Mount Revelstoke",mood:"Energising",priceUSD:19,desc:"A fresh nature-inspired scented candle with a crisp outdoor feeling.",img:"https://images.pexels.com/photos/10771942/pexels-photo-10771942.jpeg?auto=compress&cs=tinysrgb&w=1200"},
 {name:"Autumn Glow",mood:"Tropical",priceUSD:19,desc:"Warm botanical notes and glowing candlelight for an inviting escape.",img:"https://images.pexels.com/photos/12480609/pexels-photo-12480609.jpeg?auto=compress&cs=tinysrgb&w=1200"},
 {name:"Ginger & Rose",mood:"Romantic",priceUSD:19,desc:"Warm ginger, candlelight and rose petals for a romantic atmosphere.",img:"https://images.pexels.com/photos/6798396/pexels-photo-6798396.jpeg?auto=compress&cs=tinysrgb&w=1200"}
+];
+const collections=[
+ {name:"Candles",note:"Set the mood",img:"https://images.pexels.com/photos/6755743/pexels-photo-6755743.jpeg?auto=compress&cs=tinysrgb&w=900"},
+ {name:"Linen sprays",note:"Freshen your space",img:"https://images.pexels.com/photos/10771904/pexels-photo-10771904.jpeg?auto=compress&cs=tinysrgb&w=900"},
+ {name:"Gift sets",note:"Thoughtful. Luxurious.",img:"https://images.pexels.com/photos/5782650/pexels-photo-5782650.jpeg?auto=compress&cs=tinysrgb&w=900"},
+ {name:"New arrivals",note:"Fresh scents, new moods.",img:"https://images.pexels.com/photos/6311846/pexels-photo-6311846.jpeg?auto=compress&cs=tinysrgb&w=900"},
+ {name:"The edit",note:"Curated beauty",img:"https://images.pexels.com/photos/9765419/pexels-photo-9765419.jpeg?auto=compress&cs=tinysrgb&w=900"},
 ];
 type Cart=Record<string,number>;
 
@@ -60,38 +67,40 @@ export default function Home(){
    window.open("https://wa.me/"+number+"?text="+encodeURIComponent(msg),"_blank");
  };
  return <main className="grain min-h-screen overflow-hidden"><div aria-hidden="true" className="app-candle-collage" /><div className="app-content">
-  <header className={"fixed top-0 z-40 w-full transition-all duration-500 "+(scrolled?"border-b border-black/10 bg-[#f7f3ec]/92 shadow-[0_8px_30px_rgba(33,29,25,0.08)] backdrop-blur-xl":"border-b border-white/15 bg-transparent")}>
-   <div className="mx-auto flex h-[82px] max-w-[1400px] items-center justify-between px-5 md:px-10">
+  <header className="fixed top-0 z-40 w-full border-b border-black/10 bg-[#f6f1e9]/95 shadow-[0_2px_18px_rgba(33,29,25,0.04)] backdrop-blur-xl">
+   <div className="mx-auto flex h-[80px] max-w-[1440px] items-center justify-between px-5 md:px-14">
     <button aria-label="In The Mood Candles home" onClick={()=>window.scrollTo({top:0,behavior:"smooth"})} className="group flex items-center gap-3 text-left">
       <span className="flex h-12 w-12 items-center justify-center">
         <Image src="/tm-logo.svg" alt="In The Mood Candles TM logo" width={48} height={48} priority className="h-10 w-10 object-contain transition-transform duration-500 group-hover:scale-105" />
       </span>
-      <span className={"leading-none transition-colors duration-500 "+(scrolled?"text-[#211d19]":"text-white drop-shadow-[0_1px_8px_rgba(0,0,0,.25)]")}>
-        <span className="serif block text-[18px] leading-none tracking-[.04em] italic sm:text-[20px]">in the <strong className="font-bold not-italic">mood</strong> for</span>
-        <span className={"mt-1 block text-[8px] font-semibold uppercase tracking-[.34em] "+(scrolled?"text-[#776f67]":"text-white/75")}>candles</span>
+      <span className="leading-none text-[#211d19]">
+        <span className="serif block text-[17px] leading-none tracking-[.18em] sm:text-[19px]">IN THE MOOD</span>
+        <span className="mt-1 block text-[8px] font-semibold uppercase tracking-[.42em] text-[#776f67]">FOR CANDLES</span>
       </span>
     </button>
     <nav className="hidden items-center gap-1 md:flex">
-      {[["shop","#shop"],["our story","#story"],["instagram","https://www.instagram.com/inthemoodfor_candles/"]].map(([label,href])=>
-        <a key={label} href={href} target={label==="instagram"?"_blank":undefined} rel={label==="instagram"?"noreferrer":undefined} className={"rounded-full px-5 py-2.5 text-[10px] font-bold uppercase tracking-[.18em] transition-all duration-300 "+(scrolled?"text-[#211d19] hover:bg-black/5":"text-white hover:bg-white/15 drop-shadow-[0_1px_8px_rgba(0,0,0,.2)]")}>{label}</a>
+      {[["home","#top"],["shop","#collection"],["our story","#story"],["journal","#mission"]].map(([label,href])=>
+        <a key={label} href={href} className="relative px-5 py-2.5 text-[9px] font-bold uppercase tracking-[.22em] text-[#211d19] transition-opacity hover:opacity-55">{label}{label==="home"&&<span className="absolute bottom-0 left-5 right-5 h-px bg-[#211d19]"/>}</a>
       )}
     </nav>
     <div className="flex items-center gap-1.5">
-      <button aria-label="Open shopping bag" className={"relative rounded-full p-2.5 transition-all duration-300 "+(scrolled?"text-[#211d19] hover:bg-black/5":"text-white hover:bg-white/15 drop-shadow-[0_1px_8px_rgba(0,0,0,.2)]")} onClick={()=>setBag(true)}>
+      <button aria-label="Search" className="hidden p-2.5 text-[#211d19] transition-opacity hover:opacity-55 md:block"><Search className="h-[18px] w-[18px]"/></button>
+      <button aria-label="Account" className="hidden p-2.5 text-[#211d19] transition-opacity hover:opacity-55 md:block"><UserRound className="h-[18px] w-[18px]"/></button>
+      <button aria-label="Open shopping bag" className="relative p-2.5 text-[#211d19] transition-opacity hover:opacity-55" onClick={()=>setBag(true)}>
         <ShoppingBag className="h-[22px] w-[22px] md:h-[19px] md:w-[19px]"/>{count>0&&<span className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center rounded-full bg-[#9c5638] text-[9px] font-bold text-white">{count}</span>}
       </button>
-      <button aria-label={menu?"Close menu":"Open menu"} className={"rounded-full p-2.5 transition-all duration-300 md:hidden "+(scrolled?"text-[#211d19] hover:bg-black/5":"text-white hover:bg-white/15")} onClick={()=>setMenu(!menu)}>{menu?<X className="h-[24px] w-[24px] md:h-[21px] md:w-[21px]"/>:<Menu className="h-[24px] w-[24px] md:h-[21px] md:w-[21px]"/>}</button>
+      <button aria-label={menu?"Close menu":"Open menu"} className="p-2.5 text-[#211d19] transition-opacity hover:opacity-55 md:hidden" onClick={()=>setMenu(!menu)}>{menu?<X className="h-[24px] w-[24px] md:h-[21px] md:w-[21px]"/>:<Menu className="h-[24px] w-[24px] md:h-[21px] md:w-[21px]"/>}</button>
     </div>
    </div>
    <AnimatePresence>{menu&&<motion.div initial={{height:0,opacity:0}} animate={{height:"auto",opacity:1}} exit={{height:0,opacity:0}} className="overflow-hidden border-t border-black/10 bg-[#f7f3ec]/98 px-5 py-5 shadow-xl backdrop-blur-xl md:hidden"><div className="flex flex-col gap-1">
-     {[["shop","#shop"],["our story","#story"],["instagram","https://www.instagram.com/inthemoodfor_candles/"]].map(([label,href])=><a key={label} href={href} target={label==="instagram"?"_blank":undefined} rel={label==="instagram"?"noreferrer":undefined} onClick={()=>setMenu(false)} className="rounded-2xl px-4 py-4 text-[11px] font-bold uppercase tracking-[.18em] text-[#211d19] transition hover:bg-black/5">{label}</a>)}
+     {[["shop","#collection"],["our story","#story"],["instagram","https://www.instagram.com/inthemoodfor_candles/"]].map(([label,href])=><a key={label} href={href} target={label==="instagram"?"_blank":undefined} rel={label==="instagram"?"noreferrer":undefined} onClick={()=>setMenu(false)} className="rounded-2xl px-4 py-4 text-[11px] font-bold uppercase tracking-[.18em] text-[#211d19] transition hover:bg-black/5">{label}</a>)}
    </div></motion.div>}</AnimatePresence>
   </header>
 
-  <section className="relative flex min-h-[92vh] items-end md:h-screen md:min-h-0 overflow-hidden px-5 pb-14 pt-28 md:min-h-[820px] md:px-10 md:pb-20">
-   <div className="absolute inset-0"><Image src="https://images.unsplash.com/photo-1603006905003-be475563bc59?auto=format&fit=crop&w=2200&q=90" fill priority sizes="100vw" className="object-cover object-center" alt="Candle in a warm interior"/></div>
+  <section id="top" className="relative mt-[80px] flex min-h-[calc(100vh-80px)] items-end overflow-hidden px-5 pb-14 md:min-h-[690px] md:px-14 md:pb-20">
+   <div className="absolute inset-0 overflow-hidden"><Image src="/images/hero-reference.jpg" fill priority sizes="100vw" className="object-cover object-center md:-translate-y-[8%] md:scale-[1.08]" alt="In The Mood candle collection in a warmly lit home"/></div>
    <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/15 to-black/10"/><div className="absolute left-5 top-28 z-10 md:left-10 md:top-32"><div className="flex items-center justify-center"><Image src="/tm-logo.svg" alt="In The Mood Candles logo" width={80} height={80} className="h-16 w-16 object-contain md:h-20 md:w-20" /></div></div>
-   <motion.div initial={{opacity:0,y:30}} animate={{opacity:1,y:0}} transition={{duration:.9}} className="relative z-10 max-w-4xl text-white">
+   <motion.div initial={{opacity:0,y:30}} animate={{opacity:1,y:0}} transition={{duration:.9}} className="hidden">
     <p className="mb-5 text-[10px] font-bold uppercase tracking-[.34em] text-white/75">Luxury candles &amp; home fragrance.</p>
     <h1 className="serif text-5xl leading-[.96] md:text-7xl lg:text-8xl">Every room has a mood.<br/><span className="italic">Every moment has a feeling.</span><br/>And every memory deserves a signature.</h1>
     <div className="mt-8 flex items-center gap-4">
@@ -102,9 +111,16 @@ export default function Home(){
    </motion.div>
   </section>
 
+  <section id="collection" className="relative overflow-hidden bg-[#382014] px-5 py-14 text-[#f7f3ec] md:px-14 md:py-16">
+   <div className="absolute inset-0 opacity-35" style={{backgroundImage:"linear-gradient(rgba(31,16,10,.72),rgba(31,16,10,.72)), url('/images/collection-reference.jpg')",backgroundSize:"cover",backgroundPosition:"center"}}/>
+   <div className="relative mx-auto max-w-[1320px]"><div className="mb-7 flex items-end justify-between"><div><p className="mb-2 text-[9px] font-bold uppercase tracking-[.34em] text-white/70">Shop our collection</p><h2 className="serif text-4xl leading-none md:text-5xl">Find your mood.</h2></div><a href="#products" className="hidden items-center gap-2 text-[9px] font-bold uppercase tracking-[.18em] md:inline-flex">View all <ArrowRight size={15}/></a></div>
+    <div className="grid grid-cols-2 gap-x-3 gap-y-7 sm:grid-cols-3 lg:grid-cols-5 lg:gap-4">{collections.map((collection)=><a href="#products" key={collection.name} className="group text-center"><div className="relative aspect-square overflow-hidden border border-white/20 bg-black/20"><Image src={collection.img} alt={collection.name} fill sizes="(max-width: 640px) 50vw, 20vw" unoptimized className="object-cover transition duration-700 group-hover:scale-105"/><div className="absolute inset-0 bg-black/10 transition group-hover:bg-black/0"/></div><h3 className="mt-3 text-[10px] font-bold uppercase tracking-[.22em]">{collection.name}</h3><p className="mt-1 text-[8px] font-semibold uppercase tracking-[.16em] text-white/70">{collection.note}</p></a>)}</div>
+   </div>
+  </section>
+
   <section className="border-b border-t border-black/10 bg-[#e9e1d6] px-0 py-4 md:px-10"><div className="marquee-wrap overflow-hidden"><motion.div animate={{x:["0%","-50%"]}} transition={{duration:22,repeat:Infinity,ease:"linear"}} className="marquee-track flex w-max items-center whitespace-nowrap text-[10px] font-bold uppercase tracking-[.2em]"><div className="flex items-center gap-8 pr-8"><span>hand-poured</span><span>soy wax</span><span>inspired by travel</span><span>small-batch care</span><span>beautifully giftable</span></div><div aria-hidden="true" className="flex items-center gap-8 pr-8"><span>hand-poured</span><span>soy wax</span><span>inspired by travel</span><span>small-batch care</span><span>beautifully giftable</span></div></motion.div></div></section>
 
-  <section id="shop" className="mx-auto max-w-[1400px] px-5 py-20 md:px-10 md:py-28">
+  <section id="products" className="mx-auto max-w-[1400px] px-5 py-20 md:px-14 md:py-28">
    <div className="mb-12 flex flex-col gap-7 md:flex-col md:items-start"><div><p className="mb-3 text-[10px] font-bold uppercase text-[#9c5638]">the collection</p><h2 className="serif text-5xl tracking-[-.04em] md:text-6xl">Find your mood.</h2></div><div className="hide-scroll -mx-1 flex max-w-full gap-2 overflow-x-auto px-1 pb-1 md:max-w-none md:overflow-visible">{["ALL","Relaxing","Romantic","Cosy","Playful","Tropical","Energising","Festive","Dreamy"].map(x=><button key={x} onClick={()=>setFilter(x)} className={"rounded-full border px-5 py-2 text-[11px] font-bold uppercase tracking-[.3em] transition "+(filter===x?"border-[#211d19] bg-[#211d19] text-white":"border-black/15 hover:border-black/40")}>{x}</button>)}</div></div>
    <div className="grid grid-cols-1 gap-x-7 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
     {shown.map((p,i)=><motion.article layout key={p.name} initial={{opacity:0,y:25}} whileInView={{opacity:1,y:0}} viewport={{once:true,margin:"-50px"}} transition={{delay:i*.04,duration:.5}} className="group">
@@ -145,7 +161,7 @@ export default function Home(){
 
   <footer className="px-5 py-10 md:px-10"><div className="mx-auto flex max-w-[1400px] flex-col justify-between gap-5 border-t border-black/10 pt-7 text-[10px] font-semibold uppercase tracking-[.15em] md:flex-row"><span>© {new Date().getFullYear()} in the mood for</span><span>made for slow moments</span></div></footer>
 
-  <AnimatePresence>{bag&&<><motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} onClick={()=>setBag(false)} className="fixed inset-0 z-50 bg-black/35 backdrop-blur-sm"/><motion.aside initial={{x:"100%"}} animate={{x:0}} exit={{x:"100%"}} transition={{type:"spring",damping:28,stiffness:260}} className="fixed right-0 top-0 z-50 flex h-full w-full max-w-[480px] flex-col bg-[#f7f3ec] shadow-2xl"><div className="flex items-center justify-between border-b border-black/10 px-6 py-5"><div><p className="text-[9px] font-bold uppercase text-[#776f67]">your</p><h3 className="serif text-2xl">Bag</h3></div><button onClick={()=>setBag(false)}><X/></button></div><div className="flex-1 overflow-auto p-6">{Object.keys(cart).length===0?<div className="flex h-full flex-col items-center justify-center text-center"><ShoppingBag size={25}/><p className="serif mt-4 text-2xl">Your bag is empty.</p><a href="#shop" onClick={()=>setBag(false)} className="mt-5 border-b border-black pb-1 text-[10px] font-bold uppercase">discover candles</a></div>:<div className="space-y-5">{Object.entries(cart).map(([name,q])=>{const p=products.find(x=>x.name===name)!;return <div key={name} className="flex gap-4 border-b border-black/10 pb-5"><Image src={p.img} width={80} height={96} sizes="80px" className="h-24 w-20 object-cover" alt=""/><div className="flex flex-1 flex-col"><div className="flex justify-between"><span className="serif text-lg">{name}</span><span>{formatMoney(p.priceUSD*rate*q,currency)}</span></div><div className="mt-auto flex items-center gap-3"><button onClick={()=>change(name,-1)} className="rounded-full border p-1"><Minus size={12}/></button><span className="text-xs">{q}</span><button onClick={()=>change(name,1)} className="rounded-full border p-1"><Plus size={12}/></button></div></div></div>})}</div>}</div>{count>0&&<div className="border-t border-black/10 p-6"><div className="mb-5 flex justify-between text-sm"><span>Estimated total</span><span className="font-semibold">{formatMoney(total,currency)}</span></div><button onClick={whatsapp} className="w-full bg-[#211d19] py-4 text-[10px] font-bold uppercase tracking-[.2em] text-white transition hover:bg-[#9c5638]">order via WhatsApp</button><p className="mt-3 text-center text-[10px] text-[#776f67]">We'll confirm availability, delivery and payment with you on WhatsApp.</p></div>}</motion.aside></>}</AnimatePresence>
+  <AnimatePresence>{bag&&<><motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} onClick={()=>setBag(false)} className="fixed inset-0 z-50 bg-black/35 backdrop-blur-sm"/><motion.aside initial={{x:"100%"}} animate={{x:0}} exit={{x:"100%"}} transition={{type:"spring",damping:28,stiffness:260}} className="fixed right-0 top-0 z-50 flex h-full w-full max-w-[480px] flex-col bg-[#f7f3ec] shadow-2xl"><div className="flex items-center justify-between border-b border-black/10 px-6 py-5"><div><p className="text-[9px] font-bold uppercase text-[#776f67]">your</p><h3 className="serif text-2xl">Bag</h3></div><button onClick={()=>setBag(false)}><X/></button></div><div className="flex-1 overflow-auto p-6">{Object.keys(cart).length===0?<div className="flex h-full flex-col items-center justify-center text-center"><ShoppingBag size={25}/><p className="serif mt-4 text-2xl">Your bag is empty.</p><a href="#collection" onClick={()=>setBag(false)} className="mt-5 border-b border-black pb-1 text-[10px] font-bold uppercase">discover candles</a></div>:<div className="space-y-5">{Object.entries(cart).map(([name,q])=>{const p=products.find(x=>x.name===name)!;return <div key={name} className="flex gap-4 border-b border-black/10 pb-5"><Image src={p.img} width={80} height={96} sizes="80px" className="h-24 w-20 object-cover" alt=""/><div className="flex flex-1 flex-col"><div className="flex justify-between"><span className="serif text-lg">{name}</span><span>{formatMoney(p.priceUSD*rate*q,currency)}</span></div><div className="mt-auto flex items-center gap-3"><button onClick={()=>change(name,-1)} className="rounded-full border p-1"><Minus size={12}/></button><span className="text-xs">{q}</span><button onClick={()=>change(name,1)} className="rounded-full border p-1"><Plus size={12}/></button></div></div></div>})}</div>}</div>{count>0&&<div className="border-t border-black/10 p-6"><div className="mb-5 flex justify-between text-sm"><span>Estimated total</span><span className="font-semibold">{formatMoney(total,currency)}</span></div><button onClick={whatsapp} className="w-full bg-[#211d19] py-4 text-[10px] font-bold uppercase tracking-[.2em] text-white transition hover:bg-[#9c5638]">order via WhatsApp</button><p className="mt-3 text-center text-[10px] text-[#776f67]">We'll confirm availability, delivery and payment with you on WhatsApp.</p></div>}</motion.aside></>}</AnimatePresence>
  </div>
  </main>
 }
