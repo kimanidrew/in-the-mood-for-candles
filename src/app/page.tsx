@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowRight,
@@ -129,6 +129,8 @@ export default function Home() {
   const [storeCollections, setStoreCollections] = useState<StoreCollection[]>([]);
   const [socials, setSocials] = useState<Social[]>([]);
   const [heroImage, setHeroImage] = useState("/hero.jpg");
+  const [activeCollection, setActiveCollection] = useState(0);
+  const collectionRailRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setCurrency(detectCurrency());
