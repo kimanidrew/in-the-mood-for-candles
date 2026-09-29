@@ -113,6 +113,7 @@ export default function Home() {
   const [storeContent, setStoreContent] = useState<StoreContent[]>([]);
   const [storeCollections, setStoreCollections] = useState<StoreCollection[]>([]);
   const [socials, setSocials] = useState<Social[]>([]);
+  const [heroImage, setHeroImage] = useState("/hero.jpg");
 
   useEffect(() => {
     setCurrency(detectCurrency());
@@ -128,7 +129,11 @@ export default function Home() {
             img: p.images?.[0]?.url || "/hero.jpg",
           })));
         }
-        if (Array.isArray(data.content)) setStoreContent(data.content);
+        if (Array.isArray(data.content)) {
+          setStoreContent(data.content);
+          const dbHero = data.content.find((item: StoreContent) => item.key === "hero");
+          if (dbHero?.imageUrl && dbHero.imageUrl !== "/hero.webp") setHeroImage(dbHero.imageUrl);
+        }
         if (Array.isArray(data.collections)) setStoreCollections(data.collections);
         if (Array.isArray(data.socials)) setSocials(data.socials);
       })
@@ -262,7 +267,8 @@ export default function Home() {
 
       <section id="top" className="hero-section relative min-h-[680px] overflow-hidden md:min-h-[690px]">
         <Image
-          src={hero?.imageUrl || "/hero.jpg"}
+          src={heroImage}
+          onError={() => setHeroImage("/hero.jpg")}
           alt={hero?.imageAlt || "Warm candlelit room with a scented candle"}
           fill
           priority
@@ -282,11 +288,11 @@ export default function Home() {
             <p className="mb-7 text-[12px] font-semibold uppercase tracking-[.34em] text-white/80 md:text-[9px]">
               {hero?.eyebrow || "Candles • Linen sprays • Memories"}
             </p>
-            <h1 className="serif text-[3.35rem] leading-[.94] tracking-[-.035em] sm:text-[4.25rem] md:text-[5.45rem]">
+            <h1 className="serif italic text-[3.35rem] leading-[.94] tracking-[-.035em] sm:text-[4.25rem] md:text-[5.45rem]">
               {hero?.title || "Set the mood. Leave a scent worth remembering."}
             </h1>
             <span className="mt-7 block h-px w-10 bg-white/80" />
-            <p className="mt-6 max-w-[370px] text-[9px] leading-6 text-white/85 md:text-[12px]">
+            <p className="mt-6 max-w-[470px] text-[13px] leading-7 text-white/90 md:text-[16px] md:leading-8">
               {hero?.body || "Beautifully scented candles and linen sprays designed to transform your space, creating a feeling that stays with you."}
             </p>
             <a
