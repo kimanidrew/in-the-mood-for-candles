@@ -105,6 +105,7 @@ model Product {
   updatedAt     DateTime       @updatedAt
   images        ProductImage[]
   variants      ProductVariant[]
+  collections   Collection[]
   favoritedBy   User[] @relation("FavoriteProducts")
 }
 
@@ -171,4 +172,5 @@ model Collection {
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  products    Product[]
 }
