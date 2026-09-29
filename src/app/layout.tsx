@@ -4,9 +4,9 @@ export const metadata = {
   title: "In The Mood Candles | Hand-poured candles",
   description: "Hand-poured candles made to set the mood.",
   icons: {
-    icon: "/favicon.png",
-    shortcut: "/favicon.png",
-    apple: "/favicon.png",
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
+    apple: "/favicon.svg",
   },
 };
 
