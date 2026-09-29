@@ -125,7 +125,7 @@ export default function Home() {
             mood: p.mood,
             priceUSD: Number(p.priceUSD || 0),
             desc: p.shortDescription || p.description,
-            img: p.images?.[0]?.url || "/hero.webp",
+            img: p.images?.[0]?.url || "/hero.jpg",
           })));
         }
         if (Array.isArray(data.content)) setStoreContent(data.content);
@@ -262,7 +262,7 @@ export default function Home() {
 
       <section id="top" className="hero-section relative min-h-[680px] overflow-hidden md:min-h-[690px]">
         <Image
-          src={hero?.imageUrl || "/hero.webp"}
+          src={hero?.imageUrl || "/hero.jpg"}
           alt={hero?.imageAlt || "Warm candlelit room with a scented candle"}
           fill
           priority
