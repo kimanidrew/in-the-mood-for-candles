@@ -27,6 +27,20 @@ async function main() {
     },
   });
 
+  const moods = [
+    { id:"mood_relaxing", slug:"relaxing", name:"Relaxing", sortOrder:0 },
+    { id:"mood_romantic", slug:"romantic", name:"Romantic", sortOrder:1 },
+    { id:"mood_cosy", slug:"cosy", name:"Cosy", sortOrder:2 },
+    { id:"mood_playful", slug:"playful", name:"Playful", sortOrder:3 },
+    { id:"mood_tropical", slug:"tropical", name:"Tropical", sortOrder:4 },
+    { id:"mood_energising", slug:"energising", name:"Energising", sortOrder:5 },
+    { id:"mood_festive", slug:"festive", name:"Festive", sortOrder:6 },
+    { id:"mood_dreamy", slug:"dreamy", name:"Dreamy", sortOrder:7 },
+  ];
+  for (const mood of moods) {
+    await prisma.mood.upsert({ where:{slug:mood.slug}, update:{name:mood.name,sortOrder:mood.sortOrder,isActive:true}, create:mood });
+  }
+
   const collections = [
     ["candles", "Candles", "Set the mood", "https://images.pexels.com/photos/6311846/pexels-photo-6311846.jpeg?auto=compress&cs=tinysrgb&w=1200", "Cosy"],
     ["linen-sprays", "Linen sprays", "Freshen your space", "https://images.pexels.com/photos/8247308/pexels-photo-8247308.jpeg?auto=compress&cs=tinysrgb&w=1200", "Relaxing"],
@@ -65,22 +79,22 @@ async function main() {
   }
 
   const products = [
-    {sku:"IMC-LAV-001",slug:"lavender",name:"Lavender",mood:"Relaxing",priceUSD:19,description:"Soft lavender and herbal notes made for quiet evenings and slow rituals.",img:"https://images.pexels.com/photos/6755743/pexels-photo-6755743.jpeg?auto=compress&cs=tinysrgb&w=1200",stock:25},
-    {sku:"IMC-KPF-002",slug:"kootenay-pine-fig",name:"Kootenay Pine Fig",mood:"Dreamy",priceUSD:19,description:"A peaceful pine-and-fig inspired fragrance with a calm natural character.",img:"https://images.pexels.com/photos/10771904/pexels-photo-10771904.jpeg?auto=compress&cs=tinysrgb&w=1200",stock:20},
-    {sku:"IMC-FCN-003",slug:"festive-cinnamon",name:"Festive Cinnamon",mood:"Festive",priceUSD:19,description:"Aromatic cinnamon and holiday notes for a warm seasonal glow.",img:"https://images.pexels.com/photos/5782650/pexels-photo-5782650.jpeg?auto=compress&cs=tinysrgb&w=1200",stock:20},
-    {sku:"IMC-WAM-004",slug:"warm-amber",name:"Warm Amber",mood:"Cosy",priceUSD:19,description:"A warmly lit scented candle with a soft amber atmosphere.",img:"https://images.pexels.com/photos/6311846/pexels-photo-6311846.jpeg?auto=compress&cs=tinysrgb&w=1200",stock:20},
-    {sku:"IMC-RSP-005",slug:"rosemary-spice",name:"Rosemary Spice",mood:"Playful",priceUSD:19,description:"Bright rosemary and spice notes with a vivid, inviting character.",img:"https://images.pexels.com/photos/5782675/pexels-photo-5782675.jpeg?auto=compress&cs=tinysrgb&w=1200",stock:20},
-    {sku:"IMC-SSA-006",slug:"spa-serenity",name:"Spa Serenity",mood:"Relaxing",priceUSD:19,description:"A tranquil candle styled for slow self-care and spa-like evenings.",img:"https://images.pexels.com/photos/8247308/pexels-photo-8247308.jpeg?auto=compress&cs=tinysrgb&w=1200",stock:20},
-    {sku:"IMC-RRU-007",slug:"rustic-retreat",name:"Rustic Retreat",mood:"Romantic",priceUSD:19,description:"A rustic scented candle with warm natural textures and intimate glow.",img:"https://images.pexels.com/photos/9765419/pexels-photo-9765419.jpeg?auto=compress&cs=tinysrgb&w=1200",stock:20},
-    {sku:"IMC-MRV-008",slug:"mount-revelstoke",name:"Mount Revelstoke",mood:"Energising",priceUSD:19,description:"A fresh nature-inspired scented candle with a crisp outdoor feeling.",img:"https://images.pexels.com/photos/10771942/pexels-photo-10771942.jpeg?auto=compress&cs=tinysrgb&w=1200",stock:20},
-    {sku:"IMC-AUG-009",slug:"autumn-glow",name:"Autumn Glow",mood:"Tropical",priceUSD:19,description:"Warm botanical notes and glowing candlelight for an inviting escape.",img:"https://images.pexels.com/photos/12480609/pexels-photo-12480609.jpeg?auto=compress&cs=tinysrgb&w=1200",stock:20},
-    {sku:"IMC-GRO-010",slug:"ginger-rose",name:"Ginger & Rose",mood:"Romantic",priceUSD:19,description:"Warm ginger, candlelight and rose petals for a romantic atmosphere.",img:"https://images.pexels.com/photos/6798396/pexels-photo-6798396.jpeg?auto=compress&cs=tinysrgb&w=1200",stock:20},
+    {sku:"IMC-LAV-001",slug:"lavender",name:"Lavender",mood:"Relaxing",moodId:"mood_relaxing",priceUSD:19,description:"Soft lavender and herbal notes made for quiet evenings and slow rituals.",img:"https://images.pexels.com/photos/6755743/pexels-photo-6755743.jpeg?auto=compress&cs=tinysrgb&w=1200",stock:25},
+    {sku:"IMC-KPF-002",slug:"kootenay-pine-fig",name:"Kootenay Pine Fig",mood:"Dreamy",moodId:"mood_dreamy",priceUSD:19,description:"A peaceful pine-and-fig inspired fragrance with a calm natural character.",img:"https://images.pexels.com/photos/10771904/pexels-photo-10771904.jpeg?auto=compress&cs=tinysrgb&w=1200",stock:20},
+    {sku:"IMC-FCN-003",slug:"festive-cinnamon",name:"Festive Cinnamon",mood:"Festive",moodId:"mood_festive",priceUSD:19,description:"Aromatic cinnamon and holiday notes for a warm seasonal glow.",img:"https://images.pexels.com/photos/5782650/pexels-photo-5782650.jpeg?auto=compress&cs=tinysrgb&w=1200",stock:20},
+    {sku:"IMC-WAM-004",slug:"warm-amber",name:"Warm Amber",mood:"Cosy",moodId:"mood_cosy",priceUSD:19,description:"A warmly lit scented candle with a soft amber atmosphere.",img:"https://images.pexels.com/photos/6311846/pexels-photo-6311846.jpeg?auto=compress&cs=tinysrgb&w=1200",stock:20},
+    {sku:"IMC-RSP-005",slug:"rosemary-spice",name:"Rosemary Spice",mood:"Playful",moodId:"mood_playful",priceUSD:19,description:"Bright rosemary and spice notes with a vivid, inviting character.",img:"https://images.pexels.com/photos/5782675/pexels-photo-5782675.jpeg?auto=compress&cs=tinysrgb&w=1200",stock:20},
+    {sku:"IMC-SSA-006",slug:"spa-serenity",name:"Spa Serenity",mood:"Relaxing",moodId:"mood_relaxing",priceUSD:19,description:"A tranquil candle styled for slow self-care and spa-like evenings.",img:"https://images.pexels.com/photos/8247308/pexels-photo-8247308.jpeg?auto=compress&cs=tinysrgb&w=1200",stock:20},
+    {sku:"IMC-RRU-007",slug:"rustic-retreat",name:"Rustic Retreat",mood:"Romantic",moodId:"mood_romantic",priceUSD:19,description:"A rustic scented candle with warm natural textures and intimate glow.",img:"https://images.pexels.com/photos/9765419/pexels-photo-9765419.jpeg?auto=compress&cs=tinysrgb&w=1200",stock:20},
+    {sku:"IMC-MRV-008",slug:"mount-revelstoke",name:"Mount Revelstoke",mood:"Energising",moodId:"mood_energising",priceUSD:19,description:"A fresh nature-inspired scented candle with a crisp outdoor feeling.",img:"https://images.pexels.com/photos/10771942/pexels-photo-10771942.jpeg?auto=compress&cs=tinysrgb&w=1200",stock:20},
+    {sku:"IMC-AUG-009",slug:"autumn-glow",name:"Autumn Glow",mood:"Tropical",moodId:"mood_tropical",priceUSD:19,description:"Warm botanical notes and glowing candlelight for an inviting escape.",img:"https://images.pexels.com/photos/12480609/pexels-photo-12480609.jpeg?auto=compress&cs=tinysrgb&w=1200",stock:20},
+    {sku:"IMC-GRO-010",slug:"ginger-rose",name:"Ginger & Rose",mood:"Romantic",moodId:"mood_romantic",priceUSD:19,description:"Warm ginger, candlelight and rose petals for a romantic atmosphere.",img:"https://images.pexels.com/photos/6798396/pexels-photo-6798396.jpeg?auto=compress&cs=tinysrgb&w=1200",stock:20},
   ];
   for (const p of products) {
     const product = await prisma.product.upsert({
       where:{sku:p.sku},
-      update:{name:p.name,slug:p.slug,mood:p.mood,description:p.description,priceUSD:p.priceUSD,stock:p.stock,status:"ACTIVE"},
-      create:{sku:p.sku,slug:p.slug,name:p.name,mood:p.mood,description:p.description,priceUSD:p.priceUSD,stock:p.stock,status:"ACTIVE",waxType:"Soy wax",wickType:"Cotton wick",sizeLabel:"Standard jar",scentIntensity:"Medium",category:"Candles"},
+      update:{name:p.name,slug:p.slug,mood:p.mood,moodId:p.moodId,description:p.description,priceUSD:p.priceUSD,stock:p.stock,status:"ACTIVE"},
+      create:{sku:p.sku,slug:p.slug,name:p.name,mood:p.mood,moodId:p.moodId,description:p.description,priceUSD:p.priceUSD,stock:p.stock,status:"ACTIVE",waxType:"Soy wax",wickType:"Cotton wick",sizeLabel:"Standard jar",scentIntensity:"Medium",category:"Candles"},
     });
     await prisma.productImage.deleteMany({where:{productId:product.id}});
     await prisma.productImage.create({data:{productId:product.id,url:p.img,alt:p.name,sortOrder:0,isPrimary:true}});
