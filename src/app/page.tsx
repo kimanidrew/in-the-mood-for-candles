@@ -120,7 +120,7 @@ function formatMoney(amount: number, info: CurrencyInfo) {
 
 export default function Home() {
   const [filter, setFilter] = useState("ALL");
-  const [shopProducts, setShopProducts] = useState(products);
+  const [shopProducts, setShopProducts] = useState<StoreProduct[]>(products);
   const [cart, setCart] = useState<Cart>({});
   const [bag, setBag] = useState(false);
   const [menu, setMenu] = useState(false);
