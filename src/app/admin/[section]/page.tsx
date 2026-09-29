@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import AdminPage, { type Tab } from "../page";
 
-const sections = ["content", "collections", "products", "moods", "social"] as const;
+const sections = ["content", "collections", "collection", "products", "moods", "social"] as const;
 
 export default async function AdminSectionPage({
   params,
@@ -10,5 +10,5 @@ export default async function AdminSectionPage({
 }) {
   const { section } = await params;
   if (!sections.includes(section as (typeof sections)[number])) notFound();
-  return <AdminPage initialTab={section as Tab} />;
+  return <AdminPage initialTab={(section === "collection" ? "collections" : section) as Tab} />;
 }
