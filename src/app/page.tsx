@@ -144,7 +144,6 @@ export default function Home() {
         if (Array.isArray(moodData.moods)) setMoods(moodData.moods);
         return data;
       })
-      .then((r) => r.ok ? r.json() : Promise.reject())
       .then((data) => {
         if (Array.isArray(data.products) && data.products.length) {
           setStoreProducts(data.products.map((p: any) => ({
