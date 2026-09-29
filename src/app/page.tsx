@@ -5,14 +5,16 @@ import {AnimatePresence,motion} from "framer-motion";
 import {ArrowRight,ChevronDown,Heart,Instagram,Menu,Minus,Plus,ShoppingBag,X} from "lucide-react";
 
 const products=[
-{name:"Pandan Coconut",mood:"Tropical",priceUSD:19,desc:"Creamy coconut, green pandan and a soft tropical finish.",img:"https://images.unsplash.com/photo-1603006905003-be475563bc59?auto=format&fit=crop&w=1000&q=85"},
-{name:"Mango Lychee Jelly",mood:"Playful",priceUSD:19,desc:"Juicy mango and lychee with a bright, playful sweetness.",img:"https://images.unsplash.com/photo-1602523961358-f9f03dd557db?auto=format&fit=crop&w=1000&q=85"},
-{name:"Thai Massage",mood:"Relaxing",priceUSD:19,desc:"A calming spa-inspired blend for slow evenings.",img:"https://images.unsplash.com/photo-1602874801006-e26d7b7b8e8a?auto=format&fit=crop&w=1000&q=85"},
-{name:"Kopitiam Mornings",mood:"Energising",priceUSD:19,desc:"Roasted coffee, condensed milk and vanilla — cafe mornings in a jar.",img:"https://images.unsplash.com/photo-1603905179139-db12ab535b0b?auto=format&fit=crop&w=1000&q=85"},
-{name:"Croissant in Paris",mood:"Romantic",priceUSD:19,desc:"Warm pastry, buttery comfort and a little Parisian romance.",img:"https://images.unsplash.com/photo-1605651202774-7d573fd12f8f?auto=format&fit=crop&w=1000&q=85"},
-{name:"Winter Forest",mood:"Cosy",priceUSD:18,desc:"Evergreen woods, cool air and a quiet cabin feeling.",img:"https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=1000&q=85"},
-{name:"Cosy Christmas",mood:"Festive",priceUSD:19,desc:"A warm festive blend made for glowing nights.",img:"https://images.unsplash.com/photo-1602874801006-e26d7b7b8e8a?auto=format&fit=crop&w=1000&q=85"},
-{name:"Small Towns in Italy",mood:"Dreamy",priceUSD:19,desc:"A sun-warmed, leisurely Mediterranean escape.",img:"https://images.unsplash.com/photo-1523293836416-66be4f2b0b3b?auto=format&fit=crop&w=1000&q=85"}
+{name:"Lavender",mood:"Relaxing",priceUSD:19,desc:"Soft lavender and herbal notes made for quiet evenings and slow rituals.",img:"https://images.pexels.com/photos/6755743/pexels-photo-6755743.jpeg?auto=compress&cs=tinysrgb&w=1200"},
+{name:"Vanilla",mood:"Cosy",priceUSD:19,desc:"Creamy vanilla warmth with a gentle, comforting home-fragrance character.",img:"https://images.pexels.com/photos/13673112/pexels-photo-13673112.jpeg?auto=compress&cs=tinysrgb&w=1200"},
+{name:"Iced Coffee Latte",mood:"Energising",priceUSD:19,desc:"Roasted coffee and sweet latte notes inspired by slow café mornings.",img:"https://images.pexels.com/photos/37117322/pexels-photo-37117322.jpeg?auto=compress&cs=tinysrgb&w=1200"},
+{name:"Rose & Lavender",mood:"Romantic",priceUSD:19,desc:"Delicate rosebuds and lavender for a soft floral, candlelit mood.",img:"https://images.pexels.com/photos/36471951/pexels-photo-36471951.jpeg?auto=compress&cs=tinysrgb&w=1200"},
+{name:"Apple Cider",mood:"Festive",priceUSD:19,desc:"Warm apple and spice notes with the feeling of a fireside seasonal evening.",img:"https://images.pexels.com/photos/9651902/pexels-photo-9651902.jpeg?auto=compress&cs=tinysrgb&w=1200"},
+{name:"Cinnamon Spice",mood:"Tropical",priceUSD:19,desc:"Sweet cinnamon and warm spice notes with a rich, inviting glow.",img:"https://images.pexels.com/photos/12349435/pexels-photo-12349435.jpeg?auto=compress&cs=tinysrgb&w=1200"},
+{name:"Lavender Fresh Breeze",mood:"Dreamy",priceUSD:19,desc:"A fresh lavender atmosphere that feels airy, peaceful and clean.",img:"https://images.pexels.com/photos/5816986/pexels-photo-5816986.jpeg?auto=compress&cs=tinysrgb&w=1200"},
+{name:"Amber Glow",mood:"Cosy",priceUSD:19,desc:"A softly glowing amber jar with a warm, intimate evening character.",img:"https://images.pexels.com/photos/6311846/pexels-photo-6311846.jpeg?auto=compress&cs=tinysrgb&w=1200"},
+{name:"Wild Rosemary",mood:"Playful",priceUSD:19,desc:"Green rosemary and fresh botanical notes with a bright, spirited feel.",img:"https://images.pexels.com/photos/5782690/pexels-photo-5782690.jpeg?auto=compress&cs=tinysrgb&w=1200"},
+{name:"Candlelight Retreat",mood:"Tropical",priceUSD:19,desc:"A warm jar candle designed to bring a relaxed holiday-retreat feeling home.",img:"https://images.pexels.com/photos/7815071/pexels-photo-7815071.jpeg?auto=compress&cs=tinysrgb&w=1200"}
 ];
 type Cart=Record<string,number>;
 
