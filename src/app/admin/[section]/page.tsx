@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import AdminPage, { type Tab } from "../page";
 
-const sections = ["content", "collections", "products", "social"] as const;
+const sections = ["content", "collections", "products", "moods", "social"] as const;
 
 export default async function AdminSectionPage({
   params,
