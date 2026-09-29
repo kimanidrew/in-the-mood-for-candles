@@ -1,4 +1,5 @@
 import "./globals.css";
+import SiteChrome from "@/components/site/SiteChrome";
 
 export const metadata = {
   title: "In The Mood Candles | Hand-poured candles",
@@ -13,7 +14,7 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body><SiteChrome>{children}</SiteChrome></body>
     </html>
   );
 }
