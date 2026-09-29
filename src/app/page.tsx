@@ -167,7 +167,12 @@ export default function Home() {
           const dbHero = data.content.find((item: StoreContent) => item.key === "hero");
           if (dbHero?.imageUrl) setHeroImage(normalizeImageUrl(dbHero.imageUrl));
         }
-        if (Array.isArray(data.collections)) {\n          setStoreCollections(data.collections);\n          if (data.collections.length) setActiveProductCollection((current: string) => current || data.collections[0].slug);\n        }
+        if (Array.isArray(data.collections)) {
+          setStoreCollections(data.collections);
+          if (data.collections.length) {
+            setActiveProductCollection((current: string) => current || data.collections[0].slug);
+          }
+        }
         if (Array.isArray(data.socials)) setSocials(data.socials);
       })
       .catch(() => {});
