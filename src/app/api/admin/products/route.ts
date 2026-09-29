@@ -39,7 +39,7 @@ export async function GET(){
     await requireAdmin();
     return NextResponse.json({
       products:await prisma.product.findMany({
-        include:{images:true,variants:true,moodRef:true},
+        include:{images:true,variants:true,moodRef:true,collections:{select:{id:true,slug:true,title:true}}},
         orderBy:{updatedAt:"desc"},
       }),
     });
@@ -58,10 +58,12 @@ export async function POST(request:Request){
     }
 
     const identifiers=await uniqueIdentifiers(name);
+    const collectionIds=Array.isArray(b.collectionIds) ? b.collectionIds.filter(Boolean).map(String) : [];
     const product=await prisma.product.create({
       data:{
         ...productData(b),
         ...identifiers,
+        collections:{connect:collectionIds.map((id:string)=>({id})),},
         images:{create:(b.images||[]).filter(Boolean).map((url:string,i:number)=>({url,alt:name,sortOrder:i,isPrimary:i===0}))},
       },
       include:{images:true,variants:true},
@@ -85,9 +87,10 @@ export async function PUT(request:Request){
     }
 
     const identifiers=await uniqueIdentifiers(name, existing.id);
+    const collectionIds=Array.isArray(b.collectionIds) ? b.collectionIds.filter(Boolean).map(String) : [];
     const product=await prisma.product.update({
       where:{id:existing.id},
-      data:{...productData(b),...identifiers},
+      data:{...productData(b),...identifiers,collections:{set:collectionIds.map((id:string)=>({id}))}},
     });
 
     if(Array.isArray(b.images)){
