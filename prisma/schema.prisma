@@ -1,0 +1,142 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  CUSTOMER
+  ADMIN
+}
+
+enum ProductStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+enum ContentType {
+  HERO
+  COLLECTION
+  STORY
+  MISSION
+  VISION
+  SOCIAL
+  GENERAL
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String?
+  email        String   @unique
+  passwordHash String
+  role         UserRole @default(CUSTOMER)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Product {
+  id             String        @id @default(cuid())
+  sku            String        @unique
+  slug           String        @unique
+  name           String
+  shortName      String?
+  shortDescription String?
+  description    String
+  mood           String
+  category       String        @default("Candles")
+  status         ProductStatus @default(DRAFT)
+  priceUSD       Decimal       @db.Decimal(10, 2)
+  currency       String        @default("USD")
+  sizeLabel      String?
+  waxType        String?
+  wickType       String?
+  burnTimeHours  Decimal?      @db.Decimal(6, 2)
+  scentFamily    String?
+  scentIntensity String?
+  topNotes      String?
+  middleNotes   String?
+  baseNotes     String?
+  ingredients   String?
+  allergens     String?
+  careInstructions String?
+  vesselMaterial String?
+  vesselColor   String?
+  dimensions    String?
+  netWeight     String?
+  stock         Int            @default(0)
+  featured      Boolean        @default(false)
+  seoTitle      String?
+  seoDescription String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  images        ProductImage[]
+  variants      ProductVariant[]
+}
+
+model ProductImage {
+  id        String   @id @default(cuid())
+  productId String
+  url       String
+  alt       String?
+  sortOrder Int      @default(0)
+  isPrimary Boolean  @default(false)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+model ProductVariant {
+  id          String   @id @default(cuid())
+  productId   String
+  name        String
+  sku         String?
+  priceUSD    Decimal? @db.Decimal(10, 2)
+  sizeLabel   String?
+  stock       Int      @default(0)
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model SiteContent {
+  id          String      @id @default(cuid())
+  type        ContentType
+  key         String      @unique
+  title       String?
+  eyebrow     String?
+  body        String?
+  imageUrl    String?
+  imageAlt    String?
+  buttonText  String?
+  buttonUrl   String?
+  sortOrder   Int         @default(0)
+  isActive    Boolean     @default(true)
+  updatedAt   DateTime    @updatedAt
+  createdAt   DateTime    @default(now())
+}
+
+model SocialLink {
+  id        String   @id @default(cuid())
+  platform  String   @unique
+  label     String?
+  url       String
+  isActive  Boolean  @default(true)
+  sortOrder Int      @default(0)
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+}
+
+model Collection {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  subtitle    String?
+  imageUrl    String
+  imageAlt    String?
+  mood        String?
+  sortOrder   Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
