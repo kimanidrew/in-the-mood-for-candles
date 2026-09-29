@@ -422,7 +422,7 @@ export default function Home() {
             <h2 className="serif text-5xl leading-[.95] md:text-7xl">A scent is<br /><span className="italic">a memory.</span></h2>
           </div>
           <div className="max-w-xl text-[13px] leading-7 text-[#665c54]">
-            <p>{journal?.body || "There is magic in lighting a candle and letting a familiar fragrance fill the room."}
+            {(journal?.body || "There is magic in lighting a candle and letting a familiar fragrance fill the room.").split(/\n\n/).map((paragraph, index) => <p key={index} className={index ? "mt-5" : ""}>{paragraph}</p>)}
             <a href={instagram} target="_blank" rel="noreferrer" className="mt-7 inline-flex items-center gap-3 border-b border-[#211d19]/40 pb-2 text-[12px] font-bold uppercase tracking-[.2em]">
               follow the journey <Instagram size={14} />
             </a>
@@ -439,7 +439,7 @@ export default function Home() {
               <div className="mt-8 h-px w-20 bg-[#d2a38c]/60" />
             </div>
             <div className="max-w-2xl space-y-6 text-[13px] leading-7 text-white/75 md:text-[15px] md:leading-8">
-              {(story?.body || "It started with a simple love for beautiful scents and the magic they create.").split("\\n\\n").map((paragraph, index) => (
+              {(story?.body || "It started with a simple love for beautiful scents and the magic they create.").split(/\n\n/).map((paragraph, index) => (
                 <p key={index} className={index === 6 ? "serif pt-2 text-3xl italic text-[#d2a38c]" : ""}>{paragraph}</p>
               ))}
             </div>
