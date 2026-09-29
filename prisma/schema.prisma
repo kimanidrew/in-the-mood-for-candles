@@ -50,6 +50,7 @@ model Mood {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   products    Product[]
+  favoritedBy User[] @relation("FavoriteMoods")
 }
 
 model User {
@@ -99,6 +100,7 @@ model Product {
   updatedAt     DateTime       @updatedAt
   images        ProductImage[]
   variants      ProductVariant[]
+  favoritedBy   User[] @relation("FavoriteProducts")
 }
 
 model ProductImage {
