@@ -88,7 +88,7 @@ export default function Home(){
    </div></motion.div>}</AnimatePresence>
   </header>
 
-  <section className="relative flex min-h-[92vh] items-end overflow-hidden px-5 pb-14 pt-28 md:min-h-[820px] md:px-10 md:pb-20">
+  <section className="relative flex min-h-[92vh] items-end md:h-screen md:min-h-0 overflow-hidden px-5 pb-14 pt-28 md:min-h-[820px] md:px-10 md:pb-20">
    <div className="absolute inset-0"><Image src="https://images.unsplash.com/photo-1603006905003-be475563bc59?auto=format&fit=crop&w=2200&q=90" fill priority sizes="100vw" className="object-cover object-center" alt="Candle in a warm interior"/></div>
    <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/15 to-black/10"/><div className="absolute left-5 top-28 z-10 md:left-10 md:top-32"><div className="flex items-center justify-center"><Image src="/tm-logo.svg" alt="In The Mood Candles logo" width={80} height={80} className="h-16 w-16 object-contain md:h-20 md:w-20" /></div></div>
    <motion.div initial={{opacity:0,y:30}} animate={{opacity:1,y:0}} transition={{duration:.9}} className="relative z-10 max-w-3xl text-white">
