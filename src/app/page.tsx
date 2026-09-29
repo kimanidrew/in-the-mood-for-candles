@@ -316,12 +316,15 @@ export default function Home() {
           <div className="flex items-center gap-0.5">
             <button aria-label="Search" className="hidden p-2.5 transition-opacity hover:opacity-50 md:block"><Search size={18} strokeWidth={1.5} /></button>
             <button aria-label="Account" onClick={() => window.location.href = "/account"} className="hidden p-2.5 transition-opacity hover:opacity-50 md:block"><UserRound size={18} strokeWidth={1.5} /></button>
+            <a href="/account#favourites" aria-label="Favourites" className="hidden p-2.5 transition-opacity hover:opacity-50 md:hidden">
+              <Heart size={24} strokeWidth={1.6} />
+            </a>
             <button aria-label="Shopping bag" className="relative p-2.5 transition-opacity hover:opacity-50" onClick={() => setBag(true)}>
-              <ShoppingBag size={20} strokeWidth={1.5} />
+              <ShoppingBag size={24} strokeWidth={1.6} />
               {count > 0 && <span className="absolute right-0.5 top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-[#211d19] text-[12px] font-bold text-white">{count}</span>}
             </button>
             <button aria-label={menu ? "Close menu" : "Open menu"} className="p-2.5 md:hidden" onClick={() => setMenu((open) => !open)}>
-              {menu ? <X size={23} strokeWidth={1.5} /> : <Menu size={23} strokeWidth={1.5} />}
+              {menu ? <X size={27} strokeWidth={1.6} /> : <Menu size={27} strokeWidth={1.6} />}
             </button>
           </div>
         </div>
