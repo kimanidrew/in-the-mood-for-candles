@@ -21,6 +21,7 @@ export async function PUT(request:Request){
     await requireAdmin(); const b=await request.json(); const name=String(b.name||"").trim();
     if(!b.id||!name) return NextResponse.json({error:"Mood id and name are required."},{status:400});
     const mood=await prisma.mood.update({where:{id:b.id},data:{name,slug:slugify(name),sortOrder:Number(b.sortOrder||0),isActive:b.isActive!==false}});
+    await prisma.product.updateMany({where:{moodId:mood.id},data:{mood:name}});
     return NextResponse.json({mood});
   }catch{ return NextResponse.json({error:"Unable to update mood."},{status:500});}
 }
