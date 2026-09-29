@@ -14,12 +14,6 @@ export default async function MoodPage({ params }: { params: Promise<{ slug: str
 
   return (
     <main className="min-h-screen bg-[#f6f1e9] text-[#211d19]">
-      <header className="sticky top-0 z-50 border-b border-black/10 bg-[#f6f1e9]/90 px-5 backdrop-blur-xl md:px-12">
-        <div className="mx-auto flex h-[76px] max-w-[1400px] items-center justify-between">
-          <Link href="/" className="flex items-center gap-3"><Image src="/tm-logo.svg" alt="In The Mood For Candles" width={48} height={48} unoptimized/><span className="serif text-[17px] tracking-[.1em]">IN THE MOOD</span></Link>
-          <Link href="/#collection" className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[.18em]"><ArrowLeft size={14}/> Back to moods</Link>
-        </div>
-      </header>
       <section className="mx-auto max-w-[1400px] px-5 py-12 md:px-12 md:py-20">
         <div className="grid gap-8 overflow-hidden rounded-[2rem] bg-[#2a180f] text-[#f5eadf] md:grid-cols-[.9fr_1.1fr]">
           <div className="relative min-h-[360px] md:min-h-[500px]">{mood.imageUrl && <Image src={mood.imageUrl} alt={mood.name} fill unoptimized={mood.imageUrl.startsWith("data:image/")} className="object-cover"/>}<div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"/></div>
