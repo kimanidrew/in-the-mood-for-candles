@@ -65,17 +65,50 @@ button { cursor: pointer; }
   .hero-section > div.relative { min-height: 700px; }
   .collection-grid {
     display: flex;
-    gap: 12px;
+    align-items: center;
+    gap: 14px;
     overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-snap-stop: always;
+    scroll-padding-inline: 50%;
     margin-right: -20px;
-    padding-right: 20px;
+    margin-left: -20px;
+    padding: 18px calc(50% - 35vw) 28px;
     scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
   }
   .collection-grid::-webkit-scrollbar { display: none; }
   .collection-card {
-    flex: 0 0 68vw;
+    flex: 0 0 70vw;
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+    transform: scale(.92);
+    transform-origin: center center;
+    opacity: .72;
+    transition:
+      transform .55s cubic-bezier(.22,1,.36,1),
+      opacity .45s ease,
+      filter .45s ease;
+    will-change: transform, opacity;
   }
-  .collection-card-featured { flex: 0 0 78vw; }
+  .collection-card-active {
+    transform: scale(1);
+    opacity: 1;
+    filter: none;
+    z-index: 2;
+  }
+  .collection-card:not(.collection-card-active) {
+    filter: saturate(.82);
+  }
+  .collection-card > div:first-child {
+    aspect-ratio: 1.05;
+    transition: box-shadow .55s cubic-bezier(.22,1,.36,1);
+  }
+  .collection-card-active > div:first-child {
+    box-shadow: 0 22px 50px rgba(0,0,0,.2);
+  }
+  .collection-card-featured { flex: 0 0 70vw; }
   .collection-card-featured > div:first-child { aspect-ratio: 1.05; }
 }
 
