@@ -136,7 +136,7 @@ export default function Home() {
   const [favoriteNotice, setFavoriteNotice] = useState("");
   const [heroImage, setHeroImage] = useState("/hero.jpg");
   const [activeCollection, setActiveCollection] = useState(0);
-  const [activeProductCollection, setActiveProductCollection] = useState("ALL");
+  const [activeProductCollection, setActiveProductCollection] = useState("");
   const collectionRailRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -167,7 +167,7 @@ export default function Home() {
           const dbHero = data.content.find((item: StoreContent) => item.key === "hero");
           if (dbHero?.imageUrl) setHeroImage(normalizeImageUrl(dbHero.imageUrl));
         }
-        if (Array.isArray(data.collections)) setStoreCollections(data.collections);
+        if (Array.isArray(data.collections)) {\n          setStoreCollections(data.collections);\n          if (data.collections.length) setActiveProductCollection((current: string) => current || data.collections[0].slug);\n        }
         if (Array.isArray(data.socials)) setSocials(data.socials);
       })
       .catch(() => {});
@@ -210,8 +210,8 @@ export default function Home() {
   const moodTabs: StoreMood[] = moods.length ? moods : Array.from(new Set(shopProducts.map((product) => product.mood).filter(Boolean))).map((name) => ({ id: name, name, slug: String(name).toLowerCase().replace(/\\s+/g, "-"), imageUrl: null, sortOrder: 0 }));
   const selectedProductCollection = storeCollections.find((collection) => collection.slug === activeProductCollection);
   const shown = useMemo(() => {
-    if (activeProductCollection === "ALL") return shopProducts;
-    const ids = new Set((selectedProductCollection?.products || []).map((product) => product.id).filter(Boolean));
+    if (!selectedProductCollection) return [];
+    const ids = new Set((selectedProductCollection.products || []).map((product) => product.id).filter(Boolean));
     return ids.size ? shopProducts.filter((product) => ids.has(product.id)) : [];
   }, [activeProductCollection, selectedProductCollection, shopProducts]);
 
@@ -421,17 +421,16 @@ export default function Home() {
         <div className="mx-auto max-w-[1400px]">
           <div className="mb-10 flex flex-col gap-6 md:mb-12 md:flex-row md:items-end md:justify-between"><div><p className="mb-3 text-[12px] font-bold uppercase tracking-[.36em] text-[#9c5638]">The candle collection</p><h2 className="serif text-5xl leading-none md:text-7xl">Choose your <span className="italic">collection.</span></h2></div><p className="max-w-sm text-[9px] leading-6 text-[#776f67]">Curated candles for every atmosphere, ritual and little moment.</p></div>
           <div className="hide-scroll mb-12 flex gap-7 overflow-x-auto border-b border-black/10 pb-4 md:justify-center md:overflow-visible">
-            <button onClick={() => setActiveProductCollection("ALL")} className={"shrink-0 pb-3 text-[12px] font-bold uppercase tracking-[.25em] transition " + (activeProductCollection === "ALL" ? "border-b border-[#211d19] text-[#211d19]" : "text-[#776f67] hover:text-[#211d19]")}>all</button>
             {storeCollections.map((collection) => <button key={collection.slug} onClick={() => setActiveProductCollection(collection.slug)} className={"shrink-0 pb-3 text-[12px] font-bold uppercase tracking-[.25em] transition " + (activeProductCollection === collection.slug ? "border-b border-[#211d19] text-[#211d19]" : "text-[#776f67] hover:text-[#211d19]")}>{collection.title}</button>)}
           </div>
-          {activeProductCollection !== "ALL" && <div className="mb-8 flex items-center justify-between gap-4"><div><p className="serif text-2xl">{selectedProductCollection?.title}</p><p className="mt-1 text-xs text-[#776f67]">{selectedProductCollection?.subtitle}</p></div><a href={"/collections/" + activeProductCollection} className="inline-flex shrink-0 items-center gap-2 border-b border-black/30 pb-1 text-[10px] font-bold uppercase tracking-[.18em]">view all <ArrowRight size={13}/></a></div>}
+          {selectedProductCollection && <div className="mb-8 flex items-center justify-between gap-4"><div><p className="serif text-2xl">{selectedProductCollection.title}</p><p className="mt-1 text-xs text-[#776f67]">{selectedProductCollection.subtitle}</p></div><a href={"/collections/" + activeProductCollection} className="inline-flex shrink-0 items-center gap-2 border-b border-black/30 pb-1 text-[10px] font-bold uppercase tracking-[.18em]">view all <ArrowRight size={13}/></a></div>}
           <div className="grid grid-cols-1 gap-x-7 gap-y-14 sm:grid-cols-2 lg:grid-cols-4">
             {shown.slice(0,4).map((product,index) => <motion.article layout key={product.id||product.name} initial={{opacity:0,y:18}} whileInView={{opacity:1,y:0}} viewport={{once:true,margin:"-50px"}} transition={{delay:index*.035,duration:.5}} className="group">
               <div className="relative aspect-[.82] overflow-hidden bg-[#e2d8cb]"><Image src={normalizeImageUrl(product.img)} alt={product.name} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" unoptimized={isDataImage(product.img)} className="object-cover transition duration-700 group-hover:scale-[1.04]"/><div className="absolute left-3 top-3 bg-[#f6f1e9]/90 px-3 py-2 text-[12px] font-bold uppercase tracking-[.18em]">{product.mood}</div><button onClick={()=>toggleFavorite("product",product.id)} aria-label={(favoriteProductIds.includes(product.id||"")?"Remove ":"Save ")+product.name+" to favourites"} className={"absolute right-3 top-3 bg-[#f6f1e9]/90 p-2.5 transition hover:bg-white "+(favoriteProductIds.includes(product.id||"")?"text-[#9c5638]":"text-[#211d19]")}><Heart size={14} fill={favoriteProductIds.includes(product.id||"")?"currentColor":"none"} strokeWidth={1.5}/></button><button onClick={()=>add(product.name)} className="absolute bottom-0 left-0 right-0 bg-[#211d19] py-4 text-[12px] font-bold uppercase tracking-[.2em] text-white opacity-0 transition group-hover:opacity-100">add to bag <span className="ml-1">+</span></button></div>
               <div className="pt-4"><div className="flex items-start justify-between gap-3"><div><h3 className="serif text-[21px]">{product.name}</h3><p className="mt-1 text-[12px] font-bold uppercase tracking-[.18em] text-[#9c5638]">{product.mood}</p></div><span className="serif pt-1 text-[16px] italic text-[#9c5638]">Price coming soon</span></div><p className="mt-3 text-[12px] leading-5 text-[#776f67]">{product.desc}</p></div>
             </motion.article>)}
           </div>
-          {activeProductCollection !== "ALL" && <div className="mt-12 text-center"><a href={"/collections/" + activeProductCollection} className="inline-flex items-center gap-3 border border-[#211d19] px-6 py-3 text-[10px] font-bold uppercase tracking-[.2em] transition hover:bg-[#211d19] hover:text-white">view all {selectedProductCollection?.title || "candles"} <ArrowRight size={14}/></a></div>}
+          {selectedProductCollection && <div className="mt-12 text-center"><a href={"/collections/" + activeProductCollection} className="inline-flex items-center gap-3 border border-[#211d19] px-6 py-3 text-[10px] font-bold uppercase tracking-[.2em] transition hover:bg-[#211d19] hover:text-white">view all {selectedProductCollection?.title || "candles"} <ArrowRight size={14}/></a></div>}
         </div>
       </section>
 
