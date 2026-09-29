@@ -27,7 +27,7 @@ type Collection = {
 };
 type Social = { id:string; platform:string; label:string|null; url:string; isActive:boolean; sortOrder:number };
 type Product = {
-  id:string; sku:string; slug:string; name:string; shortName:string|null; shortDescription:string|null;
+  id:string; sku:string; slug:string; name:string; moodId:string|null; shortName:string|null; shortDescription:string|null;
   description:string; mood:string; category:string; status:string; priceUSD:string|number; currency:string;
   sizeLabel:string|null; waxType:string|null; wickType:string|null; burnTimeHours:string|number|null;
   scentFamily:string|null; scentIntensity:string|null; topNotes:string|null; middleNotes:string|null; baseNotes:string|null;
@@ -36,7 +36,8 @@ type Product = {
   seoTitle:string|null; seoDescription:string|null; images:{id?:string;url:string;alt?:string|null}[];
 };
 
-export type Tab = "overview"|"content"|"collections"|"products"|"social";
+export type Mood = { id:string; name:string; slug:string; sortOrder:number; isActive:boolean; _count?:{products:number} };
+export type Tab = "overview"|"content"|"collections"|"products"|"moods"|"social";
 
 function normalizeImageUrl(src?: string | null) {
   if (!src) return src;
@@ -66,7 +67,7 @@ function isDataImage(src?:string|null) {
 function newProduct():Product {
   return {
     id:"", sku:"", slug:"", name:"", shortName:null, shortDescription:null, description:"",
-    mood:"Relaxing", category:"Candles", status:"DRAFT", priceUSD:19, currency:"USD",
+    mood:"Relaxing", moodId:null, category:"Candles", status:"DRAFT", priceUSD:19, currency:"USD",
     sizeLabel:"Standard jar", waxType:"Soy wax", wickType:"Cotton wick", burnTimeHours:null,
     scentFamily:null, scentIntensity:null, topNotes:null, middleNotes:null, baseNotes:null,
     ingredients:null, allergens:null, careInstructions:null, vesselMaterial:null, vesselColor:null,
@@ -169,6 +170,7 @@ export default function AdminPage({ initialTab = "overview" }: { initialTab?: Ta
   const [content,setContent]=useState<Content[]>([]);
   const [collections,setCollections]=useState<Collection[]>([]);
   const [socials,setSocials]=useState<Social[]>([]);
+  const [moodList,setMoodList]=useState<Mood[]>([]);
   const [products,setProducts]=useState<Product[]>([]);
   const [selectedProduct,setSelectedProduct]=useState<Product|null>(null);
   const [editingContent,setEditingContent]=useState<Content|null>(null);
@@ -182,9 +184,9 @@ export default function AdminPage({ initialTab = "overview" }: { initialTab?: Ta
     const md=await me.json();
     if(md.user?.role!=="ADMIN"){router.replace("/account");return;}
     setUser(md.user);
-    const [c,p]=await Promise.all([fetch("/api/admin/content"),fetch("/api/admin/products")]);
-    const cd=await c.json(), pd=await p.json();
-    setContent(cd.content||[]); setCollections(cd.collections||[]); setSocials(cd.socials||[]); setProducts(pd.products||[]);
+    const [c,p,m]=await Promise.all([fetch("/api/admin/content"),fetch("/api/admin/products"),fetch("/api/admin/moods")]);
+    const cd=await c.json(), pd=await p.json(), mdm=await m.json();
+    setContent(cd.content||[]); setCollections(cd.collections||[]); setSocials(cd.socials||[]); setProducts(pd.products||[]); setMoodList(mdm.moods||[]);
     setLoading(false);
   }
 
@@ -196,6 +198,16 @@ export default function AdminPage({ initialTab = "overview" }: { initialTab?: Ta
     const d=await r.json();
     if(!r.ok){setNotice(d.error||"Something went wrong.");return false;}
     setNotice("Saved.");
+    await loadData();
+    return true;
+  }
+
+  async function mutateMood(method:"POST"|"PUT"|"DELETE", body:any) {
+    setNotice("Saving mood…");
+    const r=await fetch("/api/admin/moods",{method,headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+    const d=await r.json();
+    if(!r.ok){setNotice(d.error||"Unable to save mood.");return false;}
+    setNotice("Mood saved.");
     await loadData();
     return true;
   }
@@ -242,7 +254,7 @@ export default function AdminPage({ initialTab = "overview" }: { initialTab?: Ta
             <span className="hidden leading-none sm:block"><span className="serif block text-[19px] tracking-[.12em]">IN THE MOOD</span><span className="mt-1 block text-[8px] font-bold uppercase tracking-[.36em] text-[#776f67]">FOR CANDLES</span></span>
           </Link>
           <div className="hidden items-center gap-1 lg:flex">
-            {(["overview","content","collections","products","social"] as Tab[]).map(item=><Link key={item} href={item==="overview"?"/admin":"/admin/"+item} className={"rounded-full px-4 py-2 text-[10px] font-bold uppercase tracking-[.18em] transition "+(tab===item?"bg-[#211d19] text-white":"hover:bg-black/5")}>{item}</Link>)}
+            {(["overview","content","collections","products","moods","social"] as Tab[]).map(item=><Link key={item} href={item==="overview"?"/admin":"/admin/"+item} className={"rounded-full px-4 py-2 text-[10px] font-bold uppercase tracking-[.18em] transition "+(tab===item?"bg-[#211d19] text-white":"hover:bg-black/5")}>{item}</Link>)}
           </div>
           <div className="flex items-center gap-2">
             <Link href="/" className="hidden rounded-full px-4 py-2 text-[10px] font-bold uppercase tracking-[.16em] hover:bg-black/5 md:inline-flex"><ExternalLink size={13}/> Store</Link>
@@ -263,7 +275,7 @@ export default function AdminPage({ initialTab = "overview" }: { initialTab?: Ta
               <div className="grid gap-10 lg:grid-cols-[1fr_.75fr] lg:items-center">
                 <div><p className="text-[10px] font-bold uppercase tracking-[.34em] text-[#d2a38c]">The studio</p><h1 className="serif mt-4 max-w-3xl text-5xl leading-[.92] md:text-7xl">Shape the feeling behind every candle.</h1><p className="mt-6 max-w-xl text-sm leading-7 text-white/70">Manage the same visual language as the storefront — quietly editorial, warm, image-led and simple to maintain.</p><div className="mt-7 flex flex-wrap gap-3"><Button onClick={()=>router.push("/admin/products")}><Plus size={14}/> Add candle</Button><Button kind="light" onClick={()=>router.push("/admin/content")}><Pencil size={14}/> Edit homepage</Button></div></div>
                 <div className="grid grid-cols-2 gap-3">{[
-                  ["Products",products.length,"products"],["Homepage blocks",content.length,"content"],["Collections",collections.length,"collections"],["Social links",socials.length,"social"]
+                  ["Products",products.length,"products"],["Moods",moodList.length,"moods"],["Homepage blocks",content.length,"content"],["Collections",collections.length,"collections"],["Social links",socials.length,"social"]
                 ].map(([label,count,target])=><button key={label} onClick={()=>router.push(target==="overview"?"/admin":"/admin/"+target)} className="rounded-[1.5rem] bg-white/10 p-5 text-left transition hover:bg-white/15"><p className="text-[9px] font-bold uppercase tracking-[.2em] text-white/50">{label}</p><p className="serif mt-2 text-4xl">{count}</p><p className="mt-2 text-[10px] uppercase tracking-[.16em] text-white/50">Manage →</p></button>)}</div>
               </div>
             </section>
@@ -292,6 +304,13 @@ export default function AdminPage({ initialTab = "overview" }: { initialTab?: Ta
           </section>
         )}
 
+        {tab==="moods" && (
+          <section>
+            <SectionHeading eyebrow="Feeling library" title="Choose a feeling." action={<Button onClick={async()=>{const name=window.prompt("Mood name");if(name?.trim())await mutateMood("POST",{name:name.trim(),sortOrder:moodList.length})}}><Plus size={14}/> Add mood</Button>}/>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{moodList.map((mood,index)=><article key={mood.id} className="rounded-[1.6rem] bg-white p-5 ring-1 ring-black/5"><div className="flex items-start justify-between gap-4"><div><p className="text-[9px] font-bold uppercase tracking-[.24em] text-[#9c5638]">Mood {index+1}</p><h3 className="serif mt-1 text-3xl">{mood.name}</h3><p className="mt-2 text-[10px] uppercase tracking-[.16em] text-[#776f67]">{mood._count?.products||0} candles</p></div><span className={mood.isActive?"rounded-full bg-[#e8eee5] px-3 py-1 text-[9px] font-bold uppercase tracking-[.15em]":"rounded-full bg-black/5 px-3 py-1 text-[9px] font-bold uppercase tracking-[.15em]"}>{mood.isActive?"visible":"hidden"}</span></div><div className="mt-5 flex gap-2"><Button kind="light" onClick={async()=>{const name=window.prompt("Rename mood",mood.name);if(name?.trim())await mutateMood("PUT",{...mood,name:name.trim()})}}><Pencil size={13}/> Edit</Button><Button kind="danger" onClick={async()=>{if(window.confirm("Delete this mood? Products will keep their legacy mood text but will no longer be linked to this mood."))await mutateMood("DELETE",{id:mood.id})}}><Trash2 size={13}/> Delete</Button></div></article>)}</div>
+          </section>
+        )}
+
         {tab==="social" && (
           <section>
             <SectionHeading eyebrow="Social links" title="Keep the outside world connected." action={<Button onClick={()=>setEditingSocial({id:"",platform:"instagram",label:"",url:"https://",isActive:true,sortOrder:socials.length})}><Plus size={14}/> Add link</Button>}/>
@@ -306,7 +325,7 @@ export default function AdminPage({ initialTab = "overview" }: { initialTab?: Ta
 
       {editingSocial && <div className="fixed inset-0 z-[80] grid place-items-center bg-[#211d19]/55 p-4 backdrop-blur-sm"><div className="w-full max-w-lg rounded-[2rem] bg-[#f6f1e9] p-7 shadow-2xl md:p-9"><div className="flex items-start justify-between"><div><p className="text-[10px] font-bold uppercase tracking-[.3em] text-[#9c5638]">Social</p><h2 className="serif mt-1 text-4xl">{editingSocial.id?"Edit link":"New link"}</h2></div><button onClick={()=>setEditingSocial(null)}><X/></button></div><div className="mt-7 space-y-5"><Field label="Platform"><input value={editingSocial.platform} onChange={e=>setEditingSocial({...editingSocial,platform:e.target.value.toLowerCase()})} className="input"/></Field><Field label="Label"><input value={editingSocial.label||""} onChange={e=>setEditingSocial({...editingSocial,label:e.target.value})} className="input"/></Field><Field label="Link"><input type="url" value={editingSocial.url} onChange={e=>setEditingSocial({...editingSocial,url:e.target.value})} className="input"/></Field><label className="flex items-center gap-3 text-xs font-semibold"><input type="checkbox" checked={editingSocial.isActive} onChange={e=>setEditingSocial({...editingSocial,isActive:e.target.checked})}/> Visible on storefront</label></div><div className="mt-8 flex justify-end gap-2"><Button kind="light" onClick={()=>setEditingSocial(null)}>Cancel</Button><Button onClick={async()=>{const ok=await mutateContent(editingSocial.id?"PUT":"POST",{kind:"social",...editingSocial});if(ok)setEditingSocial(null)}}><Save size={14}/> Save link</Button></div></div></div>}
 
-      {selectedProduct && <div className="fixed inset-0 z-[80] overflow-y-auto bg-[#211d19]/55 p-4 backdrop-blur-sm md:p-8"><div className="mx-auto max-w-5xl rounded-[2rem] bg-[#f6f1e9] p-6 shadow-2xl md:p-9"><div className="flex items-start justify-between"><div><p className="text-[10px] font-bold uppercase tracking-[.3em] text-[#9c5638]">Candle catalogue</p><h2 className="serif mt-1 text-4xl">{selectedProduct.id?"Edit candle":"New candle"}</h2></div><button onClick={()=>setSelectedProduct(null)}><X/></button></div><div className="mt-7 grid gap-5 lg:grid-cols-[.7fr_1.3fr]"><div><ImagePicker value={selectedProduct.images?.[0]?.url||""} alt={selectedProduct.name} onChange={value=>setSelectedProduct({...selectedProduct,images:value?[{...selectedProduct.images?.[0],url:value}]:[]})} label="Primary candle image"/><div className="mt-4 grid grid-cols-3 gap-2">{(selectedProduct.images||[]).slice(1).map((image,index)=><div key={image.url} className="relative aspect-square overflow-hidden rounded-xl bg-[#e8dfd5]"><Image src={normalizeImageUrl(image.url)!} alt={selectedProduct.name} fill unoptimized={isDataImage(image.url)} sizes="120px" className="object-cover"/><button type="button" onClick={()=>setSelectedProduct({...selectedProduct,images:[selectedProduct.images[0],...(selectedProduct.images||[]).slice(1).filter((_,i)=>i!==index)]})} className="absolute right-1 top-1 rounded-full bg-[#211d19]/80 p-1 text-white"><X size={12}/></button></div>)}</div><DeviceGalleryPicker onAdd={async value=>setSelectedProduct({...selectedProduct,images:[...(selectedProduct.images||[]),...value.map(url=>({url}))]})}/></div><div className="grid gap-4 sm:grid-cols-2">{productFields.map(([key,label])=><Field key={key} label={label}><textarea rows={key==="description"||key==="careInstructions"||key==="seoDescription"?3:1} value={(selectedProduct as any)[key]??""} onChange={e=>setSelectedProduct({...selectedProduct,[key]:e.target.value})} className="input resize-y"/></Field>)}<Field label="Status"><select value={selectedProduct.status} onChange={e=>setSelectedProduct({...selectedProduct,status:e.target.value})} className="input"><option>DRAFT</option><option>ACTIVE</option><option>ARCHIVED</option></select></Field><Field label="Mood"><select value={selectedProduct.mood} onChange={e=>setSelectedProduct({...selectedProduct,mood:e.target.value})} className="input">{moods.map(x=><option key={x}>{x}</option>)}</select></Field><label className="flex items-center gap-3 text-xs font-semibold"><input type="checkbox" checked={selectedProduct.featured} onChange={e=>setSelectedProduct({...selectedProduct,featured:e.target.checked})}/> Featured candle</label></div></div><div className="mt-8 flex flex-col-reverse gap-2 sm:flex-row sm:justify-between"><Button kind="danger" onClick={()=>selectedProduct.id&&removeProduct(selectedProduct.id)} disabled={!selectedProduct.id}><Trash2 size={14}/> Delete</Button><div className="flex gap-2"><Button kind="light" onClick={()=>setSelectedProduct(null)}>Cancel</Button><Button onClick={()=>mutateProduct(selectedProduct.id?"PUT":"POST",{...selectedProduct,images:(selectedProduct.images||[]).map(x=>x.url)})}><Check size={14}/> Save candle</Button></div></div></div></div>}
+      {selectedProduct && <div className="fixed inset-0 z-[80] overflow-y-auto bg-[#211d19]/55 p-4 backdrop-blur-sm md:p-8"><div className="mx-auto max-w-5xl rounded-[2rem] bg-[#f6f1e9] p-6 shadow-2xl md:p-9"><div className="flex items-start justify-between"><div><p className="text-[10px] font-bold uppercase tracking-[.3em] text-[#9c5638]">Candle catalogue</p><h2 className="serif mt-1 text-4xl">{selectedProduct.id?"Edit candle":"New candle"}</h2></div><button onClick={()=>setSelectedProduct(null)}><X/></button></div><div className="mt-7 grid gap-5 lg:grid-cols-[.7fr_1.3fr]"><div><ImagePicker value={selectedProduct.images?.[0]?.url||""} alt={selectedProduct.name} onChange={value=>setSelectedProduct({...selectedProduct,images:value?[{...selectedProduct.images?.[0],url:value}]:[]})} label="Primary candle image"/><div className="mt-4 grid grid-cols-3 gap-2">{(selectedProduct.images||[]).slice(1).map((image,index)=><div key={image.url} className="relative aspect-square overflow-hidden rounded-xl bg-[#e8dfd5]"><Image src={normalizeImageUrl(image.url)!} alt={selectedProduct.name} fill unoptimized={isDataImage(image.url)} sizes="120px" className="object-cover"/><button type="button" onClick={()=>setSelectedProduct({...selectedProduct,images:[selectedProduct.images[0],...(selectedProduct.images||[]).slice(1).filter((_,i)=>i!==index)]})} className="absolute right-1 top-1 rounded-full bg-[#211d19]/80 p-1 text-white"><X size={12}/></button></div>)}</div><DeviceGalleryPicker onAdd={async value=>setSelectedProduct({...selectedProduct,images:[...(selectedProduct.images||[]),...value.map(url=>({url}))]})}/></div><div className="grid gap-4 sm:grid-cols-2">{productFields.map(([key,label])=><Field key={key} label={label}><textarea rows={key==="description"||key==="careInstructions"||key==="seoDescription"?3:1} value={(selectedProduct as any)[key]??""} onChange={e=>setSelectedProduct({...selectedProduct,[key]:e.target.value})} className="input resize-y"/></Field>)}<Field label="Status"><select value={selectedProduct.status} onChange={e=>setSelectedProduct({...selectedProduct,status:e.target.value})} className="input"><option>DRAFT</option><option>ACTIVE</option><option>ARCHIVED</option></select></Field><Field label="Mood"><select value={selectedProduct.moodId||""} onChange={e=>{const selected=moodList.find(x=>x.id===e.target.value);setSelectedProduct({...selectedProduct,moodId:e.target.value||null,mood:selected?.name||""})}} className="input"><option value="">Choose a mood</option>{moodList.filter(x=>x.isActive).map(x=><option key={x.id} value={x.id}>{x.name}</option>)}</select>{!moodList.length&&<p className="mt-2 text-[10px] text-[#9c5638]">Create a mood in Admin → Moods first.</p>}</Field><label className="flex items-center gap-3 text-xs font-semibold"><input type="checkbox" checked={selectedProduct.featured} onChange={e=>setSelectedProduct({...selectedProduct,featured:e.target.checked})}/> Featured candle</label></div></div><div className="mt-8 flex flex-col-reverse gap-2 sm:flex-row sm:justify-between"><Button kind="danger" onClick={()=>selectedProduct.id&&removeProduct(selectedProduct.id)} disabled={!selectedProduct.id}><Trash2 size={14}/> Delete</Button><div className="flex gap-2"><Button kind="light" onClick={()=>setSelectedProduct(null)}>Cancel</Button><Button onClick={()=>mutateProduct(selectedProduct.id?"PUT":"POST",{...selectedProduct,images:(selectedProduct.images||[]).map(x=>x.url)})}><Check size={14}/> Save candle</Button></div></div></div></div>}
     </main>
   );
 }
