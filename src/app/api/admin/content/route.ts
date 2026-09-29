@@ -16,7 +16,7 @@ export async function GET() {
     await requireAdmin();
     const [content, collections, socials] = await Promise.all([
       prisma.siteContent.findMany({ orderBy: { sortOrder: "asc" } }),
-      prisma.collection.findMany({ orderBy: { sortOrder: "asc" } }),
+      prisma.collection.findMany({ orderBy: { sortOrder: "asc" }, include: { products: { select: { id: true, name: true, slug: true, images: { where: { isPrimary: true }, take: 1 } } } } }),
       prisma.socialLink.findMany({ orderBy: { sortOrder: "asc" } }),
     ]);
     return NextResponse.json({ content, collections, socials });
@@ -47,6 +47,7 @@ export async function POST(request:Request) {
           slug: body.slug,
           title: body.title,
           imageUrl: body.imageUrl || "/hero.jpg",
+          products: { connect: (Array.isArray(body.productIds) ? body.productIds : []).filter(Boolean).map((id:string) => ({ id })) },
           ...pick(body, collectionFields.filter((key) => !["slug","title","imageUrl"].includes(key))),
         },
       });
@@ -77,7 +78,7 @@ export async function PUT(request:Request) {
 
     let result;
     if (kind === "content") result = await prisma.siteContent.update({ where: { id }, data: pick(body, contentFields) });
-    else if (kind === "collection") result = await prisma.collection.update({ where: { id }, data: pick(body, collectionFields) });
+    else if (kind === "collection") result = await prisma.collection.update({ where: { id }, data: { ...pick(body, collectionFields), products: { set: (Array.isArray(body.productIds) ? body.productIds : []).filter(Boolean).map((productId:string) => ({ id: productId })) } } });
     else if (kind === "social") result = await prisma.socialLink.update({ where: { id }, data: pick(body, socialFields) });
     else return NextResponse.json({ error: "Unknown content type" }, { status: 400 });
 
