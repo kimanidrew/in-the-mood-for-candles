@@ -5,16 +5,16 @@ import {AnimatePresence,motion} from "framer-motion";
 import {ArrowRight,ChevronDown,Heart,Instagram,Menu,Minus,Plus,ShoppingBag,X} from "lucide-react";
 
 const products=[
-{name:"Lavender",mood:"Relaxing",priceUSD:19,desc:"Soft lavender and herbal notes made for quiet evenings and slow rituals.",img:"https://images.pexels.com/photos/6755743/pexels-photo-6755743.jpeg?auto=compress&cs=tinysrgb&w=1200"},
-{name:"Vanilla",mood:"Cosy",priceUSD:19,desc:"Creamy vanilla warmth with a gentle, comforting home-fragrance character.",img:"https://images.pexels.com/photos/13673112/pexels-photo-13673112.jpeg?auto=compress&cs=tinysrgb&w=1200"},
-{name:"Iced Coffee Latte",mood:"Energising",priceUSD:19,desc:"Roasted coffee and sweet latte notes inspired by slow café mornings.",img:"https://images.pexels.com/photos/37117322/pexels-photo-37117322.jpeg?auto=compress&cs=tinysrgb&w=1200"},
-{name:"Rose & Lavender",mood:"Romantic",priceUSD:19,desc:"Delicate rosebuds and lavender for a soft floral, candlelit mood.",img:"https://images.pexels.com/photos/36471951/pexels-photo-36471951.jpeg?auto=compress&cs=tinysrgb&w=1200"},
-{name:"Apple Cider",mood:"Festive",priceUSD:19,desc:"Warm apple and spice notes with the feeling of a fireside seasonal evening.",img:"https://images.pexels.com/photos/9651902/pexels-photo-9651902.jpeg?auto=compress&cs=tinysrgb&w=1200"},
-{name:"Cinnamon Spice",mood:"Tropical",priceUSD:19,desc:"Sweet cinnamon and warm spice notes with a rich, inviting glow.",img:"https://images.pexels.com/photos/12349435/pexels-photo-12349435.jpeg?auto=compress&cs=tinysrgb&w=1200"},
-{name:"Lavender Fresh Breeze",mood:"Dreamy",priceUSD:19,desc:"A fresh lavender atmosphere that feels airy, peaceful and clean.",img:"https://images.pexels.com/photos/5816986/pexels-photo-5816986.jpeg?auto=compress&cs=tinysrgb&w=1200"},
-{name:"Amber Glow",mood:"Cosy",priceUSD:19,desc:"A softly glowing amber jar with a warm, intimate evening character.",img:"https://images.pexels.com/photos/6311846/pexels-photo-6311846.jpeg?auto=compress&cs=tinysrgb&w=1200"},
-{name:"Wild Rosemary",mood:"Playful",priceUSD:19,desc:"Green rosemary and fresh botanical notes with a bright, spirited feel.",img:"https://images.pexels.com/photos/5782690/pexels-photo-5782690.jpeg?auto=compress&cs=tinysrgb&w=1200"},
-{name:"Candlelight Retreat",mood:"Tropical",priceUSD:19,desc:"A warm jar candle designed to bring a relaxed holiday-retreat feeling home.",img:"https://images.pexels.com/photos/7815071/pexels-photo-7815071.jpeg?auto=compress&cs=tinysrgb&w=1200"}
+{name:"Lavender",mood:"Relaxing",priceUSD:19,desc:"Soft lavender and herbal notes made for quiet evenings and slow rituals.",img:"/candles/lavender.jpg"},
+{name:"Vanilla",mood:"Cosy",priceUSD:19,desc:"Creamy vanilla warmth with a gentle, comforting home-fragrance character.",img:"/candles/vanilla.jpg"},
+{name:"Iced Coffee Latte",mood:"Energising",priceUSD:19,desc:"Roasted coffee and sweet latte notes inspired by slow café mornings.",img:"/candles/iced-coffee.jpg"},
+{name:"Rose & Lavender",mood:"Romantic",priceUSD:19,desc:"Delicate rosebuds and lavender for a soft floral, candlelit mood.",img:"/candles/rose-lavender.jpg"},
+{name:"Apple Cider",mood:"Festive",priceUSD:19,desc:"Warm apple and spice notes with the feeling of a fireside seasonal evening.",img:"/candles/apple-cider.jpg"},
+{name:"Cinnamon Spice",mood:"Tropical",priceUSD:19,desc:"Sweet cinnamon and warm spice notes with a rich, inviting glow.",img:"/candles/cinnamon.jpg"},
+{name:"Lavender Fresh Breeze",mood:"Dreamy",priceUSD:19,desc:"A fresh lavender atmosphere that feels airy, peaceful and clean.",img:"/candles/lavender-breeze.jpg"},
+{name:"Amber Glow",mood:"Cosy",priceUSD:19,desc:"A softly glowing amber jar with a warm, intimate evening character.",img:"/candles/amber-glow.jpg"},
+{name:"Wild Rosemary",mood:"Playful",priceUSD:19,desc:"Green rosemary and fresh botanical notes with a bright, spirited feel.",img:"/candles/rosemary.jpg"},
+{name:"Candlelight Retreat",mood:"Tropical",priceUSD:19,desc:"A warm jar candle designed to bring a relaxed holiday-retreat feeling home.",img:"/candles/candlelight-retreat.jpg"}
 ];
 type Cart=Record<string,number>;
 
