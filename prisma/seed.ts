@@ -28,17 +28,17 @@ async function main() {
   });
 
   const moods = [
-    { id:"mood_relaxing", slug:"relaxing", name:"Relaxing", sortOrder:0 },
-    { id:"mood_romantic", slug:"romantic", name:"Romantic", sortOrder:1 },
-    { id:"mood_cosy", slug:"cosy", name:"Cosy", sortOrder:2 },
-    { id:"mood_playful", slug:"playful", name:"Playful", sortOrder:3 },
-    { id:"mood_tropical", slug:"tropical", name:"Tropical", sortOrder:4 },
-    { id:"mood_energising", slug:"energising", name:"Energising", sortOrder:5 },
-    { id:"mood_festive", slug:"festive", name:"Festive", sortOrder:6 },
-    { id:"mood_dreamy", slug:"dreamy", name:"Dreamy", sortOrder:7 },
+    { id:"mood_relaxing", slug:"relaxing", name:"Relaxing", imageUrl:"https://images.pexels.com/photos/6755743/pexels-photo-6755743.jpeg?auto=compress&cs=tinysrgb&w=1200", sortOrder:0 },
+    { id:"mood_romantic", slug:"romantic", name:"Romantic", imageUrl:"https://images.pexels.com/photos/6798396/pexels-photo-6798396.jpeg?auto=compress&cs=tinysrgb&w=1200", sortOrder:1 },
+    { id:"mood_cosy", slug:"cosy", name:"Cosy", imageUrl:"https://images.pexels.com/photos/6311846/pexels-photo-6311846.jpeg?auto=compress&cs=tinysrgb&w=1200", sortOrder:2 },
+    { id:"mood_playful", slug:"playful", name:"Playful", imageUrl:"https://images.pexels.com/photos/5782675/pexels-photo-5782675.jpeg?auto=compress&cs=tinysrgb&w=1200", sortOrder:3 },
+    { id:"mood_tropical", slug:"tropical", name:"Tropical", imageUrl:"https://images.pexels.com/photos/12480609/pexels-photo-12480609.jpeg?auto=compress&cs=tinysrgb&w=1200", sortOrder:4 },
+    { id:"mood_energising", slug:"energising", name:"Energising", imageUrl:"https://images.pexels.com/photos/10771942/pexels-photo-10771942.jpeg?auto=compress&cs=tinysrgb&w=1200", sortOrder:5 },
+    { id:"mood_festive", slug:"festive", name:"Festive", imageUrl:"https://images.pexels.com/photos/5782650/pexels-photo-5782650.jpeg?auto=compress&cs=tinysrgb&w=1200", sortOrder:6 },
+    { id:"mood_dreamy", slug:"dreamy", name:"Dreamy", imageUrl:"https://images.pexels.com/photos/10771904/pexels-photo-10771904.jpeg?auto=compress&cs=tinysrgb&w=1200", sortOrder:7 },
   ];
   for (const mood of moods) {
-    await prisma.mood.upsert({ where:{slug:mood.slug}, update:{name:mood.name,sortOrder:mood.sortOrder,isActive:true}, create:mood });
+    await prisma.mood.upsert({ where:{slug:mood.slug}, update:{name:mood.name,imageUrl:mood.imageUrl,sortOrder:mood.sortOrder,isActive:true}, create:mood });
   }
 
   const collections = [
