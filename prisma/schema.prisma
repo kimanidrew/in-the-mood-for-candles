@@ -61,6 +61,8 @@ model User {
   role         UserRole @default(CUSTOMER)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  favoriteProducts Product[] @relation("FavoriteProducts")
+  favoriteMoods Mood[] @relation("FavoriteMoods")
 }
 
 model Product {
