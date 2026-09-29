@@ -287,6 +287,11 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[#f6f1e9] text-[#211d19]">
+      {favoriteNotice && (
+        <div className="fixed bottom-5 left-1/2 z-[100] -translate-x-1/2 rounded-full bg-[#211d19] px-5 py-3 text-[10px] font-bold uppercase tracking-[.16em] text-white shadow-xl">
+          {favoriteNotice}
+        </div>
+      )}
       <header className="site-header sticky top-0 z-50 border-b border-[#211d19]/10 bg-[#f6f1e9]/95 backdrop-blur-md">
         <div className="mx-auto flex h-[82px] max-w-[1440px] items-center justify-between px-5 md:px-14">
           <button
