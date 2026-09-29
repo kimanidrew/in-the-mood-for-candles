@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/auth";
 
-const editable=["sku","slug","name","shortName","shortDescription","description","mood","category","status","priceUSD","currency","sizeLabel","waxType","wickType","burnTimeHours","scentFamily","scentIntensity","topNotes","middleNotes","baseNotes","ingredients","allergens","careInstructions","vesselMaterial","vesselColor","dimensions","netWeight","stock","featured","seoTitle","seoDescription"];
+const editable=["sku","slug","name","shortName","shortDescription","description","mood","moodId","category","status","priceUSD","currency","sizeLabel","waxType","wickType","burnTimeHours","scentFamily","scentIntensity","topNotes","middleNotes","baseNotes","ingredients","allergens","careInstructions","vesselMaterial","vesselColor","dimensions","netWeight","stock","featured","seoTitle","seoDescription"];
 
 function productData(body:any){
   const data:any=Object.fromEntries(editable.filter(k=>k in body).map(k=>[k,body[k]]));
@@ -14,7 +14,7 @@ function productData(body:any){
 }
 
 export async function GET(){
-  try { await requireAdmin(); return NextResponse.json({products:await prisma.product.findMany({include:{images:true,variants:true},orderBy:{updatedAt:"desc"}})}); }
+  try { await requireAdmin(); return NextResponse.json({products:await prisma.product.findMany({include:{images:true,variants:true,moodRef:true},orderBy:{updatedAt:"desc"}})}); }
   catch { return NextResponse.json({error:"Unauthorized"},{status:401}); }
 }
 
