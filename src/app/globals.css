@@ -29,3 +29,8 @@ filter:saturate(.7) contrast(.92)}
 html,.hide-scroll{scrollbar-width:none;-ms-overflow-style:none}
 html::-webkit-scrollbar,.hide-scroll::-webkit-scrollbar{display:none;width:0;height:0}
 @media (max-width:767px){body{overflow-x:hidden}.hide-scroll{overscroll-behavior-x:contain}.app-candle-collage{opacity:.075;background-size:100% 100%,38% 27%,38% 27%,38% 27%,38% 27%;background-position:center,0% 8%,65% 18%,8% 60%,70% 72%}}
+
+
+/* Infinite feature-strip marquee on mobile; desktop keeps the static layout. */
+@media (max-width:767px){.marquee-track{animation:candle-marquee 22s linear infinite;will-change:transform}.marquee-wrap{width:100%}}
+@keyframes candle-marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
