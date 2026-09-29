@@ -250,7 +250,7 @@ export default function Home() {
           >
             <Image src="/tm-logo.svg" alt="In The Mood Candles logo" width={56} height={56} priority unoptimized className="h-12 w-12 object-contain" />
             <span className="leading-none">
-              <span className="serif block text-[18px] tracking-[.13em] sm:text-[21px]">IN THE MOOD</span>
+              <span className="serif block text-[15px] tracking-[.11em] sm:text-[17px]">IN THE MOOD</span>
               <span className="mt-1 block text-[9px] font-semibold uppercase tracking-[.39em] text-[#776f67]">FOR CANDLES</span>
             </span>
           </button>
