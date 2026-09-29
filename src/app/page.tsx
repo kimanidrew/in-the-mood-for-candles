@@ -1,0 +1,73 @@
+"use client";
+import {useMemo,useState} from "react";
+import {AnimatePresence,motion} from "framer-motion";
+import {ArrowRight,ChevronDown,Heart,Instagram,Menu,Minus,Plus,ShoppingBag,X} from "lucide-react";
+
+const products=[
+{name:"Pandan Coconut",mood:"ASIA",price:19,desc:"Creamy coconut, green pandan and a soft tropical finish.",img:"https://images.unsplash.com/photo-1603006905003-be475563bc59?auto=format&fit=crop&w=1000&q=85"},
+{name:"Mango Lychee Jelly",mood:"ASIA",price:19,desc:"Juicy mango and lychee with a bright, playful sweetness.",img:"https://images.unsplash.com/photo-1602523961358-f9f03dd557db?auto=format&fit=crop&w=1000&q=85"},
+{name:"Thai Massage",mood:"ASIA",price:19,desc:"A calming spa-inspired blend for slow evenings.",img:"https://images.unsplash.com/photo-1602874801006-e26d7b7b8e8a?auto=format&fit=crop&w=1000&q=85"},
+{name:"Kopitiam Mornings",mood:"ASIA",price:19,desc:"Roasted coffee, condensed milk and vanilla — cafe mornings in a jar.",img:"https://images.unsplash.com/photo-1603905179139-db12ab535b0b?auto=format&fit=crop&w=1000&q=85"},
+{name:"Croissant in Paris",mood:"EUROPE",price:19,desc:"Warm pastry, buttery comfort and a little Parisian romance.",img:"https://images.unsplash.com/photo-1605651202774-7d573fd12f8f?auto=format&fit=crop&w=1000&q=85"},
+{name:"Winter Forest",mood:"EUROPE",price:18,desc:"Evergreen woods, cool air and a quiet cabin feeling.",img:"https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=1000&q=85"},
+{name:"Cosy Christmas",mood:"EUROPE",price:19,desc:"A warm festive blend made for glowing nights.",img:"https://images.unsplash.com/photo-1602874801006-e26d7b7b8e8a?auto=format&fit=crop&w=1000&q=85"},
+{name:"Small Towns in Italy",mood:"EUROPE",price:19,desc:"A sun-warmed, leisurely Mediterranean escape.",img:"https://images.unsplash.com/photo-1523293836416-66be4f2b0b3b?auto=format&fit=crop&w=1000&q=85"}
+];
+type Cart=Record<string,number>;
+
+export default function Home(){
+ const [filter,setFilter]=useState("ALL");
+ const [cart,setCart]=useState<Cart>({});
+ const [bag,setBag]=useState(false);
+ const [menu,setMenu]=useState(false);
+ const shown=useMemo(()=>filter==="ALL"?products:products.filter(p=>p.mood===filter),[filter]);
+ const total=Object.entries(cart).reduce((s,[name,q])=>s+(products.find(p=>p.name===name)?.price||0)*q,0);
+ const count=Object.values(cart).reduce((a,b)=>a+b,0);
+ const add=(name:string)=>setCart(c=>({...c,[name]:(c[name]||0)+1}));
+ const change=(name:string,n:number)=>setCart(c=>{const x={...c,[name]:Math.max(0,(c[name]||0)+n)};if(!x[name])delete x[name];return x});
+ const whatsapp=()=>{
+   const number=process.env.NEXT_PUBLIC_WHATSAPP_NUMBER||"254700000000";
+   const lines=Object.entries(cart).map(([n,q])=>"• "+n+" × "+q);
+   const msg="Hello In The Mood For! ✨\nI'd like to order:\n"+lines.join("\n")+"\n\nEstimated total: £"+total+".";
+   window.open("https://wa.me/"+number+"?text="+encodeURIComponent(msg),"_blank");
+ };
+ return <main className="grain min-h-screen overflow-hidden">
+  <header className="fixed top-0 z-40 w-full border-b border-black/10 bg-[#f7f3ec]/90 backdrop-blur-xl">
+   <div className="mx-auto flex h-[74px] max-w-[1400px] items-center justify-between px-5 md:px-10">
+    <button onClick={()=>window.scrollTo({top:0,behavior:"smooth"})} className="serif text-[23px] tracking-[-.03em]">in the mood <span className="italic">for...</span></button>
+    <nav className="hidden items-center gap-9 text-[11px] font-semibold uppercase tracking-[.18em] md:flex"><a href="#shop">shop</a><a href="#story">our story</a><a href="https://www.instagram.com/inthemoodfor_candles/" target="_blank">instagram</a></nav>
+    <div className="flex items-center gap-2"><button className="relative rounded-full p-2" onClick={()=>setBag(true)}><ShoppingBag size={19}/>{count>0&&<span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-[#9c5638] text-[9px] text-white">{count}</span>}</button><button className="p-2 md:hidden" onClick={()=>setMenu(!menu)}>{menu?<X/>:<Menu/>}</button></div>
+   </div>
+   <AnimatePresence>{menu&&<motion.div initial={{height:0,opacity:0}} animate={{height:"auto",opacity:1}} exit={{height:0,opacity:0}} className="border-t border-black/10 px-6 py-5 md:hidden"><div className="flex flex-col gap-5 text-sm uppercase tracking-[.15em]"><a href="#shop" onClick={()=>setMenu(false)}>shop</a><a href="#story" onClick={()=>setMenu(false)}>our story</a><a href="https://www.instagram.com/inthemoodfor_candles/">instagram</a></div></motion.div>}</AnimatePresence>
+  </header>
+
+  <section className="relative flex min-h-[92vh] items-end overflow-hidden px-5 pb-14 pt-28 md:min-h-[820px] md:px-10 md:pb-20">
+   <div className="absolute inset-0"><img src="https://images.unsplash.com/photo-1603006905003-be475563bc59?auto=format&fit=crop&w=2200&q=90" className="h-full w-full object-cover object-center" alt="candle"/></div>
+   <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/15 to-black/10"/>
+   <motion.div initial={{opacity:0,y:30}} animate={{opacity:1,y:0}} transition={{duration:.9}} className="relative z-10 max-w-3xl text-white">
+    <p className="mb-4 text-[10px] font-bold uppercase tracking-[.28em]">candles • gifts • memories</p>
+    <h1 className="serif text-6xl leading-[.9] tracking-[-.045em] md:text-8xl">Light a candle.<br/><span className="italic">Travel somewhere.</span></h1>
+    <p className="mt-7 max-w-lg text-sm leading-6 text-white/85 md:text-base">Hand-poured scents inspired by places, food and the little moments we never want to forget.</p>
+    <a href="#shop" className="mt-8 inline-flex items-center gap-3 border border-white/70 px-6 py-3 text-[11px] font-bold uppercase tracking-[.18em] transition hover:bg-white hover:text-black">shop the collection <ArrowRight size={15}/></a>
+   </motion.div>
+  </section>
+
+  <section className="border-b border-t border-black/10 bg-[#e9e1d6] px-5 py-4 md:px-10"><div className="mx-auto flex max-w-[1400px] justify-between gap-8 overflow-auto whitespace-nowrap text-[10px] font-bold uppercase tracking-[.2em]"><span>hand-poured</span><span>soy wax</span><span>inspired by travel</span><span>small-batch care</span><span>beautifully giftable</span></div></section>
+
+  <section id="shop" className="mx-auto max-w-[1400px] px-5 py-20 md:px-10 md:py-28">
+   <div className="mb-12 flex flex-col justify-between gap-7 md:flex-row md:items-end"><div><p className="mb-3 text-[10px] font-bold uppercase tracking-[.22em] text-[#9c5638]">the collection</p><h2 className="serif text-5xl tracking-[-.04em] md:text-6xl">Find your mood.</h2></div><div className="flex gap-2">{["ALL","ASIA","EUROPE"].map(x=><button key={x} onClick={()=>setFilter(x)} className={"rounded-full border px-5 py-2 text-[10px] font-bold tracking-[.18em] transition "+(filter===x?"border-[#211d19] bg-[#211d19] text-white":"border-black/15 hover:border-black/40")}>{x}</button>)}</div></div>
+   <div className="grid grid-cols-1 gap-x-5 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
+    {shown.map((p,i)=><motion.article layout key={p.name} initial={{opacity:0,y:25}} whileInView={{opacity:1,y:0}} viewport={{once:true,margin:"-50px"}} transition={{delay:i*.04,duration:.5}} className="group">
+      <div className="relative aspect-[.84] overflow-hidden bg-[#ded5c8]"><img src={p.img} alt={p.name} className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.045]"/><button aria-label="Save" className="absolute right-3 top-3 rounded-full bg-white/85 p-2 backdrop-blur"><Heart size={15}/></button><button onClick={()=>add(p.name)} className="absolute bottom-3 left-3 right-3 translate-y-2 bg-white/95 py-3 text-[10px] font-bold uppercase tracking-[.18em] opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100">add to bag</button></div>
+      <div className="pt-4"><div className="flex justify-between gap-3"><h3 className="serif text-xl">{p.name}</h3><span className="text-sm">£{p.price}</span></div><p className="mt-1 text-xs leading-5 text-[#776f67]">{p.desc}</p></div>
+    </motion.article>)}
+   </div>
+  </section>
+
+  <section id="story" className="bg-[#211d19] px-5 py-24 text-[#f7f3ec] md:px-10 md:py-32"><div className="mx-auto grid max-w-[1200px] gap-14 md:grid-cols-[.8fr_1.2fr] md:items-center"><div><p className="mb-5 text-[10px] font-bold uppercase tracking-[.25em] text-[#d2a38c]">our story</p><h2 className="serif text-5xl leading-none md:text-7xl">Scent is a<br/><span className="italic">memory.</span></h2></div><div className="max-w-xl text-sm leading-7 text-white/70 md:text-base"><p>We believe there is magic in lighting a candle when the scent fills the room. It can take you to cherished places, treasured moments and heartfelt memories.</p><p className="mt-6">Inspired by travel, food and the places that stay with us, every candle is made to turn an ordinary moment into somewhere worth remembering.</p><a href="https://www.instagram.com/inthemoodfor_candles/" target="_blank" className="mt-8 inline-flex items-center gap-3 border-b border-white/40 pb-2 text-[10px] font-bold uppercase tracking-[.2em]">follow the journey <Instagram size={15}/></a></div></div></section>
+
+  <footer className="px-5 py-10 md:px-10"><div className="mx-auto flex max-w-[1400px] flex-col justify-between gap-5 border-t border-black/10 pt-7 text-[10px] font-semibold uppercase tracking-[.15em] md:flex-row"><span>© {new Date().getFullYear()} in the mood for</span><span>made for slow moments</span></div></footer>
+
+  <AnimatePresence>{bag&&<><motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} onClick={()=>setBag(false)} className="fixed inset-0 z-50 bg-black/35 backdrop-blur-sm"/><motion.aside initial={{x:"100%"}} animate={{x:0}} exit={{x:"100%"}} transition={{type:"spring",damping:28,stiffness:260}} className="fixed right-0 top-0 z-50 flex h-full w-full max-w-[480px] flex-col bg-[#f7f3ec] shadow-2xl"><div className="flex items-center justify-between border-b border-black/10 px-6 py-5"><div><p className="text-[9px] font-bold uppercase tracking-[.2em] text-[#776f67]">your</p><h3 className="serif text-2xl">Bag</h3></div><button onClick={()=>setBag(false)}><X/></button></div><div className="flex-1 overflow-auto p-6">{Object.keys(cart).length===0?<div className="flex h-full flex-col items-center justify-center text-center"><ShoppingBag size={25}/><p className="serif mt-4 text-2xl">Your bag is empty.</p><a href="#shop" onClick={()=>setBag(false)} className="mt-5 border-b border-black pb-1 text-[10px] font-bold uppercase tracking-[.18em]">discover candles</a></div>:<div className="space-y-5">{Object.entries(cart).map(([name,q])=>{const p=products.find(x=>x.name===name)!;return <div key={name} className="flex gap-4 border-b border-black/10 pb-5"><img src={p.img} className="h-24 w-20 object-cover" alt=""/><div className="flex flex-1 flex-col"><div className="flex justify-between"><span className="serif text-lg">{name}</span><span>£{p.price*q}</span></div><div className="mt-auto flex items-center gap-3"><button onClick={()=>change(name,-1)} className="rounded-full border p-1"><Minus size={12}/></button><span className="text-xs">{q}</span><button onClick={()=>change(name,1)} className="rounded-full border p-1"><Plus size={12}/></button></div></div></div>})}</div>}</div>{count>0&&<div className="border-t border-black/10 p-6"><div className="mb-5 flex justify-between text-sm"><span>Estimated total</span><span className="font-semibold">£{total}</span></div><button onClick={whatsapp} className="w-full bg-[#211d19] py-4 text-[10px] font-bold uppercase tracking-[.2em] text-white transition hover:bg-[#9c5638]">order via WhatsApp</button><p className="mt-3 text-center text-[10px] text-[#776f67]">We'll confirm availability, delivery and payment with you on WhatsApp.</p></div>}</motion.aside></>}</AnimatePresence>
+ </main>
+}
