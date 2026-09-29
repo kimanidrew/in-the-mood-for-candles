@@ -186,7 +186,11 @@ export default function AdminPage({ initialTab = "overview" }: { initialTab?: Ta
     setUser(md.user);
     const [c,p,m]=await Promise.all([fetch("/api/admin/content"),fetch("/api/admin/products"),fetch("/api/admin/moods")]);
     const cd=await c.json(), pd=await p.json(), mdm=await m.json();
-    setContent(cd.content||[]); setCollections(cd.collections||[]); setSocials(cd.socials||[]); setProducts(pd.products||[]); setMoodList(mdm.moods||[]);
+    setContent(cd.content||[]); setCollections(cd.collections||[]); setSocials(cd.socials||[]); setMoodList(mdm.moods||[]);
+    setProducts((pd.products||[]).map((product:any) => ({
+      ...product,
+      moodId: product.moodId || mdm.moods?.find((m:any) => m.name === product.mood)?.id || null,
+    })));
     setLoading(false);
   }
 
