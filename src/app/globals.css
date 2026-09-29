@@ -1,9 +1,31 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Dancing+Script:wght@500;600;700&family=Playfair+Display:ital,wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Dancing+Script:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@400;500;600;700&display=swap');
 @import "tailwindcss";
+
 :root{--cream:#f7f3ec;--ink:#211d19;--muted:#776f67;--line:#ddd5ca;--accent:#9c5638}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--cream);color:var(--ink);font-family:"DM Sans",sans-serif}.serif{font-family:"Playfair Display",serif}.grain{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E")}.hide-scroll::-webkit-scrollbar{display:none}.hide-scroll{scrollbar-width:none}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--cream);color:var(--ink);font-family:"Manrope",sans-serif;letter-spacing:-.01em}
+button,a{font-family:inherit}
+.serif{font-family:"Playfair Display",serif}
+.grain{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E")}
 .mood-brand{font-family:"Dancing Script",cursive}
 
-/* Keep mobile browsing clean: no visible scrollbars or scroll indicators. */
-html,.hide-scroll{scrollbar-width:none;-ms-overflow-style:none}html::-webkit-scrollbar,.hide-scroll::-webkit-scrollbar{display:none;width:0;height:0}
-@media (max-width:767px){body{overflow-x:hidden}.hide-scroll{overscroll-behavior-x:contain}}
+/* A soft, faded candle collage keeps the storefront feeling warm without competing with content. */
+.app-candle-collage{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;opacity:.105;background-image:
+linear-gradient(rgba(247,243,236,.74),rgba(247,243,236,.74)),
+url("https://images.unsplash.com/photo-1603006905003-be475563bc59?auto=format&fit=crop&w=900&q=70"),
+url("https://images.unsplash.com/photo-1602523961358-f9f03dd557db?auto=format&fit=crop&w=900&q=70"),
+url("https://images.unsplash.com/photo-1602874801006-e26d7b7b8e8a?auto=format&fit=crop&w=900&q=70"),
+url("https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=900&q=70");
+background-size:100% 100%,24% 31%,24% 31%,24% 31%,24% 31%;
+background-position:center,4% 8%,72% 4%,22% 64%,88% 72%;
+background-repeat:no-repeat;
+filter:saturate(.7) contrast(.92)}
+.app-candle-collage::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at center,rgba(247,243,236,.7) 0%,rgba(247,243,236,.9) 72%,rgba(247,243,236,1) 100%)}
+.app-content{position:relative;z-index:1}
+
+.hide-scroll::-webkit-scrollbar{display:none}
+.hide-scroll{scrollbar-width:none}
+html,.hide-scroll{scrollbar-width:none;-ms-overflow-style:none}
+html::-webkit-scrollbar,.hide-scroll::-webkit-scrollbar{display:none;width:0;height:0}
+@media (max-width:767px){body{overflow-x:hidden}.hide-scroll{overscroll-behavior-x:contain}.app-candle-collage{opacity:.075;background-size:100% 100%,38% 27%,38% 27%,38% 27%,38% 27%;background-position:center,0% 8%,65% 18%,8% 60%,70% 72%}}
