@@ -158,7 +158,7 @@ export default function Home() {
             <Image src="/tm-logo.svg" alt="In The Mood Candles logo" width={56} height={56} priority className="h-12 w-12 object-contain" />
             <span className="leading-none">
               <span className="serif block text-[18px] tracking-[.13em] sm:text-[21px]">IN THE MOOD</span>
-              <span className="mt-1 block text-[8px] font-semibold uppercase tracking-[.39em] text-[#776f67]">FOR CANDLES</span>
+              <span className="mt-1 block text-[12px] font-semibold uppercase tracking-[.39em] text-[#776f67]">FOR CANDLES</span>
             </span>
           </button>
 
@@ -172,7 +172,7 @@ export default function Home() {
               <a
                 key={label}
                 href={href}
-                className={"nav-link relative px-5 py-3 text-[9px] font-bold uppercase tracking-[.25em] text-[#211d19] transition-opacity hover:opacity-50 " +
+                className={"nav-link relative px-5 py-3 text-[13px] font-bold uppercase tracking-[.25em] text-[#211d19] transition-opacity hover:opacity-50 " +
                   (label === "home" ? "nav-link-active" : "")}
               >
                 {label}
@@ -185,7 +185,7 @@ export default function Home() {
             <button aria-label="Account" className="hidden p-2.5 transition-opacity hover:opacity-50 md:block"><UserRound size={18} strokeWidth={1.5} /></button>
             <button aria-label="Shopping bag" className="relative p-2.5 transition-opacity hover:opacity-50" onClick={() => setBag(true)}>
               <ShoppingBag size={20} strokeWidth={1.5} />
-              {count > 0 && <span className="absolute right-0.5 top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-[#211d19] text-[8px] font-bold text-white">{count}</span>}
+              {count > 0 && <span className="absolute right-0.5 top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-[#211d19] text-[13px] font-bold text-white">{count}</span>}
             </button>
             <button aria-label={menu ? "Close menu" : "Open menu"} className="p-2.5 md:hidden" onClick={() => setMenu((open) => !open)}>
               {menu ? <X size={23} strokeWidth={1.5} /> : <Menu size={23} strokeWidth={1.5} />}
@@ -214,7 +214,7 @@ export default function Home() {
                     target={label === "instagram" ? "_blank" : undefined}
                     rel={label === "instagram" ? "noreferrer" : undefined}
                     onClick={() => setMenu(false)}
-                    className="border-b border-black/10 py-4 text-[10px] font-bold uppercase tracking-[.22em]"
+                    className="border-b border-black/10 py-4 text-[13px] font-bold uppercase tracking-[.22em]"
                   >
                     {label}
                   </a>
@@ -244,7 +244,7 @@ export default function Home() {
             transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
             className="max-w-[590px] text-white"
           >
-            <p className="mb-7 text-[9px] font-semibold uppercase tracking-[.34em] text-white/80 md:text-[10px]">
+            <p className="mb-7 text-[13px] font-semibold uppercase tracking-[.34em] text-white/80 md:text-[12px]">
               Candles &nbsp;•&nbsp; Linen sprays &nbsp;•&nbsp; Memories
             </p>
             <h1 className="serif text-[3.35rem] leading-[.94] tracking-[-.035em] sm:text-[4.25rem] md:text-[5.45rem]">
@@ -259,7 +259,7 @@ export default function Home() {
             </p>
             <a
               href="#collection"
-              className="mt-8 inline-flex items-center gap-3 border border-white/75 px-5 py-3.5 text-[9px] font-bold uppercase tracking-[.2em] transition hover:bg-white hover:text-[#211d19]"
+              className="mt-8 inline-flex items-center gap-3 border border-white/75 px-5 py-3.5 text-[13px] font-bold uppercase tracking-[.2em] transition hover:bg-white hover:text-[#211d19]"
             >
               explore the collection <ArrowRight size={14} />
             </a>
@@ -271,10 +271,10 @@ export default function Home() {
         <div className="mx-auto max-w-[1310px]">
           <div className="mb-9 flex items-end justify-between gap-8 md:mb-10">
             <div>
-              <p className="mb-3 text-[9px] font-semibold uppercase tracking-[.34em] text-[#d5b5a0]">Shop our collection</p>
+              <p className="mb-3 text-[13px] font-semibold uppercase tracking-[.34em] text-[#d5b5a0]">Shop our collection</p>
               <h2 className="serif text-[3rem] leading-none md:text-[4rem]">Find your <span className="italic">mood.</span></h2>
             </div>
-            <a href="#products" className="hidden items-center gap-3 pb-2 text-[9px] font-bold uppercase tracking-[.2em] md:flex">
+            <a href="#products" className="hidden items-center gap-3 pb-2 text-[13px] font-bold uppercase tracking-[.2em] md:flex">
               view all <ArrowRight size={14} />
             </a>
           </div>
@@ -297,14 +297,14 @@ export default function Home() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
                 </div>
                 <div className="pt-4 text-center">
-                  <p className="text-[9px] font-semibold uppercase tracking-[.32em]">{card.label}</p>
-                  <p className="mt-2 text-[8px] uppercase tracking-[.22em] text-[#d5b5a0]">{card.sub}</p>
+                  <p className="text-[13px] font-semibold uppercase tracking-[.32em]">{card.label}</p>
+                  <p className="mt-2 text-[12px] uppercase tracking-[.22em] text-[#d5b5a0]">{card.sub}</p>
                 </div>
               </a>
             ))}
           </div>
 
-          <a href="#products" className="mt-9 flex items-center justify-center gap-3 text-[9px] font-bold uppercase tracking-[.2em] md:hidden">
+          <a href="#products" className="mt-9 flex items-center justify-center gap-3 text-[13px] font-bold uppercase tracking-[.2em] md:hidden">
             view all <ArrowRight size={14} />
           </a>
         </div>
@@ -314,7 +314,7 @@ export default function Home() {
         <div className="mx-auto max-w-[1400px]">
           <div className="mb-12 flex flex-col gap-6 md:mb-14 md:flex-row md:items-end md:justify-between">
             <div>
-              <p className="mb-3 text-[9px] font-bold uppercase tracking-[.36em] text-[#9c5638]">The candle collection</p>
+              <p className="mb-3 text-[13px] font-bold uppercase tracking-[.36em] text-[#9c5638]">The candle collection</p>
               <h2 className="serif text-5xl leading-none md:text-7xl">Choose a feeling.</h2>
             </div>
             <p className="max-w-sm text-[12px] leading-6 text-[#776f67]">
@@ -327,7 +327,7 @@ export default function Home() {
               <button
                 key={item}
                 onClick={() => setFilter(item)}
-                className={"shrink-0 pb-3 text-[9px] font-bold uppercase tracking-[.25em] transition " +
+                className={"shrink-0 pb-3 text-[13px] font-bold uppercase tracking-[.25em] transition " +
                   (filter === item ? "border-b border-[#211d19] text-[#211d19]" : "text-[#776f67] hover:text-[#211d19]")}
               >
                 {item}
@@ -355,7 +355,7 @@ export default function Home() {
                     unoptimized
                     className="object-cover transition duration-700 group-hover:scale-[1.04]"
                   />
-                  <div className="absolute left-3 top-3 bg-[#f6f1e9]/90 px-3 py-2 text-[8px] font-bold uppercase tracking-[.18em]">
+                  <div className="absolute left-3 top-3 bg-[#f6f1e9]/90 px-3 py-2 text-[13px] font-bold uppercase tracking-[.18em]">
                     {product.mood}
                   </div>
                   <button aria-label={"Save " + product.name} className="absolute right-3 top-3 bg-[#f6f1e9]/90 p-2.5 transition hover:bg-white">
@@ -363,7 +363,7 @@ export default function Home() {
                   </button>
                   <button
                     onClick={() => add(product.name)}
-                    className="absolute bottom-0 left-0 right-0 bg-[#211d19] py-4 text-[9px] font-bold uppercase tracking-[.2em] text-white opacity-0 transition group-hover:opacity-100"
+                    className="absolute bottom-0 left-0 right-0 bg-[#211d19] py-4 text-[13px] font-bold uppercase tracking-[.2em] text-white opacity-0 transition group-hover:opacity-100"
                   >
                     add to bag <span className="ml-1">+</span>
                   </button>
@@ -372,11 +372,11 @@ export default function Home() {
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <h3 className="serif text-[21px]">{product.name}</h3>
-                      <p className="mt-1 text-[8px] font-bold uppercase tracking-[.18em] text-[#9c5638]">{product.mood}</p>
+                      <p className="mt-1 text-[13px] font-bold uppercase tracking-[.18em] text-[#9c5638]">{product.mood}</p>
                     </div>
                     <span className="serif pt-1 text-[16px] italic text-[#9c5638]">Price coming soon</span>
                   </div>
-                  <p className="mt-3 text-[11px] leading-5 text-[#776f67]">{product.desc}</p>
+                  <p className="mt-3 text-[13px] leading-5 text-[#776f67]">{product.desc}</p>
                 </div>
               </motion.article>
             ))}
@@ -387,33 +387,61 @@ export default function Home() {
       <section id="journal" className="border-y border-black/10 bg-[#e9dfd4] px-5 py-20 md:px-14 md:py-28">
         <div className="mx-auto grid max-w-[1200px] gap-12 md:grid-cols-[.9fr_1.1fr] md:items-center">
           <div>
-            <p className="mb-4 text-[9px] font-bold uppercase tracking-[.35em] text-[#9c5638]">The journal</p>
+            <p className="mb-4 text-[13px] font-bold uppercase tracking-[.35em] text-[#9c5638]">The journal</p>
             <h2 className="serif text-5xl leading-[.95] md:text-7xl">A scent is<br /><span className="italic">a memory.</span></h2>
           </div>
-          <div className="max-w-xl text-[13px] leading-7 text-[#665c54]">
+          <div className="max-w-xl text-[15px] leading-8 text-[#665c54]">
             <p>There is magic in lighting a candle and letting a familiar fragrance fill the room. Scent can take us back to places, people and little moments we thought we had forgotten.</p>
             <p className="mt-5">Inspired by travel, food and the spaces that stay with us, every candle is made to become part of your story.</p>
-            <a href="https://www.instagram.com/inthemoodfor_candles/" target="_blank" rel="noreferrer" className="mt-7 inline-flex items-center gap-3 border-b border-[#211d19]/40 pb-2 text-[9px] font-bold uppercase tracking-[.2em]">
+            <a href="https://www.instagram.com/inthemoodfor_candles/" target="_blank" rel="noreferrer" className="mt-7 inline-flex items-center gap-3 border-b border-[#211d19]/40 pb-2 text-[13px] font-bold uppercase tracking-[.2em]">
               follow the journey <Instagram size={14} />
             </a>
           </div>
         </div>
       </section>
 
-      <section id="story" className="bg-[#211d19] px-5 py-20 text-[#f7f3ec] md:px-14 md:py-28">
+      <section id="story" className="bg-[#211d19] px-5 py-24 text-[#f7f3ec] md:px-14 md:py-32">
         <div className="mx-auto max-w-[1200px]">
-          <p className="mb-4 text-[9px] font-bold uppercase tracking-[.35em] text-[#d2a38c]">Our story</p>
-          <div className="grid gap-10 md:grid-cols-2 md:items-end">
-            <h2 className="serif text-5xl leading-none md:text-7xl">Made for moments<br /><span className="italic">worth remembering.</span></h2>
-            <p className="max-w-xl text-[13px] leading-7 text-white/65">
-              We create beautifully scented candles and home fragrances that bring warmth, comfort and a little luxury into everyday spaces. Small rituals become better when they have a scent of their own.
-            </p>
+          <p className="mb-5 text-[13px] font-bold uppercase tracking-[.35em] text-[#d2a38c]">Our Story</p>
+          <div className="grid gap-12 md:grid-cols-[.85fr_1.15fr] md:items-start">
+            <div>
+              <h2 className="serif text-5xl leading-[.95] md:text-8xl">More than a candle.<br /><span className="italic">It’s a feeling.</span></h2>
+              <div className="mt-8 h-px w-20 bg-[#d2a38c]/60" />
+            </div>
+            <div className="max-w-2xl space-y-6 text-[15px] leading-8 text-white/75 md:text-[17px] md:leading-9">
+              <p>It started with a simple love for beautiful scents and the magic they create.</p>
+              <p>There’s something special about lighting a candle and watching a space transform. The soft glow, the warmth, and most importantly, the scent that slowly fills the room and becomes part of the moment.</p>
+              <p>At In The Mood For Candles, we believe fragrance has the power to create memories. A scent can welcome you into a room, make you feel at home, remind you of someone you love, or take you back to a moment you thought you had forgotten.</p>
+              <p>Because when everything else fades, a scent can stay with you.</p>
+              <p>We created In The Mood For Candles to bring beautiful fragrances into everyday moments, whether you’re unwinding after a long day, setting the tone for a date night, celebrating yourself, or simply making your home feel a little more like you.</p>
+              <p>Our candles are made to be experienced, remembered, and associated with the moments that matter.</p>
+              <p className="serif pt-2 text-3xl italic text-[#d2a38c]">Light it. Feel it. Remember it.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="mission" className="bg-[#f6f1e9] px-5 py-24 md:px-14 md:py-32">
+        <div className="mx-auto max-w-[1200px]">
+          <div className="mb-14">
+            <p className="mb-5 text-[13px] font-bold uppercase tracking-[.35em] text-[#9c5638]">Our mission &amp; vision</p>
+            <h2 className="serif text-5xl leading-none md:text-8xl">What we <span className="italic">stand for.</span></h2>
+          </div>
+          <div className="grid gap-6 md:grid-cols-2">
+            <article className="rounded-[2rem] bg-[#211d19] p-8 text-[#f7f3ec] md:p-12">
+              <p className="mb-5 text-[12px] font-bold uppercase tracking-[.3em] text-[#d2a38c]">Our mission</p>
+              <p className="serif text-3xl leading-tight md:text-5xl">To create beautifully scented candles that transform everyday spaces into memorable experiences, bringing warmth, comfort and a little luxury into every moment.</p>
+            </article>
+            <article className="rounded-[2rem] border border-black/10 bg-[#e9dfd4] p-8 md:p-12">
+              <p className="mb-5 text-[12px] font-bold uppercase tracking-[.3em] text-[#9c5638]">Our vision</p>
+              <p className="serif text-3xl leading-tight md:text-5xl">To become a beloved fragrance brand known for creating scents that become part of people’s stories, spaces and most cherished memories.</p>
+            </article>
           </div>
         </div>
       </section>
 
       <footer className="bg-[#f6f1e9] px-5 py-10 md:px-14">
-        <div className="mx-auto flex max-w-[1400px] flex-col justify-between gap-5 border-t border-black/10 pt-7 text-[9px] font-semibold uppercase tracking-[.18em] md:flex-row">
+        <div className="mx-auto flex max-w-[1400px] flex-col justify-between gap-5 border-t border-black/10 pt-7 text-[13px] font-semibold uppercase tracking-[.18em] md:flex-row">
           <span>© {new Date().getFullYear()} In The Mood For Candles</span>
           <span>Made for slow moments</span>
         </div>
@@ -431,7 +459,7 @@ export default function Home() {
               className="fixed right-0 top-0 z-[61] flex h-full w-full max-w-[460px] flex-col bg-[#f6f1e9] shadow-2xl"
             >
               <div className="flex items-center justify-between border-b border-black/10 px-6 py-5">
-                <div><p className="text-[8px] font-bold uppercase text-[#776f67]">Your</p><h3 className="serif text-2xl">Bag</h3></div>
+                <div><p className="text-[13px] font-bold uppercase text-[#776f67]">Your</p><h3 className="serif text-2xl">Bag</h3></div>
                 <button onClick={() => setBag(false)} aria-label="Close bag"><X /></button>
               </div>
               <div className="flex-1 overflow-auto p-6">
@@ -439,7 +467,7 @@ export default function Home() {
                   <div className="flex h-full flex-col items-center justify-center text-center">
                     <ShoppingBag size={24} strokeWidth={1.5} />
                     <p className="serif mt-4 text-2xl">Your bag is empty.</p>
-                    <a href="#products" onClick={() => setBag(false)} className="mt-5 border-b border-black pb-1 text-[9px] font-bold uppercase tracking-[.18em]">discover candles</a>
+                    <a href="#products" onClick={() => setBag(false)} className="mt-5 border-b border-black pb-1 text-[13px] font-bold uppercase tracking-[.18em]">discover candles</a>
                   </div>
                 ) : (
                   <div className="space-y-5">
@@ -465,8 +493,8 @@ export default function Home() {
               {count > 0 && (
                 <div className="border-t border-black/10 p-6">
                   <div className="mb-5 flex justify-between text-sm"><span>Estimated total</span><span className="font-semibold">{formatMoney(total, currency)}</span></div>
-                  <button onClick={whatsapp} className="w-full bg-[#211d19] py-4 text-[9px] font-bold uppercase tracking-[.2em] text-white transition hover:bg-[#9c5638]">order via WhatsApp</button>
-                  <p className="mt-3 text-center text-[9px] text-[#776f67]">We'll confirm availability, delivery and payment with you on WhatsApp.</p>
+                  <button onClick={whatsapp} className="w-full bg-[#211d19] py-4 text-[13px] font-bold uppercase tracking-[.2em] text-white transition hover:bg-[#9c5638]">order via WhatsApp</button>
+                  <p className="mt-3 text-center text-[13px] text-[#776f67]">We'll confirm availability, delivery and payment with you on WhatsApp.</p>
                 </div>
               )}
             </motion.aside>
