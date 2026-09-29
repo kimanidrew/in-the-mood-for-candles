@@ -41,7 +41,7 @@ const collectionCards = [
 
 type Cart = Record<string, number>;
 type CurrencyInfo = { code: string; locale: string; label: string };
-type StoreProduct = typeof products[number];
+type StoreProduct = typeof products[number] & { id?: string };
 type StoreContent = { key: string; type?: string; layout?: string|null; title?: string|null; eyebrow?: string|null; body?: string|null; imageUrl?: string|null; imageAlt?: string|null; buttonText?: string|null; buttonUrl?: string|null; sortOrder?: number; isActive?: boolean };
 type StoreCollection = { slug:string; title:string; subtitle?:string|null; imageUrl:string; mood?:string|null };
 type Social = { platform:string; url:string; label?:string|null };
@@ -131,22 +131,29 @@ export default function Home() {
   const [storeCollections, setStoreCollections] = useState<StoreCollection[]>([]);
   const [socials, setSocials] = useState<Social[]>([]);
   const [moods, setMoods] = useState<StoreMood[]>([]);
+  const [favoriteProductIds, setFavoriteProductIds] = useState<string[]>([]);
+  const [favoriteMoodIds, setFavoriteMoodIds] = useState<string[]>([]);
+  const [favoriteNotice, setFavoriteNotice] = useState("");
   const [heroImage, setHeroImage] = useState("/hero.jpg");
   const [activeCollection, setActiveCollection] = useState(0);
   const collectionRailRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setCurrency(detectCurrency());
-    Promise.all([fetch("/api/storefront"), fetch("/api/moods")])
-      .then(async ([storeResponse, moodsResponse]) => {
+    Promise.all([fetch("/api/storefront"), fetch("/api/moods"), fetch("/api/favorites")])
+      .then(async ([storeResponse, moodsResponse, favoritesResponse]) => {
         const data = storeResponse.ok ? await storeResponse.json() : {};
         const moodData = moodsResponse.ok ? await moodsResponse.json() : {};
+        const favoriteData = favoritesResponse.ok ? await favoritesResponse.json() : {};
         if (Array.isArray(moodData.moods)) setMoods(moodData.moods);
+        if (Array.isArray(favoriteData.favoriteProductIds)) setFavoriteProductIds(favoriteData.favoriteProductIds);
+        if (Array.isArray(favoriteData.favoriteMoodIds)) setFavoriteMoodIds(favoriteData.favoriteMoodIds);
         return data;
       })
       .then((data) => {
         if (Array.isArray(data.products) && data.products.length) {
           setStoreProducts(data.products.map((p: any) => ({
+            id: p.id,
             name: p.name,
             mood: p.mood,
             priceUSD: Number(p.priceUSD || 0),
@@ -234,6 +241,36 @@ export default function Home() {
   const instagram = socials.find((item) => item.platform === "instagram")?.url || "https://www.instagram.com/inthemoodfor_candles";
 
   const add = (name: string) => setCart((current) => ({ ...current, [name]: (current[name] || 0) + 1 }));
+  const toggleFavorite = async (type: "product" | "mood", id?: string) => {
+    if (!id) return;
+    const isFavorite = type === "product" ? favoriteProductIds.includes(id) : favoriteMoodIds.includes(id);
+    try {
+      const response = await fetch("/api/favorites", {
+        method: isFavorite ? "DELETE" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type, id }),
+      });
+      const data = await response.json().catch(() => null);
+      if (response.status === 401) {
+        window.location.href = "/account";
+        return;
+      }
+      if (!response.ok) {
+        setFavoriteNotice(data?.error || "Could not update favourites.");
+        window.setTimeout(() => setFavoriteNotice(""), 2500);
+        return;
+      }
+      if (type === "product") {
+        setFavoriteProductIds((current) => isFavorite ? current.filter((item) => item !== id) : [...current, id]);
+      } else {
+        setFavoriteMoodIds((current) => isFavorite ? current.filter((item) => item !== id) : [...current, id]);
+      }
+    } catch {
+      setFavoriteNotice("Could not update favourites. Please try again.");
+      window.setTimeout(() => setFavoriteNotice(""), 2500);
+    }
+  };
+
   const change = (name: string, amount: number) => setCart((current) => {
     const next = { ...current, [name]: Math.max(0, (current[name] || 0) + amount) };
     if (!next[name]) delete next[name];
@@ -427,16 +464,34 @@ export default function Home() {
           </div>
 
           <div className="hide-scroll mb-12 flex gap-7 overflow-x-auto border-b border-black/10 pb-4 md:justify-center md:overflow-visible">
-            {["ALL", ...moodTabs.map((mood) => mood.name)].map((item) => (
-              <button
-                key={item}
-                onClick={() => setFilter(item)}
-                className={"shrink-0 pb-3 text-[12px] font-bold uppercase tracking-[.25em] transition " +
-                  (filter === item ? "border-b border-[#211d19] text-[#211d19]" : "text-[#776f67] hover:text-[#211d19]")}
-              >
-                {item}
-              </button>
-            ))}
+            <button
+              onClick={() => setFilter("ALL")}
+              className={"shrink-0 pb-3 text-[12px] font-bold uppercase tracking-[.25em] transition " +
+                (filter === "ALL" ? "border-b border-[#211d19] text-[#211d19]" : "text-[#776f67] hover:text-[#211d19]")}
+            >
+              all
+            </button>
+            {moodTabs.map((mood) => {
+              const isMoodFavorite = favoriteMoodIds.includes(mood.id);
+              return (
+                <div key={mood.id} className="flex shrink-0 items-center gap-1 pb-3">
+                  <button
+                    onClick={() => setFilter(mood.name)}
+                    className={"text-[12px] font-bold uppercase tracking-[.25em] transition " +
+                      (filter === mood.name ? "border-b border-[#211d19] text-[#211d19]" : "text-[#776f67] hover:text-[#211d19]")}
+                  >
+                    {mood.name}
+                  </button>
+                  <button
+                    onClick={() => toggleFavorite("mood", mood.id)}
+                    aria-label={(isMoodFavorite ? "Remove " : "Save ") + mood.name + " mood"}
+                    className={"rounded-full p-1 transition " + (isMoodFavorite ? "text-[#9c5638]" : "text-[#a59b91] hover:text-[#9c5638]")}
+                  >
+                    <Heart size={11} fill={isMoodFavorite ? "currentColor" : "none"} strokeWidth={1.6} />
+                  </button>
+                </div>
+              );
+            })}
           </div>
 
           <div className="grid grid-cols-1 gap-x-7 gap-y-14 sm:grid-cols-2 lg:grid-cols-4">
@@ -462,8 +517,12 @@ export default function Home() {
                   <div className="absolute left-3 top-3 bg-[#f6f1e9]/90 px-3 py-2 text-[12px] font-bold uppercase tracking-[.18em]">
                     {product.mood}
                   </div>
-                  <button aria-label={"Save " + product.name} className="absolute right-3 top-3 bg-[#f6f1e9]/90 p-2.5 transition hover:bg-white">
-                    <Heart size={14} strokeWidth={1.5} />
+                  <button
+                    onClick={() => toggleFavorite("product", product.id)}
+                    aria-label={(favoriteProductIds.includes(product.id || "") ? "Remove " : "Save ") + product.name + " to favourites"}
+                    className={"absolute right-3 top-3 bg-[#f6f1e9]/90 p-2.5 transition hover:bg-white " + (favoriteProductIds.includes(product.id || "") ? "text-[#9c5638]" : "text-[#211d19]")}
+                  >
+                    <Heart size={14} fill={favoriteProductIds.includes(product.id || "") ? "currentColor" : "none"} strokeWidth={1.5} />
                   </button>
                   <button
                     onClick={() => add(product.name)}
