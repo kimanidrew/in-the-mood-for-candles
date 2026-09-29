@@ -338,7 +338,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            className="max-w-[640px] text-white"
+            className="max-w-[75%] text-white"
           >
             <p className="mb-6 text-[10px] font-semibold uppercase tracking-[.3em] text-white/80 md:text-[10px]">
               {hero?.eyebrow || "Candles • Linen sprays • Memories"}
