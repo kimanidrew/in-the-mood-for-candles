@@ -374,7 +374,7 @@ export default function Home() {
                       <h3 className="serif text-[21px]">{product.name}</h3>
                       <p className="mt-1 text-[8px] font-bold uppercase tracking-[.18em] text-[#9c5638]">{product.mood}</p>
                     </div>
-                    <span className="pt-1 text-[12px] font-semibold">{formatMoney(product.priceUSD * rate, currency)}</span>
+                    <span className="serif pt-1 text-[16px] italic text-[#9c5638]">Price coming soon</span>
                   </div>
                   <p className="mt-3 text-[11px] leading-5 text-[#776f67]">{product.desc}</p>
                 </div>
