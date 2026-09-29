@@ -89,6 +89,10 @@ function detectCurrency(): CurrencyInfo {
   return byRegion[region || ""] || FALLBACK_CURRENCY;
 }
 
+function isDataImage(src?: string | null) {
+  return Boolean(src?.startsWith("data:image/"));
+}
+
 function formatMoney(amount: number, info: CurrencyInfo) {
   try {
     return new Intl.NumberFormat(info.locale, {
@@ -194,7 +198,7 @@ export default function Home() {
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             className="flex items-center gap-3 text-left"
           >
-            <Image src="/tm-logo.svg" alt="In The Mood Candles logo" width={56} height={56} priority className="h-12 w-12 object-contain" />
+            <Image src="/tm-logo.svg" alt="In The Mood Candles logo" width={56} height={56} priority unoptimized className="h-12 w-12 object-contain" />
             <span className="leading-none">
               <span className="serif block text-[18px] tracking-[.13em] sm:text-[21px]">IN THE MOOD</span>
               <span className="mt-1 block text-[9px] font-semibold uppercase tracking-[.39em] text-[#776f67]">FOR CANDLES</span>
@@ -273,6 +277,7 @@ export default function Home() {
           fill
           priority
           sizes="100vw"
+          unoptimized={isDataImage(heroImage)}
           className="object-cover object-center"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/20 to-black/5" />
@@ -330,6 +335,7 @@ export default function Home() {
                     alt={card.title}
                     fill
                     sizes="(max-width: 768px) 70vw, 240px"
+                    unoptimized={isDataImage(card.imageUrl)}
                     className="object-cover transition duration-700 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
@@ -390,7 +396,7 @@ export default function Home() {
                     alt={product.name}
                     fill
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                    unoptimized
+                    unoptimized={isDataImage(product.img)}
                     className="object-cover transition duration-700 group-hover:scale-[1.04]"
                   />
                   <div className="absolute left-3 top-3 bg-[#f6f1e9]/90 px-3 py-2 text-[12px] font-bold uppercase tracking-[.18em]">
@@ -508,7 +514,7 @@ export default function Home() {
                       const product = storeProducts.find((item) => item.name === name)!;
                       return (
                         <div key={name} className="flex gap-4 border-b border-black/10 pb-5">
-                          <Image src={product.img} width={80} height={96} sizes="80px" className="h-24 w-20 object-cover" alt="" />
+                          <Image src={product.img} width={80} height={96} sizes="80px" unoptimized={isDataImage(product.img)} className="h-24 w-20 object-cover" alt="" />
                           <div className="flex flex-1 flex-col">
                             <div className="flex justify-between gap-3"><span className="serif text-lg">{name}</span><span className="text-sm">{formatMoney(product.priceUSD * rate * quantity, currency)}</span></div>
                             <div className="mt-auto flex items-center gap-3">
