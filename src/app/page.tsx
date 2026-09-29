@@ -111,6 +111,33 @@ export default function Home(){
    </div>
   </section>
 
+  <section id="mission" className="relative overflow-hidden border-y border-black/10 bg-[#eee7de] px-5 py-20 md:px-10 md:py-28">
+   <div className="mx-auto max-w-[1200px]">
+    <div className="mb-12 max-w-2xl">
+     <p className="mb-4 text-[10px] font-bold uppercase tracking-[.3em] text-[#9c5638]">the heart behind the flame</p>
+     <h2 className="serif text-5xl leading-[.95] md:text-7xl">Made for moments<br/><span className="italic">worth remembering.</span></h2>
+    </div>
+    <div className="grid gap-6 md:grid-cols-2">
+     <motion.article initial={{opacity:0,y:25}} whileInView={{opacity:1,y:0}} viewport={{once:true,margin:"-60px"}} className="group relative overflow-hidden rounded-[2rem] bg-[#211d19] p-8 text-[#f7f3ec] shadow-[0_20px_50px_rgba(33,29,25,.12)] md:p-12">
+      <div className="absolute -right-12 -top-12 h-40 w-40 rounded-full border border-white/10"/>
+      <div className="absolute -bottom-16 -left-10 h-44 w-44 rounded-full border border-white/10"/>
+      <span className="relative z-10 inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/20 text-sm">01</span>
+      <p className="relative z-10 mt-10 text-[10px] font-bold uppercase tracking-[.3em] text-[#d2a38c]">Our mission</p>
+      <h3 className="serif relative z-10 mt-3 text-3xl md:text-4xl">Create warmth.<br/><span className="italic">Create memories.</span></h3>
+      <p className="relative z-10 mt-6 max-w-lg text-sm leading-7 text-white/70 md:text-base">To create beautifully scented candles that transform everyday spaces into memorable experiences, bringing warmth, comfort and a little luxury into every moment.</p>
+     </motion.article>
+     <motion.article initial={{opacity:0,y:25}} whileInView={{opacity:1,y:0}} viewport={{once:true,margin:"-60px"}} transition={{delay:.1}} className="group relative overflow-hidden rounded-[2rem] border border-black/10 bg-[#f7f3ec] p-8 shadow-[0_20px_50px_rgba(33,29,25,.08)] md:p-12">
+      <div className="absolute -right-10 -bottom-12 h-44 w-44 rounded-full border border-[#9c5638]/10"/>
+      <div className="absolute right-8 top-8 h-16 w-16 rounded-full bg-[#9c5638]/5"/>
+      <span className="relative z-10 inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#211d19]/15 text-sm">02</span>
+      <p className="relative z-10 mt-10 text-[10px] font-bold uppercase tracking-[.3em] text-[#9c5638]">Our vision</p>
+      <h3 className="serif relative z-10 mt-3 text-3xl md:text-4xl">A scent in every<br/><span className="italic">cherished story.</span></h3>
+      <p className="relative z-10 mt-6 max-w-lg text-sm leading-7 text-[#776f67] md:text-base">To become a beloved fragrance brand known for creating scents that become part of people’s stories, spaces and most cherished memories.</p>
+     </motion.article>
+    </div>
+   </div>
+  </section>
+
   <section id="story" className="bg-[#211d19] px-5 py-24 text-[#f7f3ec] md:px-10 md:py-32"><div className="mx-auto grid max-w-[1200px] gap-14 md:grid-cols-[.8fr_1.2fr] md:items-center"><div><p className="mb-5 text-[10px] font-bold uppercase text-[#d2a38c]">our story</p><h2 className="serif text-5xl leading-none md:text-7xl">Scent is a<br/><span className="italic">memory.</span></h2></div><div className="max-w-xl text-sm leading-7 text-white/70 md:text-base"><p>We believe there is magic in lighting a candle when the scent fills the room. It can take you to cherished places, treasured moments and heartfelt memories.</p><p className="mt-6">Inspired by travel, food and the places that stay with us, every candle is made to turn an ordinary moment into somewhere worth remembering.</p><a href="https://www.instagram.com/inthemoodfor_candles/" target="_blank" className="mt-8 inline-flex items-center gap-3 border-b border-white/40 pb-2 text-[10px] font-bold uppercase tracking-[.2em]">follow the journey <Instagram size={15}/></a></div></div></section>
 
   <footer className="px-5 py-10 md:px-10"><div className="mx-auto flex max-w-[1400px] flex-col justify-between gap-5 border-t border-black/10 pt-7 text-[10px] font-semibold uppercase tracking-[.15em] md:flex-row"><span>© {new Date().getFullYear()} in the mood for</span><span>made for slow moments</span></div></footer>
