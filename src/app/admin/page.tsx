@@ -189,12 +189,24 @@ export default function AdminPage({ initialTab = "overview" }: { initialTab?: Ta
     const md=await me.json();
     if(md.user?.role!=="ADMIN"){router.replace("/account");return;}
     setUser(md.user);
-    const [c,p,m]=await Promise.all([fetch("/api/admin/content"),fetch("/api/admin/products"),fetch("/api/admin/moods")]);
-    const cd=await c.json(), pd=await p.json(), mdm=await m.json();
-    setContent(cd.content||[]); setCollections(cd.collections||[]); setSocials(cd.socials||[]); setMoodList(mdm.moods||[]);
-    setProducts((pd.products||[]).map((product:any) => ({
+    const [c,p,m]=await Promise.all([
+      fetch("/api/admin/content"),
+      fetch("/api/admin/products"),
+      fetch("/api/admin/moods"),
+    ]);
+    const [cd,pd,mdm]=await Promise.all([
+      c.json().catch(()=>({})),
+      p.json().catch(()=>({})),
+      m.json().catch(()=>({})),
+    ]);
+    setContent(Array.isArray(cd.content) ? cd.content : []);
+    setCollections(Array.isArray(cd.collections) ? cd.collections : []);
+    setSocials(Array.isArray(cd.socials) ? cd.socials : []);
+    setMoodList(Array.isArray(mdm.moods) ? mdm.moods : []);
+    const adminMoods = Array.isArray(mdm.moods) ? mdm.moods : [];
+    setProducts((Array.isArray(pd.products) ? pd.products : []).map((product:any) => ({
       ...product,
-      moodId: product.moodId || mdm.moods?.find((m:any) => m.name === product.mood)?.id || null,
+      moodId: product.moodId || adminMoods.find((m:any) => m.name === product.mood)?.id || null,
     })));
     setLoading(false);
   }
