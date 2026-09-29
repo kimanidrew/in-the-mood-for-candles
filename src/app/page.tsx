@@ -45,6 +45,7 @@ type StoreProduct = typeof products[number];
 type StoreContent = { key: string; type?: string; layout?: string|null; title?: string|null; eyebrow?: string|null; body?: string|null; imageUrl?: string|null; imageAlt?: string|null; buttonText?: string|null; buttonUrl?: string|null; sortOrder?: number; isActive?: boolean };
 type StoreCollection = { slug:string; title:string; subtitle?:string|null; imageUrl:string; mood?:string|null };
 type Social = { platform:string; url:string; label?:string|null };
+type StoreMood = { id:string; name:string; slug:string; sortOrder:number };
 
 const CURRENCY_BY_ZONE: Record<string, CurrencyInfo> = {
   "Africa/Nairobi": { code: "KES", locale: "en-KE", label: "Kenya" },
@@ -129,13 +130,20 @@ export default function Home() {
   const [storeContent, setStoreContent] = useState<StoreContent[]>([]);
   const [storeCollections, setStoreCollections] = useState<StoreCollection[]>([]);
   const [socials, setSocials] = useState<Social[]>([]);
+  const [moods, setMoods] = useState<StoreMood[]>([]);
   const [heroImage, setHeroImage] = useState("/hero.jpg");
   const [activeCollection, setActiveCollection] = useState(0);
   const collectionRailRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setCurrency(detectCurrency());
-    fetch("/api/storefront")
+    Promise.all([fetch("/api/storefront"), fetch("/api/moods")])
+      .then(async ([storeResponse, moodsResponse]) => {
+        const data = storeResponse.ok ? await storeResponse.json() : {};
+        const moodData = moodsResponse.ok ? await moodsResponse.json() : {};
+        if (Array.isArray(moodData.moods)) setMoods(moodData.moods);
+        return data;
+      })
       .then((r) => r.ok ? r.json() : Promise.reject())
       .then((data) => {
         if (Array.isArray(data.products) && data.products.length) {
@@ -207,6 +215,7 @@ export default function Home() {
     };
   }, [storeCollections.length]);
 
+  const moodTabs = moods.length ? moods : Array.from(new Set(shopProducts.map((product) => product.mood).filter(Boolean))).map((name) => ({ id: name, name, slug: String(name).toLowerCase().replace(/\\s+/g, "-"), sortOrder: 0 }));
   const shown = useMemo(
     () => filter === "ALL" ? shopProducts : shopProducts.filter((p) => p.mood === filter),
     [filter, shopProducts],
@@ -419,7 +428,7 @@ export default function Home() {
           </div>
 
           <div className="hide-scroll mb-12 flex gap-7 overflow-x-auto border-b border-black/10 pb-4 md:justify-center md:overflow-visible">
-            {["ALL", "Relaxing", "Romantic", "Cosy", "Playful", "Tropical", "Energising", "Festive", "Dreamy"].map((item) => (
+            {["ALL", ...moodTabs.map((mood) => mood.name)].map((item) => (
               <button
                 key={item}
                 onClick={() => setFilter(item)}
