@@ -9,8 +9,10 @@ export async function GET() {
   const data = await prisma.user.findUnique({
     where: { id: user.id },
     select: {
-      favoriteProducts: { select: { id: true } },
-      favoriteMoods: { select: { id: true } },
+      favoriteProducts: {
+        select: { id: true, name: true, slug: true, mood: true, images: { where: { isPrimary: true }, take: 1, select: { url: true } } },
+      },
+      favoriteMoods: { select: { id: true, name: true, slug: true } },
     },
   });
 
@@ -18,6 +20,8 @@ export async function GET() {
     authenticated: true,
     favoriteProductIds: data?.favoriteProducts.map((item) => item.id) || [],
     favoriteMoodIds: data?.favoriteMoods.map((item) => item.id) || [],
+    products: data?.favoriteProducts || [],
+    moods: data?.favoriteMoods || [],
   });
 }
 
