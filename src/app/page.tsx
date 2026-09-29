@@ -407,7 +407,7 @@ export default function Home() {
         <div className="mx-auto max-w-[1310px]">
           <div className="mb-9"><p className="mb-3 text-[12px] font-semibold uppercase tracking-[.34em] text-[#d5b5a0]">Shop our collection</p><h2 className="serif text-[3rem] leading-none md:text-[4rem]">Find your <span className="italic">mood.</span></h2></div>
           <div ref={collectionRailRef} className="collection-grid">
-            {moodTabs.map((mood, index) => (
+            {moodTabs.slice(0, 5).map((mood, index) => (
               <a href={"/moods/" + mood.slug} key={mood.id} data-mood-card className={"collection-card group " + (activeCollection === index ? "collection-card-active" : "")}>
                 <div className="relative aspect-[1.05] overflow-hidden border border-white/20 bg-black/20">
                   {mood.imageUrl ? <Image src={normalizeImageUrl(mood.imageUrl)} alt={mood.name} fill unoptimized={isDataImage(mood.imageUrl)} sizes="(max-width: 768px) 70vw, 240px" className="object-cover transition duration-700 group-hover:scale-105"/> : <div className="absolute inset-0 bg-gradient-to-br from-[#6f4937] via-[#3a2117] to-[#160d09]"/>}
@@ -417,6 +417,13 @@ export default function Home() {
               </a>
             ))}
           </div>
+          {moodTabs.length > 5 && (
+            <div className="mt-9 flex justify-center">
+              <a href="/moods" className="inline-flex items-center gap-3 bg-black px-7 py-4 text-[10px] font-bold uppercase tracking-[.2em] text-white transition hover:bg-[#9c5638]">
+                view all moods <ArrowRight size={14} />
+              </a>
+            </div>
+          )}
         </div>
       </section>
 
