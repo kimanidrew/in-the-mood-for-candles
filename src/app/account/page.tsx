@@ -107,7 +107,7 @@ export default function AccountPage() {
           <p className="mt-5 max-w-xl text-sm leading-7 text-white/65">Manage your personal details and keep your sign-in information up to date.</p>
         </section>
 
-        <section className="mt-7 rounded-[2rem] bg-white p-7 ring-1 ring-black/5 md:p-9">
+        <section id="favourites" className="mt-7 rounded-[2rem] bg-white p-7 ring-1 ring-black/5 md:p-9">
           <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[.3em] text-[#9c5638]">Your favourites</p>
