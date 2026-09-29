@@ -1,11 +1,15 @@
 import "dotenv/config";
+import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@prisma/client";
-import { createHash } from "node:crypto";
+import { Pool } from "pg";
+import { scryptSync, randomBytes } from "node:crypto";
 
-const prisma = new PrismaClient();
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const adapter = new PrismaPg(pool);
+const prisma = new PrismaClient({ adapter });
 
-function hashPassword(password: string) {
-  return createHash("sha256").update(password).digest("hex");
+function hashPassword(password: string, salt: string) {
+  return salt + ":" + scryptSync(password, salt, 64).toString("hex");
 }
 
 async function main() {
@@ -86,4 +90,4 @@ async function main() {
   console.log("Use ADMIN_PASSWORD from your environment; the fallback is only for first-time development.");
 }
 
-main().catch(console.error).finally(()=>prisma.$disconnect());
+main().catch(console.error).finally(async()=>{await prisma.$disconnect(); await pool.end();});
