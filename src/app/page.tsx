@@ -422,8 +422,8 @@ export default function Home() {
 
       <section id="products" className="bg-[#f6f1e9] px-5 py-20 md:px-14 md:py-28">
         <div className="mx-auto max-w-[1400px]">
-          <div className="mb-10 flex flex-col gap-6 md:mb-12 md:flex-row md:items-end md:justify-between"><div><p className="mb-3 text-[12px] font-bold uppercase tracking-[.36em] text-[#9c5638]">The candle collection</p><h2 className="serif text-5xl leading-none md:text-7xl">Choose your <span className="italic">collection.</span></h2></div><p className="max-w-sm text-[9px] leading-6 text-[#776f67]">Curated candles for every atmosphere, ritual and little moment.</p></div>
-          <div className="hide-scroll mb-12 flex gap-7 overflow-x-auto border-b border-black/10 pb-4 md:justify-center md:overflow-visible">
+          <div className="mb-10"><p className="mb-3 text-[12px] font-bold uppercase tracking-[.36em] text-[#9c5638]">The candle collection</p><h2 className="serif text-5xl leading-none md:text-7xl">Choose your <span className="italic">collection.</span></h2></div>
+          <div className="hide-scroll mb-12 flex justify-start gap-7 overflow-x-auto border-b border-black/10 pb-4 md:justify-start md:overflow-visible">
             {storeCollections.map((collection) => <button key={collection.slug} onClick={() => setActiveProductCollection(collection.slug)} className={"shrink-0 pb-3 text-[12px] font-bold uppercase tracking-[.25em] transition " + (activeProductCollection === collection.slug ? "border-b border-[#211d19] text-[#211d19]" : "text-[#776f67] hover:text-[#211d19]")}>{collection.title}</button>)}
           </div>
           {selectedProductCollection && <div className="mb-8 flex items-center justify-between gap-4"><div><p className="serif text-2xl">{selectedProductCollection.title}</p><p className="mt-1 text-xs text-[#776f67]">{selectedProductCollection.subtitle}</p></div><a href={"/collections/" + activeProductCollection} className="inline-flex shrink-0 items-center gap-2 border-b border-black/30 pb-1 text-[10px] font-bold uppercase tracking-[.18em]">view all <ArrowRight size={13}/></a></div>}
