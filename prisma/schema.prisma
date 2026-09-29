@@ -27,6 +27,20 @@ enum ContentType {
   GENERAL
 }
 
+enum SectionLayout {
+  AUTO
+  CINEMATIC
+  SPLIT_LEFT
+  SPLIT_RIGHT
+  STATEMENT
+  COLLAGE
+  FULL_BLEED
+  PRODUCT_SHOWCASE
+  QUOTE
+  FLOATING_CARD
+  MINIMAL
+}
+
 model User {
   id           String   @id @default(cuid())
   name         String?
@@ -101,6 +115,7 @@ model ProductVariant {
 model SiteContent {
   id          String      @id @default(cuid())
   type        ContentType
+  layout      SectionLayout @default(AUTO)
   key         String      @unique
   title       String?
   eyebrow     String?
