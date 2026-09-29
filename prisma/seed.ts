@@ -18,7 +18,7 @@ async function main() {
     create: {
       name: "Store Admin",
       email: adminEmail.toLowerCase(),
-      passwordHash: hashPassword(adminPassword),
+      passwordHash: hashPassword(adminPassword, randomBytes(16).toString("hex")),
       role: "ADMIN",
     },
   });
