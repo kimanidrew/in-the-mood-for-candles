@@ -206,7 +206,7 @@ export default function Home() {
                   ["shop", "#collection"],
                   ["our story", "#story"],
                   ["journal", "#journal"],
-                  ["instagram", "https://www.instagram.com/inthemoodfor_candles/"],
+                  ["instagram", "https://www.instagram.com/inthemoodfor_candles"],
                 ].map(([label, href]) => (
                   <a
                     key={label}
@@ -393,7 +393,7 @@ export default function Home() {
           <div className="max-w-xl text-[13px] leading-7 text-[#665c54]">
             <p>There is magic in lighting a candle and letting a familiar fragrance fill the room. Scent can take us back to places, people and little moments we thought we had forgotten.</p>
             <p className="mt-5">Inspired by travel, food and the spaces that stay with us, every candle is made to become part of your story.</p>
-            <a href="https://www.instagram.com/inthemoodfor_candles/" target="_blank" rel="noreferrer" className="mt-7 inline-flex items-center gap-3 border-b border-[#211d19]/40 pb-2 text-[12px] font-bold uppercase tracking-[.2em]">
+            <a href="https://www.instagram.com/inthemoodfor_candles" target="_blank" rel="noreferrer" className="mt-7 inline-flex items-center gap-3 border-b border-[#211d19]/40 pb-2 text-[12px] font-bold uppercase tracking-[.2em]">
               follow the journey <Instagram size={14} />
             </a>
           </div>
