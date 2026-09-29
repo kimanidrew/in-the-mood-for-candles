@@ -43,9 +43,9 @@ type Cart = Record<string, number>;
 type CurrencyInfo = { code: string; locale: string; label: string };
 type StoreProduct = typeof products[number] & { id?: string };
 type StoreContent = { key: string; type?: string; layout?: string|null; title?: string|null; eyebrow?: string|null; body?: string|null; imageUrl?: string|null; imageAlt?: string|null; buttonText?: string|null; buttonUrl?: string|null; sortOrder?: number; isActive?: boolean };
-type StoreCollection = { slug:string; title:string; subtitle?:string|null; imageUrl:string; mood?:string|null };
+type StoreCollection = { slug:string; title:string; subtitle?:string|null; imageUrl:string; mood?:string|null; products?:StoreProduct[] };
 type Social = { platform:string; url:string; label?:string|null };
-type StoreMood = { id:string; name:string; slug:string; sortOrder:number };
+type StoreMood = { id:string; name:string; slug:string; imageUrl?:string|null; sortOrder:number };
 
 const CURRENCY_BY_ZONE: Record<string, CurrencyInfo> = {
   "Africa/Nairobi": { code: "KES", locale: "en-KE", label: "Kenya" },
@@ -136,6 +136,7 @@ export default function Home() {
   const [favoriteNotice, setFavoriteNotice] = useState("");
   const [heroImage, setHeroImage] = useState("/hero.jpg");
   const [activeCollection, setActiveCollection] = useState(0);
+  const [activeProductCollection, setActiveProductCollection] = useState("ALL");
   const collectionRailRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -187,45 +188,33 @@ export default function Home() {
   useEffect(() => {
     const rail = collectionRailRef.current;
     if (!rail) return;
-
-    const cards = Array.from(rail.querySelectorAll<HTMLElement>("[data-collection-card]"));
+    const cards = Array.from(rail.querySelectorAll<HTMLElement>("[data-mood-card]"));
     if (!cards.length) return;
-
     const updateActive = () => {
-      const center = rail.getBoundingClientRect().left + rail.clientWidth / 2;
+      const center = rail.scrollLeft + rail.clientWidth / 2;
       let closest = 0;
       let distance = Number.POSITIVE_INFINITY;
       cards.forEach((card, index) => {
-        const rect = card.getBoundingClientRect();
-        const cardCenter = rect.left + rect.width / 2;
+        const cardCenter = card.offsetLeft + card.offsetWidth / 2;
         const nextDistance = Math.abs(cardCenter - center);
-        if (nextDistance < distance) {
-          distance = nextDistance;
-          closest = index;
-        }
+        if (nextDistance < distance) { distance = nextDistance; closest = index; }
       });
       setActiveCollection(closest);
     };
-
-    const observer = new IntersectionObserver(updateActive, {
-      root: rail,
-      threshold: [0.45, 0.65, 0.85],
-    });
-    cards.forEach((card) => observer.observe(card));
-    updateActive();
-
     rail.addEventListener("scroll", updateActive, { passive: true });
-    return () => {
-      observer.disconnect();
-      rail.removeEventListener("scroll", updateActive);
-    };
-  }, [storeCollections.length]);
+    window.addEventListener("resize", updateActive);
+    updateActive();
+    return () => { rail.removeEventListener("scroll", updateActive); window.removeEventListener("resize", updateActive); };
+  }, [moods.length]);
 
   const moodTabs = moods.length ? moods : Array.from(new Set(shopProducts.map((product) => product.mood).filter(Boolean))).map((name) => ({ id: name, name, slug: String(name).toLowerCase().replace(/\\s+/g, "-"), sortOrder: 0 }));
-  const shown = useMemo(
-    () => filter === "ALL" ? shopProducts : shopProducts.filter((p) => p.mood === filter),
-    [filter, shopProducts],
-  );
+  const selectedProductCollection = storeCollections.find((collection) => collection.slug === activeProductCollection);
+  const shown = useMemo(() => {
+    if (activeProductCollection === "ALL") return shopProducts;
+    const ids = new Set((selectedProductCollection?.products || []).map((product) => product.id).filter(Boolean));
+    return ids.size ? shopProducts.filter((product) => ids.has(product.id)) : [];
+  }, [activeProductCollection, selectedProductCollection, shopProducts]);
+
   const totalUSD = Object.entries(cart).reduce(
     (sum, [name, quantity]) => sum + (storeProducts.find((p) => p.name === name)?.priceUSD || 0) * quantity,
     0,
@@ -413,142 +402,36 @@ export default function Home() {
 
       <section id="collection" className="collection-section bg-[#2a180f] px-5 py-16 text-[#f5eadf] md:px-16 md:py-[72px]">
         <div className="mx-auto max-w-[1310px]">
-          <div className="mb-9 flex items-end justify-between gap-8 md:mb-10">
-            <div>
-              <p className="mb-3 text-[12px] font-semibold uppercase tracking-[.34em] text-[#d5b5a0]">Shop our collection</p>
-              <h2 className="serif text-[3rem] leading-none md:text-[4rem]">Find your <span className="italic">mood.</span></h2>
-            </div>
-            <a href="#products" className="hidden items-center gap-3 pb-2 text-[12px] font-bold uppercase tracking-[.2em] md:flex">
-              view all <ArrowRight size={14} />
-            </a>
-          </div>
-
+          <div className="mb-9"><p className="mb-3 text-[12px] font-semibold uppercase tracking-[.34em] text-[#d5b5a0]">Shop our collection</p><h2 className="serif text-[3rem] leading-none md:text-[4rem]">Find your <span className="italic">mood.</span></h2></div>
           <div ref={collectionRailRef} className="collection-grid">
-            {(storeCollections.length ? storeCollections : collectionCards.map((card) => ({slug:card.label.toLowerCase().replace(/\\s+/g,"-"),title:card.label,subtitle:card.sub,imageUrl:card.img,mood:null}))).map((card, index) => (
-              <a
-                href="#products"
-                key={card.slug}
-                data-collection-card
-                className={"collection-card group " + (activeCollection === index ? "collection-card-active " : "") + (index === 0 ? "collection-card-featured" : "")}
-              >
+            {moodTabs.map((mood, index) => (
+              <a href={"/moods/" + mood.slug} key={mood.id} data-mood-card className={"collection-card group " + (activeCollection === index ? "collection-card-active" : "")}>
                 <div className="relative aspect-[1.05] overflow-hidden border border-white/20 bg-black/20">
-                  <Image
-                    src={card.imageUrl}
-                    alt={card.title}
-                    fill
-                    sizes="(max-width: 768px) 70vw, 240px"
-                    unoptimized={isDataImage(card.imageUrl)}
-                    className="object-cover transition duration-700 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-                </div>
-                <div className="pt-4 text-center">
-                  <p className="text-[12px] font-semibold uppercase tracking-[.32em]">{card.title}</p>
-                  <p className="mt-2 text-[9px] uppercase tracking-[.22em] text-[#d5b5a0]">{card.subtitle}</p>
+                  {mood.imageUrl ? <Image src={normalizeImageUrl(mood.imageUrl)} alt={mood.name} fill unoptimized={isDataImage(mood.imageUrl)} sizes="(max-width: 768px) 70vw, 240px" className="object-cover transition duration-700 group-hover:scale-105"/> : <div className="absolute inset-0 bg-gradient-to-br from-[#6f4937] via-[#3a2117] to-[#160d09]"/>}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"/>
+                  <div className="absolute inset-x-0 bottom-0 p-5 text-center"><p className="text-[12px] font-semibold uppercase tracking-[.32em]">{mood.name}</p><p className="mt-2 text-[9px] uppercase tracking-[.22em] text-[#d5b5a0]">Explore this feeling</p></div>
                 </div>
               </a>
             ))}
           </div>
-
-          <a href="#products" className="mt-9 flex items-center justify-center gap-3 text-[12px] font-bold uppercase tracking-[.2em] md:hidden">
-            view all <ArrowRight size={14} />
-          </a>
         </div>
       </section>
 
       <section id="products" className="bg-[#f6f1e9] px-5 py-20 md:px-14 md:py-28">
         <div className="mx-auto max-w-[1400px]">
-          <div className="mb-12 flex flex-col gap-6 md:mb-14 md:flex-row md:items-end md:justify-between">
-            <div>
-              <p className="mb-3 text-[12px] font-bold uppercase tracking-[.36em] text-[#9c5638]">The candle collection</p>
-              <h2 className="serif text-5xl leading-none md:text-7xl">Choose a feeling.</h2>
-            </div>
-            <p className="max-w-sm text-[9px] leading-6 text-[#776f67]">
-              Fragrances made for quiet rituals, beautiful spaces and memories you want to keep.
-            </p>
-          </div>
-
+          <div className="mb-10 flex flex-col gap-6 md:mb-12 md:flex-row md:items-end md:justify-between"><div><p className="mb-3 text-[12px] font-bold uppercase tracking-[.36em] text-[#9c5638]">The candle collection</p><h2 className="serif text-5xl leading-none md:text-7xl">Choose your <span className="italic">collection.</span></h2></div><p className="max-w-sm text-[9px] leading-6 text-[#776f67]">Curated candles for every atmosphere, ritual and little moment.</p></div>
           <div className="hide-scroll mb-12 flex gap-7 overflow-x-auto border-b border-black/10 pb-4 md:justify-center md:overflow-visible">
-            <button
-              onClick={() => setFilter("ALL")}
-              className={"shrink-0 pb-3 text-[12px] font-bold uppercase tracking-[.25em] transition " +
-                (filter === "ALL" ? "border-b border-[#211d19] text-[#211d19]" : "text-[#776f67] hover:text-[#211d19]")}
-            >
-              all
-            </button>
-            {moodTabs.map((mood) => {
-              const isMoodFavorite = favoriteMoodIds.includes(mood.id);
-              return (
-                <div key={mood.id} className="flex shrink-0 items-center gap-1 pb-3">
-                  <button
-                    onClick={() => setFilter(mood.name)}
-                    className={"text-[12px] font-bold uppercase tracking-[.25em] transition " +
-                      (filter === mood.name ? "border-b border-[#211d19] text-[#211d19]" : "text-[#776f67] hover:text-[#211d19]")}
-                  >
-                    {mood.name}
-                  </button>
-                  <button
-                    onClick={() => toggleFavorite("mood", mood.id)}
-                    aria-label={(isMoodFavorite ? "Remove " : "Save ") + mood.name + " mood"}
-                    className={"rounded-full p-1 transition " + (isMoodFavorite ? "text-[#9c5638]" : "text-[#a59b91] hover:text-[#9c5638]")}
-                  >
-                    <Heart size={11} fill={isMoodFavorite ? "currentColor" : "none"} strokeWidth={1.6} />
-                  </button>
-                </div>
-              );
-            })}
+            <button onClick={() => setActiveProductCollection("ALL")} className={"shrink-0 pb-3 text-[12px] font-bold uppercase tracking-[.25em] transition " + (activeProductCollection === "ALL" ? "border-b border-[#211d19] text-[#211d19]" : "text-[#776f67] hover:text-[#211d19]")}>all</button>
+            {storeCollections.map((collection) => <button key={collection.slug} onClick={() => setActiveProductCollection(collection.slug)} className={"shrink-0 pb-3 text-[12px] font-bold uppercase tracking-[.25em] transition " + (activeProductCollection === collection.slug ? "border-b border-[#211d19] text-[#211d19]" : "text-[#776f67] hover:text-[#211d19]")}>{collection.title}</button>)}
           </div>
-
+          {activeProductCollection !== "ALL" && <div className="mb-8 flex items-center justify-between gap-4"><div><p className="serif text-2xl">{selectedProductCollection?.title}</p><p className="mt-1 text-xs text-[#776f67]">{selectedProductCollection?.subtitle}</p></div><a href={"/collections/" + activeProductCollection} className="inline-flex shrink-0 items-center gap-2 border-b border-black/30 pb-1 text-[10px] font-bold uppercase tracking-[.18em]">view all <ArrowRight size={13}/></a></div>}
           <div className="grid grid-cols-1 gap-x-7 gap-y-14 sm:grid-cols-2 lg:grid-cols-4">
-            {shown.map((product, index) => (
-              <motion.article
-                layout
-                key={product.name}
-                initial={{ opacity: 0, y: 18 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ delay: index * 0.035, duration: 0.5 }}
-                className="group"
-              >
-                <div className="relative aspect-[.82] overflow-hidden bg-[#e2d8cb]">
-                  <Image
-                    src={product.img}
-                    alt={product.name}
-                    fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                    unoptimized={isDataImage(product.img)}
-                    className="object-cover transition duration-700 group-hover:scale-[1.04]"
-                  />
-                  <div className="absolute left-3 top-3 bg-[#f6f1e9]/90 px-3 py-2 text-[12px] font-bold uppercase tracking-[.18em]">
-                    {product.mood}
-                  </div>
-                  <button
-                    onClick={() => toggleFavorite("product", product.id)}
-                    aria-label={(favoriteProductIds.includes(product.id || "") ? "Remove " : "Save ") + product.name + " to favourites"}
-                    className={"absolute right-3 top-3 bg-[#f6f1e9]/90 p-2.5 transition hover:bg-white " + (favoriteProductIds.includes(product.id || "") ? "text-[#9c5638]" : "text-[#211d19]")}
-                  >
-                    <Heart size={14} fill={favoriteProductIds.includes(product.id || "") ? "currentColor" : "none"} strokeWidth={1.5} />
-                  </button>
-                  <button
-                    onClick={() => add(product.name)}
-                    className="absolute bottom-0 left-0 right-0 bg-[#211d19] py-4 text-[12px] font-bold uppercase tracking-[.2em] text-white opacity-0 transition group-hover:opacity-100"
-                  >
-                    add to bag <span className="ml-1">+</span>
-                  </button>
-                </div>
-                <div className="pt-4">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <h3 className="serif text-[21px]">{product.name}</h3>
-                      <p className="mt-1 text-[12px] font-bold uppercase tracking-[.18em] text-[#9c5638]">{product.mood}</p>
-                    </div>
-                    <span className="serif pt-1 text-[16px] italic text-[#9c5638]">Price coming soon</span>
-                  </div>
-                  <p className="mt-3 text-[12px] leading-5 text-[#776f67]">{product.desc}</p>
-                </div>
-              </motion.article>
-            ))}
+            {shown.slice(0,4).map((product,index) => <motion.article layout key={product.id||product.name} initial={{opacity:0,y:18}} whileInView={{opacity:1,y:0}} viewport={{once:true,margin:"-50px"}} transition={{delay:index*.035,duration:.5}} className="group">
+              <div className="relative aspect-[.82] overflow-hidden bg-[#e2d8cb]"><Image src={normalizeImageUrl(product.img)} alt={product.name} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" unoptimized={isDataImage(product.img)} className="object-cover transition duration-700 group-hover:scale-[1.04]"/><div className="absolute left-3 top-3 bg-[#f6f1e9]/90 px-3 py-2 text-[12px] font-bold uppercase tracking-[.18em]">{product.mood}</div><button onClick={()=>toggleFavorite("product",product.id)} aria-label={(favoriteProductIds.includes(product.id||"")?"Remove ":"Save ")+product.name+" to favourites"} className={"absolute right-3 top-3 bg-[#f6f1e9]/90 p-2.5 transition hover:bg-white "+(favoriteProductIds.includes(product.id||"")?"text-[#9c5638]":"text-[#211d19]")}><Heart size={14} fill={favoriteProductIds.includes(product.id||"")?"currentColor":"none"} strokeWidth={1.5}/></button><button onClick={()=>add(product.name)} className="absolute bottom-0 left-0 right-0 bg-[#211d19] py-4 text-[12px] font-bold uppercase tracking-[.2em] text-white opacity-0 transition group-hover:opacity-100">add to bag <span className="ml-1">+</span></button></div>
+              <div className="pt-4"><div className="flex items-start justify-between gap-3"><div><h3 className="serif text-[21px]">{product.name}</h3><p className="mt-1 text-[12px] font-bold uppercase tracking-[.18em] text-[#9c5638]">{product.mood}</p></div><span className="serif pt-1 text-[16px] italic text-[#9c5638]">Price coming soon</span></div><p className="mt-3 text-[12px] leading-5 text-[#776f67]">{product.desc}</p></div>
+            </motion.article>)}
           </div>
+          {activeProductCollection !== "ALL" && <div className="mt-12 text-center"><a href={"/collections/" + activeProductCollection} className="inline-flex items-center gap-3 border border-[#211d19] px-6 py-3 text-[10px] font-bold uppercase tracking-[.2em] transition hover:bg-[#211d19] hover:text-white">view all {selectedProductCollection?.title || "candles"} <ArrowRight size={14}/></a></div>}
         </div>
       </section>
 
