@@ -271,7 +271,7 @@ export default function AdminPage({ initialTab = "overview" }: { initialTab?: Ta
           </div>
         </div>
         <div className="flex gap-1 overflow-x-auto px-5 pb-3 lg:hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {(["overview","content","collections","products","social"] as Tab[]).map(item=><Link key={item} href={item==="overview"?"/admin":"/admin/"+item} className={"shrink-0 rounded-full px-4 py-2 text-[10px] font-bold uppercase tracking-[.18em] "+(tab===item?"bg-[#211d19] text-white":"bg-white/60")}>{item}</Link>)}
+          {(["overview","content","collections","products","moods","social"] as Tab[]).map(item=><Link key={item} href={item==="overview"?"/admin":"/admin/"+item} className={"shrink-0 rounded-full px-4 py-2 text-[10px] font-bold uppercase tracking-[.18em] "+(tab===item?"bg-[#211d19] text-white":"bg-white/60")}>{item}</Link>)}
         </div>
       </header>
 
