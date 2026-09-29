@@ -3,9 +3,12 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight, Check, LogOut, ShieldCheck, UserRound } from "lucide-react";
 
 type User = { id:string; name:string|null; email:string; role:"CUSTOMER"|"ADMIN" };
+type FavoriteProduct = { id:string; name:string; slug:string; mood:string; images:{url:string}[] };
+type FavoriteMood = { id:string; name:string; slug:string };
 
 export default function AccountPage() {
   const router=useRouter();
@@ -20,12 +23,20 @@ export default function AccountPage() {
   const [error,setError]=useState("");
   const [notice,setNotice]=useState("");
   const [loading,setLoading]=useState(false);
+  const [favoriteProducts,setFavoriteProducts]=useState<FavoriteProduct[]>([]);
+  const [favoriteMoods,setFavoriteMoods]=useState<FavoriteMood[]>([]);
 
   async function loadUser() {
-    const res=await fetch("/api/auth/me",{cache:"no-store"});
+    const [res, favoritesRes]=await Promise.all([
+      fetch("/api/auth/me",{cache:"no-store"}),
+      fetch("/api/favorites",{cache:"no-store"}),
+    ]);
     const data=await res.json();
+    const favoritesData=await favoritesRes.json().catch(()=>({}));
     if(data?.user?.role==="ADMIN"){router.replace("/admin");return;}
     if(data?.user){
+      if(Array.isArray(favoritesData.products)) setFavoriteProducts(favoritesData.products);
+      if(Array.isArray(favoritesData.moods)) setFavoriteMoods(favoritesData.moods);
       setUser(data.user);
       setName(data.user.name||"");
       setEmail(data.user.email);
@@ -94,6 +105,44 @@ export default function AccountPage() {
           <p className="text-[10px] font-bold uppercase tracking-[.34em] text-[#d2a38c]">Customer account</p>
           <h1 className="serif mt-3 text-5xl leading-none md:text-7xl">Welcome back{user.name ? ", "+user.name.split(" ")[0] : ""}.</h1>
           <p className="mt-5 max-w-xl text-sm leading-7 text-white/65">Manage your personal details and keep your sign-in information up to date.</p>
+        </section>
+
+        <section className="mt-7 rounded-[2rem] bg-white p-7 ring-1 ring-black/5 md:p-9">
+          <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[.3em] text-[#9c5638]">Your favourites</p>
+              <h2 className="serif mt-2 text-4xl">The scents you love.</h2>
+              <p className="mt-2 max-w-xl text-sm leading-6 text-[#776f67]">Your favourite candles and moods are saved to your account, ready whenever you return.</p>
+            </div>
+            <Link href="/#products" className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[.18em]">Explore candles <ArrowRight size={13}/></Link>
+          </div>
+
+          {favoriteProducts.length > 0 ? (
+            <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {favoriteProducts.map((product) => (
+                <Link key={product.id} href={"/#products"} className="group overflow-hidden rounded-2xl bg-[#f6f1e9]">
+                  <div className="relative aspect-square overflow-hidden bg-[#e2d8cb]">
+                    {product.images?.[0]?.url ? <Image src={product.images[0].url} alt={product.name} fill unoptimized={product.images[0].url.startsWith("data:image/")} className="object-cover transition duration-500 group-hover:scale-105" /> : null}
+                  </div>
+                  <div className="p-4">
+                    <h3 className="serif text-2xl">{product.name}</h3>
+                    <p className="mt-1 text-[9px] font-bold uppercase tracking-[.18em] text-[#9c5638]">{product.mood}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <div className="mt-7 rounded-2xl bg-[#f6f1e9] p-6 text-sm text-[#776f67]">No favourite candles yet. Tap the heart on any candle to save it here.</div>
+          )}
+
+          <div className="mt-7 border-t border-black/10 pt-6">
+            <p className="text-[9px] font-bold uppercase tracking-[.22em] text-[#776f67]">Favourite moods</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {favoriteMoods.length > 0 ? favoriteMoods.map((mood) => (
+                <Link key={mood.id} href="/#products" className="rounded-full bg-[#eee4da] px-4 py-2 text-[10px] font-bold uppercase tracking-[.14em] text-[#9c5638]">{mood.name}</Link>
+              )) : <span className="text-sm text-[#776f67]">No favourite moods yet. Tap the heart beside a mood on the shop.</span>}
+            </div>
+          </div>
         </section>
 
         <div className="mt-7 grid gap-7 lg:grid-cols-[.72fr_1.28fr]">
