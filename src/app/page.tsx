@@ -41,7 +41,7 @@ const collectionCards = [
 type Cart = Record<string, number>;
 type CurrencyInfo = { code: string; locale: string; label: string };
 type StoreProduct = typeof products[number];
-type StoreContent = { key: string; title?: string|null; eyebrow?: string|null; body?: string|null; imageUrl?: string|null; buttonText?: string|null; buttonUrl?: string|null };
+type StoreContent = { key: string; title?: string|null; eyebrow?: string|null; body?: string|null; imageUrl?: string|null; imageAlt?: string|null; buttonText?: string|null; buttonUrl?: string|null };
 type StoreCollection = { slug:string; title:string; subtitle?:string|null; imageUrl:string; mood?:string|null };
 type Social = { platform:string; url:string; label?:string|null };
 
