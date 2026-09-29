@@ -74,9 +74,9 @@ export default function Home(){
     </nav>
     <div className="flex items-center gap-1.5">
       <button aria-label="Open shopping bag" className={"relative rounded-full p-2.5 transition-all duration-300 "+(scrolled?"text-[#211d19] hover:bg-black/5":"text-white hover:bg-white/15 drop-shadow-[0_1px_8px_rgba(0,0,0,.2)]")} onClick={()=>setBag(true)}>
-        <ShoppingBag size={19}/>{count>0&&<span className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center rounded-full bg-[#9c5638] text-[9px] font-bold text-white">{count}</span>}
+        <ShoppingBag className="h-[22px] w-[22px] md:h-[19px] md:w-[19px]"/>{count>0&&<span className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center rounded-full bg-[#9c5638] text-[9px] font-bold text-white">{count}</span>}
       </button>
-      <button aria-label={menu?"Close menu":"Open menu"} className={"rounded-full p-2.5 transition-all duration-300 md:hidden "+(scrolled?"text-[#211d19] hover:bg-black/5":"text-white hover:bg-white/15")} onClick={()=>setMenu(!menu)}>{menu?<X size={21}/>:<Menu size={21}/>}</button>
+      <button aria-label={menu?"Close menu":"Open menu"} className={"rounded-full p-2.5 transition-all duration-300 md:hidden "+(scrolled?"text-[#211d19] hover:bg-black/5":"text-white hover:bg-white/15")} onClick={()=>setMenu(!menu)}>{menu?<X className="h-[24px] w-[24px] md:h-[21px] md:w-[21px]"/>:<Menu className="h-[24px] w-[24px] md:h-[21px] md:w-[21px]"/>}</button>
     </div>
    </div>
    <AnimatePresence>{menu&&<motion.div initial={{height:0,opacity:0}} animate={{height:"auto",opacity:1}} exit={{height:0,opacity:0}} className="overflow-hidden border-t border-black/10 bg-[#f7f3ec]/98 px-5 py-5 shadow-xl backdrop-blur-xl md:hidden"><div className="flex flex-col gap-1">
