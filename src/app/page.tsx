@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { DynamicSection, type DynamicSectionData } from "@/components/home/DynamicSection";
 import {
   ArrowRight,
   ChevronDown,
@@ -41,7 +42,7 @@ const collectionCards = [
 type Cart = Record<string, number>;
 type CurrencyInfo = { code: string; locale: string; label: string };
 type StoreProduct = typeof products[number];
-type StoreContent = { key: string; title?: string|null; eyebrow?: string|null; body?: string|null; imageUrl?: string|null; imageAlt?: string|null; buttonText?: string|null; buttonUrl?: string|null };
+type StoreContent = { key: string; type?: string; layout?: string|null; title?: string|null; eyebrow?: string|null; body?: string|null; imageUrl?: string|null; imageAlt?: string|null; buttonText?: string|null; buttonUrl?: string|null; sortOrder?: number; isActive?: boolean };
 type StoreCollection = { slug:string; title:string; subtitle?:string|null; imageUrl:string; mood?:string|null };
 type Social = { platform:string; url:string; label?:string|null };
 
@@ -479,56 +480,19 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="journal" className="border-y border-black/10 bg-[#e9dfd4] px-5 py-20 md:px-14 md:py-28">
-        <div className="mx-auto grid max-w-[1200px] gap-12 md:grid-cols-[.9fr_1.1fr] md:items-center">
-          <div>
-            <p className="mb-4 text-[12px] font-bold uppercase tracking-[.35em] text-[#9c5638]">The journal</p>
-            <h2 className="serif text-5xl leading-[.95] md:text-7xl">A scent is<br /><span className="italic">a memory.</span></h2>
-          </div>
-          <div className="max-w-xl text-[13px] leading-7 text-[#665c54]">
-            {(journal?.body || "There is magic in lighting a candle and letting a familiar fragrance fill the room.").split(/\n\n/).map((paragraph, index) => <p key={index} className={index ? "mt-5" : ""}>{paragraph}</p>)}
-            <a href={instagram} target="_blank" rel="noreferrer" className="mt-7 inline-flex items-center gap-3 border-b border-[#211d19]/40 pb-2 text-[12px] font-bold uppercase tracking-[.2em]">
+      {((storeContent.length ? storeContent.filter((item) => item.key !== "hero") : [{"key":"journal","type":"GENERAL","layout":"STATEMENT","eyebrow":"The journal","title":"A scent is a memory.","body":"There is magic in lighting a candle and letting a familiar fragrance fill the room. Scent can take us back to places, people and little moments we thought we had forgotten.","buttonText":"discover the collection","buttonUrl":"#products"},{"key":"story","type":"STORY","layout":"SPLIT_LEFT","eyebrow":"Our story","title":"More than a candle. It’s a feeling.","body":"It started with a simple love for beautiful scents and the magic they create.\\n\\nAt In The Mood For Candles, we believe fragrance has the power to create memories.","imageUrl":"/section-samples/split-left.svg","imageAlt":"Warm candle editorial"},{"key":"mission","type":"MISSION","layout":"PRODUCT_SHOWCASE","eyebrow":"Our mission","title":"Create beautifully scented moments.","body":"To create beautifully scented candles that transform everyday spaces into memorable experiences, bringing warmth, comfort and a little luxury into every moment.","imageUrl":"/section-samples/product-showcase.svg","imageAlt":"Candle product detail"},{"key":"vision","type":"VISION","layout":"QUOTE","eyebrow":"Our vision","title":"Make fragrance part of the stories people remember.","body":"To become a beloved fragrance brand known for creating scents that become part of people’s stories, spaces and most cherished memories."}]).filter((item) => item.isActive !== false) as StoreContent[]).map((section, index) => (
+        <DynamicSection key={section.key} section={section as DynamicSectionData} index={index} />
+      ))}
+
+      {storeContent.length > 0 && instagram && (
+        <section className="border-t border-black/10 bg-[#f6f1e9] px-5 py-8 md:px-14">
+          <div className="mx-auto flex max-w-[1200px] justify-end">
+            <a href={instagram} target="_blank" rel="noreferrer" className="inline-flex items-center gap-3 border-b border-[#211d19]/30 pb-2 text-[10px] font-bold uppercase tracking-[.2em]">
               follow the journey <Instagram size={14} />
             </a>
           </div>
-        </div>
-      </section>
-
-      <section id="story" className="bg-[#211d19] px-5 py-24 text-[#f7f3ec] md:px-14 md:py-32">
-        <div className="mx-auto max-w-[1200px]">
-          <p className="mb-5 text-[12px] font-bold uppercase tracking-[.35em] text-[#d2a38c]">Our Story</p>
-          <div className="grid gap-12 md:grid-cols-[.85fr_1.15fr] md:items-start">
-            <div>
-              <h2 className="serif text-4xl leading-[.95] md:text-7xl">{story?.title || "More than a candle. It’s a feeling."}</h2>
-              <div className="mt-8 h-px w-20 bg-[#d2a38c]/60" />
-            </div>
-            <div className="max-w-2xl space-y-6 text-[13px] leading-7 text-white/75 md:text-[15px] md:leading-8">
-              {(story?.body || "It started with a simple love for beautiful scents and the magic they create.").split(/\n\n/).map((paragraph, index) => (
-                <p key={index} className={index === 6 ? "serif pt-2 text-3xl italic text-[#d2a38c]" : ""}>{paragraph}</p>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="mission" className="bg-[#f6f1e9] px-5 py-24 md:px-14 md:py-32">
-        <div className="mx-auto max-w-[1200px]">
-          <div className="mb-14">
-            <p className="mb-5 text-[12px] font-bold uppercase tracking-[.35em] text-[#9c5638]">Our mission &amp; vision</p>
-            <h2 className="serif text-5xl leading-none md:text-8xl">What we <span className="italic">stand for.</span></h2>
-          </div>
-          <div className="grid gap-6 md:grid-cols-2">
-            <article className="rounded-[2rem] bg-[#211d19] p-8 text-[#f7f3ec] md:p-12">
-              <p className="mb-5 text-[9px] font-bold uppercase tracking-[.3em] text-[#d2a38c]">{mission?.title || "Our mission"}</p>
-              <p className="serif text-2xl leading-tight md:text-4xl">{mission?.body || "To create beautifully scented candles that transform everyday spaces into memorable experiences, bringing warmth, comfort and a little luxury into every moment."}</p>
-            </article>
-            <article className="rounded-[2rem] border border-black/10 bg-[#e9dfd4] p-8 md:p-12">
-              <p className="mb-5 text-[9px] font-bold uppercase tracking-[.3em] text-[#9c5638]">{vision?.title || "Our vision"}</p>
-              <p className="serif text-2xl leading-tight md:text-4xl">{vision?.body || "To become a beloved fragrance brand known for creating scents that become part of people’s stories, spaces and most cherished memories."}</p>
-            </article>
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       <footer className="bg-[#f6f1e9] px-5 py-10 md:px-14">
         <div className="mx-auto flex max-w-[1400px] flex-col justify-between gap-5 border-t border-black/10 pt-7 text-[12px] font-semibold uppercase tracking-[.18em] md:flex-row">
