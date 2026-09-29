@@ -89,6 +89,17 @@ function detectCurrency(): CurrencyInfo {
   return byRegion[region || ""] || FALLBACK_CURRENCY;
 }
 
+function normalizeImageUrl(src?: string | null) {
+  if (!src) return "/hero.jpg";
+  try {
+    const parsed = new URL(src, typeof window !== "undefined" ? window.location.origin : "https://in-the-mood-for-candles.vercel.app");
+    if (parsed.pathname === "/hero.jpg" || parsed.pathname === "/hero.webp") return "/hero.jpg";
+    return src;
+  } catch {
+    return src;
+  }
+}
+
 function isDataImage(src?: string | null) {
   return Boolean(src?.startsWith("data:image/"));
 }
@@ -136,7 +147,7 @@ export default function Home() {
         if (Array.isArray(data.content)) {
           setStoreContent(data.content);
           const dbHero = data.content.find((item: StoreContent) => item.key === "hero");
-          if (dbHero?.imageUrl && dbHero.imageUrl !== "/hero.webp") setHeroImage(dbHero.imageUrl);
+          if (dbHero?.imageUrl) setHeroImage(normalizeImageUrl(dbHero.imageUrl));
         }
         if (Array.isArray(data.collections)) setStoreCollections(data.collections);
         if (Array.isArray(data.socials)) setSocials(data.socials);
@@ -271,7 +282,7 @@ export default function Home() {
 
       <section id="top" className="hero-section relative min-h-[680px] overflow-hidden md:min-h-[690px]">
         <Image
-          src={heroImage}
+          src={normalizeImageUrl(heroImage)}
           onError={() => setHeroImage("/hero.jpg")}
           alt={hero?.imageAlt || "Warm candlelit room with a scented candle"}
           fill
