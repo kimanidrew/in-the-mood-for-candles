@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/auth";
 
-const contentFields = ["title","eyebrow","body","imageUrl","imageAlt","buttonText","buttonUrl","sortOrder","isActive"];
+const contentLayouts = ["AUTO","CINEMATIC","SPLIT_LEFT","SPLIT_RIGHT","STATEMENT","COLLAGE","FULL_BLEED","PRODUCT_SHOWCASE","QUOTE","FLOATING_CARD","MINIMAL"];
+const contentFields = ["title","eyebrow","body","imageUrl","imageAlt","buttonText","buttonUrl","sortOrder","isActive","layout"];
 const collectionFields = ["slug","title","subtitle","imageUrl","imageAlt","mood","sortOrder","isActive"];
 const socialFields = ["platform","label","url","isActive","sortOrder"];
 
@@ -32,6 +33,7 @@ export async function POST(request:Request) {
 
     if (kind === "content") {
       if (!body.key || !body.type) return NextResponse.json({ error: "Content key and type are required." }, { status: 400 });
+      if (body.layout && !contentLayouts.includes(body.layout)) return NextResponse.json({ error: "Invalid section style." }, { status: 400 });
       const result = await prisma.siteContent.create({
         data: { key: body.key, type: body.type, ...pick(body, contentFields) },
       });
@@ -71,6 +73,7 @@ export async function PUT(request:Request) {
     const body = await request.json();
     const { kind, id } = body;
     if (!id) return NextResponse.json({ error: "Missing item id." }, { status: 400 });
+    if (kind === "content" && body.layout && !contentLayouts.includes(body.layout)) return NextResponse.json({ error: "Invalid section style." }, { status: 400 });
 
     let result;
     if (kind === "content") result = await prisma.siteContent.update({ where: { id }, data: pick(body, contentFields) });
