@@ -1,0 +1,1 @@
+ALTER TABLE "Mood" ADD COLUMN "imageUrl" TEXT;
