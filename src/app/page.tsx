@@ -1,5 +1,6 @@
 "use client";
-import {useMemo,useState} from "react";
+import Image from "next/image";
+import {useEffect,useMemo,useState} from "react";
 import {AnimatePresence,motion} from "framer-motion";
 import {ArrowRight,ChevronDown,Heart,Instagram,Menu,Minus,Plus,ShoppingBag,X} from "lucide-react";
 
@@ -20,6 +21,8 @@ export default function Home(){
  const [cart,setCart]=useState<Cart>({});
  const [bag,setBag]=useState(false);
  const [menu,setMenu]=useState(false);
+ const [scrolled,setScrolled]=useState(false);
+ useEffect(()=>{const onScroll=()=>setScrolled(window.scrollY>12);onScroll();window.addEventListener("scroll",onScroll,{passive:true});return()=>window.removeEventListener("scroll",onScroll)},[]);
  const shown=useMemo(()=>filter==="ALL"?products:products.filter(p=>p.mood===filter),[filter]);
  const total=Object.entries(cart).reduce((s,[name,q])=>s+(products.find(p=>p.name===name)?.price||0)*q,0);
  const count=Object.values(cart).reduce((a,b)=>a+b,0);
@@ -32,21 +35,37 @@ export default function Home(){
    window.open("https://wa.me/"+number+"?text="+encodeURIComponent(msg),"_blank");
  };
  return <main className="grain min-h-screen overflow-hidden">
-  <header className="fixed top-0 z-40 w-full border-b border-black/10 bg-[#f7f3ec]/90 backdrop-blur-xl">
-   <div className="mx-auto flex h-[74px] max-w-[1400px] items-center justify-between px-5 md:px-10">
-    <button aria-label="In The Mood Candles home" onClick={()=>window.scrollTo({top:0,behavior:"smooth"})} className="flex items-center gap-3 text-left">
-      <img src="/tm-logo.svg" alt="In The Mood Candles TM logo" className="h-12 w-12 object-contain" />
-      <span className="hidden leading-none sm:block"><span className="block text-[9px] font-semibold uppercase tracking-[.32em]">In The Mood</span><span className="mt-1 block text-[8px] uppercase tracking-[.28em] text-[#776f67]">Candles</span></span>
+  <header className={"fixed top-0 z-40 w-full transition-all duration-500 "+(scrolled?"border-b border-black/10 bg-[#f7f3ec]/92 shadow-[0_8px_30px_rgba(33,29,25,0.08)] backdrop-blur-xl":"border-b border-white/15 bg-transparent")}>
+   <div className="mx-auto flex h-[82px] max-w-[1400px] items-center justify-between px-5 md:px-10">
+    <button aria-label="In The Mood Candles home" onClick={()=>window.scrollTo({top:0,behavior:"smooth"})} className="group flex items-center gap-3 text-left">
+      <span className={"flex h-12 w-12 items-center justify-center rounded-full transition-all duration-500 "+(scrolled?"bg-white/75 shadow-sm":"bg-white/15 shadow-[0_4px_20px_rgba(0,0,0,0.12)] backdrop-blur-md")}>
+        <Image src="/tm-logo.svg" alt="In The Mood Candles TM logo" width={48} height={48} priority className="h-10 w-10 object-contain transition-transform duration-500 group-hover:scale-105" />
+      </span>
+      <span className={"hidden leading-none transition-colors duration-500 sm:block "+(scrolled?"text-[#211d19]":"text-white drop-shadow-[0_1px_8px_rgba(0,0,0,.25)]")}>
+        <span className="block font-serif text-[14px] tracking-[.16em]">in the mood for</span>
+        <span className={"mt-1 block text-[8px] font-semibold uppercase tracking-[.34em] "+(scrolled?"text-[#776f67]":"text-white/75")}>candles</span>
+      </span>
     </button>
-    <nav className="hidden items-center gap-9 text-[11px] font-semibold uppercase tracking-[.18em] md:flex"><a href="#shop">shop</a><a href="#story">our story</a><a href="https://www.instagram.com/inthemoodfor_candles/" target="_blank">instagram</a></nav>
-    <div className="flex items-center gap-2"><button className="relative rounded-full p-2" onClick={()=>setBag(true)}><ShoppingBag size={19}/>{count>0&&<span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-[#9c5638] text-[9px] text-white">{count}</span>}</button><button className="p-2 md:hidden" onClick={()=>setMenu(!menu)}>{menu?<X/>:<Menu/>}</button></div>
+    <nav className="hidden items-center gap-1 md:flex">
+      {[["shop","#shop"],["our story","#story"],["instagram","https://www.instagram.com/inthemoodfor_candles/"]].map(([label,href])=>
+        <a key={label} href={href} target={label==="instagram"?"_blank":undefined} rel={label==="instagram"?"noreferrer":undefined} className={"rounded-full px-5 py-2.5 text-[10px] font-bold uppercase tracking-[.18em] transition-all duration-300 "+(scrolled?"text-[#211d19] hover:bg-black/5":"text-white hover:bg-white/15 drop-shadow-[0_1px_8px_rgba(0,0,0,.2)]")}>{label}</a>
+      )}
+    </nav>
+    <div className="flex items-center gap-1.5">
+      <button aria-label="Open shopping bag" className={"relative rounded-full p-2.5 transition-all duration-300 "+(scrolled?"text-[#211d19] hover:bg-black/5":"text-white hover:bg-white/15 drop-shadow-[0_1px_8px_rgba(0,0,0,.2)]")} onClick={()=>setBag(true)}>
+        <ShoppingBag size={19}/>{count>0&&<span className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center rounded-full bg-[#9c5638] text-[9px] font-bold text-white">{count}</span>}
+      </button>
+      <button aria-label={menu?"Close menu":"Open menu"} className={"rounded-full p-2.5 transition-all duration-300 md:hidden "+(scrolled?"text-[#211d19] hover:bg-black/5":"text-white hover:bg-white/15")} onClick={()=>setMenu(!menu)}>{menu?<X size={21}/>:<Menu size={21}/>}</button>
+    </div>
    </div>
-   <AnimatePresence>{menu&&<motion.div initial={{height:0,opacity:0}} animate={{height:"auto",opacity:1}} exit={{height:0,opacity:0}} className="border-t border-black/10 px-6 py-5 md:hidden"><div className="flex flex-col gap-5 text-sm uppercase tracking-[.15em]"><a href="#shop" onClick={()=>setMenu(false)}>shop</a><a href="#story" onClick={()=>setMenu(false)}>our story</a><a href="https://www.instagram.com/inthemoodfor_candles/">instagram</a></div></motion.div>}</AnimatePresence>
+   <AnimatePresence>{menu&&<motion.div initial={{height:0,opacity:0}} animate={{height:"auto",opacity:1}} exit={{height:0,opacity:0}} className="overflow-hidden border-t border-black/10 bg-[#f7f3ec]/98 px-5 py-5 shadow-xl backdrop-blur-xl md:hidden"><div className="flex flex-col gap-1">
+     {[["shop","#shop"],["our story","#story"],["instagram","https://www.instagram.com/inthemoodfor_candles/"]].map(([label,href])=><a key={label} href={href} target={label==="instagram"?"_blank":undefined} rel={label==="instagram"?"noreferrer":undefined} onClick={()=>setMenu(false)} className="rounded-2xl px-4 py-4 text-[11px] font-bold uppercase tracking-[.18em] text-[#211d19] transition hover:bg-black/5">{label}</a>)}
+   </div></motion.div>}</AnimatePresence>
   </header>
 
   <section className="relative flex min-h-[92vh] items-end overflow-hidden px-5 pb-14 pt-28 md:min-h-[820px] md:px-10 md:pb-20">
-   <div className="absolute inset-0"><img src="https://images.unsplash.com/photo-1603006905003-be475563bc59?auto=format&fit=crop&w=2200&q=90" className="h-full w-full object-cover object-center" alt="candle"/></div>
-   <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/15 to-black/10"/><div className="absolute left-5 top-28 z-10 md:left-10 md:top-32"><div className="rounded-full bg-white/85 p-2 shadow-lg backdrop-blur-md"><img src="/tm-logo.svg" alt="In The Mood Candles logo" className="h-16 w-16 object-contain md:h-20 md:w-20" /></div></div>
+   <div className="absolute inset-0"><Image src="https://images.unsplash.com/photo-1603006905003-be475563bc59?auto=format&fit=crop&w=2200&q=90" fill priority sizes="100vw" className="object-cover object-center" alt="Candle in a warm interior"/></div>
+   <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/15 to-black/10"/><div className="absolute left-5 top-28 z-10 md:left-10 md:top-32"><div className="rounded-full bg-white/85 p-2 shadow-lg backdrop-blur-md"><Image src="/tm-logo.svg" alt="In The Mood Candles logo" width={80} height={80} className="h-16 w-16 object-contain md:h-20 md:w-20" /></div></div>
    <motion.div initial={{opacity:0,y:30}} animate={{opacity:1,y:0}} transition={{duration:.9}} className="relative z-10 max-w-3xl text-white">
     <p className="mb-4 text-[10px] font-bold uppercase tracking-[.28em]">candles • gifts • memories</p>
     <h1 className="serif text-6xl leading-[.9] tracking-[-.045em] md:text-8xl">Light a candle.<br/><span className="italic">Travel somewhere.</span></h1>
@@ -61,7 +80,7 @@ export default function Home(){
    <div className="mb-12 flex flex-col justify-between gap-7 md:flex-row md:items-end"><div><p className="mb-3 text-[10px] font-bold uppercase tracking-[.22em] text-[#9c5638]">the collection</p><h2 className="serif text-5xl tracking-[-.04em] md:text-6xl">Find your mood.</h2></div><div className="flex gap-2">{["ALL","ASIA","EUROPE"].map(x=><button key={x} onClick={()=>setFilter(x)} className={"rounded-full border px-5 py-2 text-[10px] font-bold tracking-[.18em] transition "+(filter===x?"border-[#211d19] bg-[#211d19] text-white":"border-black/15 hover:border-black/40")}>{x}</button>)}</div></div>
    <div className="grid grid-cols-1 gap-x-5 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
     {shown.map((p,i)=><motion.article layout key={p.name} initial={{opacity:0,y:25}} whileInView={{opacity:1,y:0}} viewport={{once:true,margin:"-50px"}} transition={{delay:i*.04,duration:.5}} className="group">
-      <div className="relative aspect-[.84] overflow-hidden bg-[#ded5c8]"><img src={p.img} alt={p.name} className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.045]"/><button aria-label="Save" className="absolute right-3 top-3 rounded-full bg-white/85 p-2 backdrop-blur"><Heart size={15}/></button><button onClick={()=>add(p.name)} className="absolute bottom-3 left-3 right-3 translate-y-2 bg-white/95 py-3 text-[10px] font-bold uppercase tracking-[.18em] opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100">add to bag</button></div>
+      <div className="relative aspect-[.84] overflow-hidden bg-[#ded5c8]"><Image src={p.img} alt={p.name} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" className="object-cover transition duration-700 group-hover:scale-[1.045]"/><button aria-label="Save" className="absolute right-3 top-3 rounded-full bg-white/85 p-2 backdrop-blur"><Heart size={15}/></button><button onClick={()=>add(p.name)} className="absolute bottom-3 left-3 right-3 translate-y-2 bg-white/95 py-3 text-[10px] font-bold uppercase tracking-[.18em] opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100">add to bag</button></div>
       <div className="pt-4"><div className="flex justify-between gap-3"><h3 className="serif text-xl">{p.name}</h3><span className="text-sm">£{p.price}</span></div><p className="mt-1 text-xs leading-5 text-[#776f67]">{p.desc}</p></div>
     </motion.article>)}
    </div>
@@ -71,6 +90,6 @@ export default function Home(){
 
   <footer className="px-5 py-10 md:px-10"><div className="mx-auto flex max-w-[1400px] flex-col justify-between gap-5 border-t border-black/10 pt-7 text-[10px] font-semibold uppercase tracking-[.15em] md:flex-row"><span>© {new Date().getFullYear()} in the mood for</span><span>made for slow moments</span></div></footer>
 
-  <AnimatePresence>{bag&&<><motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} onClick={()=>setBag(false)} className="fixed inset-0 z-50 bg-black/35 backdrop-blur-sm"/><motion.aside initial={{x:"100%"}} animate={{x:0}} exit={{x:"100%"}} transition={{type:"spring",damping:28,stiffness:260}} className="fixed right-0 top-0 z-50 flex h-full w-full max-w-[480px] flex-col bg-[#f7f3ec] shadow-2xl"><div className="flex items-center justify-between border-b border-black/10 px-6 py-5"><div><p className="text-[9px] font-bold uppercase tracking-[.2em] text-[#776f67]">your</p><h3 className="serif text-2xl">Bag</h3></div><button onClick={()=>setBag(false)}><X/></button></div><div className="flex-1 overflow-auto p-6">{Object.keys(cart).length===0?<div className="flex h-full flex-col items-center justify-center text-center"><ShoppingBag size={25}/><p className="serif mt-4 text-2xl">Your bag is empty.</p><a href="#shop" onClick={()=>setBag(false)} className="mt-5 border-b border-black pb-1 text-[10px] font-bold uppercase tracking-[.18em]">discover candles</a></div>:<div className="space-y-5">{Object.entries(cart).map(([name,q])=>{const p=products.find(x=>x.name===name)!;return <div key={name} className="flex gap-4 border-b border-black/10 pb-5"><img src={p.img} className="h-24 w-20 object-cover" alt=""/><div className="flex flex-1 flex-col"><div className="flex justify-between"><span className="serif text-lg">{name}</span><span>£{p.price*q}</span></div><div className="mt-auto flex items-center gap-3"><button onClick={()=>change(name,-1)} className="rounded-full border p-1"><Minus size={12}/></button><span className="text-xs">{q}</span><button onClick={()=>change(name,1)} className="rounded-full border p-1"><Plus size={12}/></button></div></div></div>})}</div>}</div>{count>0&&<div className="border-t border-black/10 p-6"><div className="mb-5 flex justify-between text-sm"><span>Estimated total</span><span className="font-semibold">£{total}</span></div><button onClick={whatsapp} className="w-full bg-[#211d19] py-4 text-[10px] font-bold uppercase tracking-[.2em] text-white transition hover:bg-[#9c5638]">order via WhatsApp</button><p className="mt-3 text-center text-[10px] text-[#776f67]">We'll confirm availability, delivery and payment with you on WhatsApp.</p></div>}</motion.aside></>}</AnimatePresence>
+  <AnimatePresence>{bag&&<><motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} onClick={()=>setBag(false)} className="fixed inset-0 z-50 bg-black/35 backdrop-blur-sm"/><motion.aside initial={{x:"100%"}} animate={{x:0}} exit={{x:"100%"}} transition={{type:"spring",damping:28,stiffness:260}} className="fixed right-0 top-0 z-50 flex h-full w-full max-w-[480px] flex-col bg-[#f7f3ec] shadow-2xl"><div className="flex items-center justify-between border-b border-black/10 px-6 py-5"><div><p className="text-[9px] font-bold uppercase tracking-[.2em] text-[#776f67]">your</p><h3 className="serif text-2xl">Bag</h3></div><button onClick={()=>setBag(false)}><X/></button></div><div className="flex-1 overflow-auto p-6">{Object.keys(cart).length===0?<div className="flex h-full flex-col items-center justify-center text-center"><ShoppingBag size={25}/><p className="serif mt-4 text-2xl">Your bag is empty.</p><a href="#shop" onClick={()=>setBag(false)} className="mt-5 border-b border-black pb-1 text-[10px] font-bold uppercase tracking-[.18em]">discover candles</a></div>:<div className="space-y-5">{Object.entries(cart).map(([name,q])=>{const p=products.find(x=>x.name===name)!;return <div key={name} className="flex gap-4 border-b border-black/10 pb-5"><Image src={p.img} width={80} height={96} sizes="80px" className="h-24 w-20 object-cover" alt=""/><div className="flex flex-1 flex-col"><div className="flex justify-between"><span className="serif text-lg">{name}</span><span>£{p.price*q}</span></div><div className="mt-auto flex items-center gap-3"><button onClick={()=>change(name,-1)} className="rounded-full border p-1"><Minus size={12}/></button><span className="text-xs">{q}</span><button onClick={()=>change(name,1)} className="rounded-full border p-1"><Plus size={12}/></button></div></div></div>})}</div>}</div>{count>0&&<div className="border-t border-black/10 p-6"><div className="mb-5 flex justify-between text-sm"><span>Estimated total</span><span className="font-semibold">£{total}</span></div><button onClick={whatsapp} className="w-full bg-[#211d19] py-4 text-[10px] font-bold uppercase tracking-[.2em] text-white transition hover:bg-[#9c5638]">order via WhatsApp</button><p className="mt-3 text-center text-[10px] text-[#776f67]">We'll confirm availability, delivery and payment with you on WhatsApp.</p></div>}</motion.aside></>}</AnimatePresence>
  </main>
 }
