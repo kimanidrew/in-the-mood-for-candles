@@ -3,8 +3,8 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   const [products,collections,content,socials]=await Promise.all([
-    prisma.product.findMany({where:{status:"ACTIVE"},include:{images:{orderBy:{sortOrder:"asc"}}},orderBy:{createdAt:"desc"}}),
-    prisma.collection.findMany({where:{isActive:true},orderBy:{sortOrder:"asc"}}),
+    prisma.product.findMany({where:{status:"ACTIVE"},include:{images:{orderBy:{sortOrder:"asc"}},collections:{select:{id:true,slug:true,title:true}}},orderBy:{createdAt:"desc"}}),
+    prisma.collection.findMany({where:{isActive:true},orderBy:{sortOrder:"asc"},include:{products:{where:{status:"ACTIVE"},include:{images:{orderBy:{sortOrder:"asc"}}},orderBy:{createdAt:"desc"}}}}),
     prisma.siteContent.findMany({where:{isActive:true},orderBy:{sortOrder:"asc"}}),
     prisma.socialLink.findMany({where:{isActive:true},orderBy:{sortOrder:"asc"}}),
   ]);
