@@ -55,7 +55,7 @@ export default function Home(){
    const msg="Hello In The Mood For! ✨\nI'd like to order:\n"+lines.join("\n")+"\n\nEstimated total: "+formatMoney(total,currency)+".";
    window.open("https://wa.me/"+number+"?text="+encodeURIComponent(msg),"_blank");
  };
- return <main className="grain min-h-screen overflow-hidden">
+ return <main className="grain min-h-screen overflow-hidden"><div aria-hidden="true" className="app-candle-collage" /><div className="app-content">
   <header className={"fixed top-0 z-40 w-full transition-all duration-500 "+(scrolled?"border-b border-black/10 bg-[#f7f3ec]/92 shadow-[0_8px_30px_rgba(33,29,25,0.08)] backdrop-blur-xl":"border-b border-white/15 bg-transparent")}>
    <div className="mx-auto flex h-[82px] max-w-[1400px] items-center justify-between px-5 md:px-10">
     <button aria-label="In The Mood Candles home" onClick={()=>window.scrollTo({top:0,behavior:"smooth"})} className="group flex items-center gap-3 text-left">
