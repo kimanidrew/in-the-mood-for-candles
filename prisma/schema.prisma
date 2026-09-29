@@ -72,6 +72,8 @@ model Product {
   shortDescription String?
   description    String
   mood           String
+  moodId         String?
+  moodRef        Mood? @relation(fields: [moodId], references: [id], onDelete: SetNull)
   category       String        @default("Candles")
   status         ProductStatus @default(DRAFT)
   priceUSD       Decimal       @db.Decimal(10, 2)
