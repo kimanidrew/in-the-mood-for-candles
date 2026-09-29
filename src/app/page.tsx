@@ -34,7 +34,10 @@ export default function Home(){
  return <main className="grain min-h-screen overflow-hidden">
   <header className="fixed top-0 z-40 w-full border-b border-black/10 bg-[#f7f3ec]/90 backdrop-blur-xl">
    <div className="mx-auto flex h-[74px] max-w-[1400px] items-center justify-between px-5 md:px-10">
-    <button onClick={()=>window.scrollTo({top:0,behavior:"smooth"})} className="serif text-[23px] tracking-[-.03em]">in the mood <span className="italic">for...</span></button>
+    <button aria-label="In The Mood Candles home" onClick={()=>window.scrollTo({top:0,behavior:"smooth"})} className="flex items-center gap-3 text-left">
+      <img src="/tm-logo.png" alt="In The Mood Candles TM logo" className="h-12 w-12 object-contain" />
+      <span className="hidden leading-none sm:block"><span className="block text-[9px] font-semibold uppercase tracking-[.32em]">In The Mood</span><span className="mt-1 block text-[8px] uppercase tracking-[.28em] text-[#776f67]">Candles</span></span>
+    </button>
     <nav className="hidden items-center gap-9 text-[11px] font-semibold uppercase tracking-[.18em] md:flex"><a href="#shop">shop</a><a href="#story">our story</a><a href="https://www.instagram.com/inthemoodfor_candles/" target="_blank">instagram</a></nav>
     <div className="flex items-center gap-2"><button className="relative rounded-full p-2" onClick={()=>setBag(true)}><ShoppingBag size={19}/>{count>0&&<span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-[#9c5638] text-[9px] text-white">{count}</span>}</button><button className="p-2 md:hidden" onClick={()=>setMenu(!menu)}>{menu?<X/>:<Menu/>}</button></div>
    </div>
@@ -43,7 +46,7 @@ export default function Home(){
 
   <section className="relative flex min-h-[92vh] items-end overflow-hidden px-5 pb-14 pt-28 md:min-h-[820px] md:px-10 md:pb-20">
    <div className="absolute inset-0"><img src="https://images.unsplash.com/photo-1603006905003-be475563bc59?auto=format&fit=crop&w=2200&q=90" className="h-full w-full object-cover object-center" alt="candle"/></div>
-   <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/15 to-black/10"/>
+   <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/15 to-black/10"/><div className="absolute left-5 top-28 z-10 md:left-10 md:top-32"><div className="rounded-full bg-white/85 p-2 shadow-lg backdrop-blur-md"><img src="/tm-logo.png" alt="In The Mood Candles logo" className="h-16 w-16 object-contain md:h-20 md:w-20" /></div></div>
    <motion.div initial={{opacity:0,y:30}} animate={{opacity:1,y:0}} transition={{duration:.9}} className="relative z-10 max-w-3xl text-white">
     <p className="mb-4 text-[10px] font-bold uppercase tracking-[.28em]">candles • gifts • memories</p>
     <h1 className="serif text-6xl leading-[.9] tracking-[-.045em] md:text-8xl">Light a candle.<br/><span className="italic">Travel somewhere.</span></h1>
