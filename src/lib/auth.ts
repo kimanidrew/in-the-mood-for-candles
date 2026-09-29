@@ -1,11 +1,17 @@
-import { createHash } from "node:crypto";
+import { scryptSync } from "node:crypto";
 import { cookies } from "next/headers";
 import { prisma } from "./prisma";
 
 const COOKIE = "imc_session";
 
-export function hashPassword(password: string) {
-  return createHash("sha256").update(password).digest("hex");
+export function hashPassword(password: string, salt: string) {
+  return salt + ":" + scryptSync(password, salt, 64).toString("hex");
+}
+
+export function verifyPassword(password: string, stored: string) {
+  const [salt, expected] = stored.split(":");
+  if (!salt || !expected) return false;
+  return scryptSync(password, salt, 64).toString("hex") === expected;
 }
 
 export async function getSessionUser() {
