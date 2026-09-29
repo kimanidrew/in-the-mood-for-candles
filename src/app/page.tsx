@@ -201,7 +201,7 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[#f6f1e9] text-[#211d19]">
+    <main className="min-h-screen bg-[#f6f1e9] text-[#211d19]">
       <header className="site-header sticky top-0 z-50 border-b border-[#211d19]/10 bg-[#f6f1e9]/95 backdrop-blur-md">
         <div className="mx-auto flex h-[82px] max-w-[1440px] items-center justify-between px-5 md:px-14">
           <button
@@ -226,7 +226,7 @@ export default function Home() {
               <a
                 key={label}
                 href={href}
-                className={"nav-link relative px-5 py-3 text-[12px] font-bold uppercase tracking-[.25em] text-[#211d19] transition-opacity hover:opacity-50 " +
+                className={"nav-link relative px-4 py-2.5 text-[10px] font-bold uppercase tracking-[.22em] text-[#211d19] transition-opacity hover:opacity-50 " +
                   (label === "home" ? "nav-link-active" : "")}
               >
                 {label}
@@ -299,21 +299,21 @@ export default function Home() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            className="max-w-[590px] text-white"
+            className="max-w-[640px] text-white"
           >
-            <p className="mb-7 text-[12px] font-semibold uppercase tracking-[.34em] text-white/80 md:text-[9px]">
+            <p className="mb-6 text-[10px] font-semibold uppercase tracking-[.3em] text-white/80 md:text-[10px]">
               {hero?.eyebrow || "Candles • Linen sprays • Memories"}
             </p>
-            <h1 className="serif italic font-bold text-[4rem] leading-[.9] tracking-[-.04em] sm:text-[5rem] md:text-[6.5rem] lg:text-[7.25rem]">
+            <h1 className="serif italic font-bold text-[3.7rem] leading-[.92] tracking-[-.035em] sm:text-[4.5rem] md:text-[5.5rem] lg:text-[6.15rem]">
               {hero?.title || "Set the mood. Leave a scent worth remembering."}
             </h1>
             <span className="mt-7 block h-px w-10 bg-white/80" />
-            <p className="mt-6 max-w-[470px] text-[13px] leading-7 text-white/90 md:text-[16px] md:leading-8">
+            <p className="mt-6 max-w-[520px] text-[13px] leading-7 text-white/90 md:text-[15px] md:leading-7.5">
               {hero?.body || "Beautifully scented candles and linen sprays designed to transform your space, creating a feeling that stays with you."}
             </p>
             <a
               href={hero?.buttonUrl || "#collection"}
-              className="mt-8 inline-flex items-center gap-3 border border-white/75 px-5 py-3.5 text-[12px] font-bold uppercase tracking-[.2em] transition hover:bg-white hover:text-[#211d19]"
+              className="mt-8 inline-flex items-center gap-3 border border-white/75 px-5 py-3 text-[10px] font-bold uppercase tracking-[.18em] transition hover:bg-white hover:text-[#211d19]"
             >
               {hero?.buttonText || "explore the collection"} <ArrowRight size={14} />
             </a>
