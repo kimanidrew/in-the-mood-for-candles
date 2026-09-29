@@ -207,7 +207,7 @@ export default function Home() {
     return () => { rail.removeEventListener("scroll", updateActive); window.removeEventListener("resize", updateActive); };
   }, [moods.length]);
 
-  const moodTabs = moods.length ? moods : Array.from(new Set(shopProducts.map((product) => product.mood).filter(Boolean))).map((name) => ({ id: name, name, slug: String(name).toLowerCase().replace(/\\s+/g, "-"), sortOrder: 0 }));
+  const moodTabs: StoreMood[] = moods.length ? moods : Array.from(new Set(shopProducts.map((product) => product.mood).filter(Boolean))).map((name) => ({ id: name, name, slug: String(name).toLowerCase().replace(/\\s+/g, "-"), imageUrl: null, sortOrder: 0 }));
   const selectedProductCollection = storeCollections.find((collection) => collection.slug === activeProductCollection);
   const shown = useMemo(() => {
     if (activeProductCollection === "ALL") return shopProducts;
