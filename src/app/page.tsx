@@ -36,6 +36,7 @@ function formatMoney(amount:number,info:CurrencyInfo){try{return new Intl.Number
 
 export default function Home(){
  const [filter,setFilter]=useState("ALL");
+ const [shopProducts,setShopProducts]=useState(products);
  const [cart,setCart]=useState<Cart>({});
  const [bag,setBag]=useState(false);
  const [menu,setMenu]=useState(false);
@@ -43,9 +44,10 @@ export default function Home(){
  const [currency,setCurrency]=useState<CurrencyInfo>(FALLBACK_CURRENCY);
  const [rate,setRate]=useState(1);
  useEffect(()=>{setCurrency(detectCurrency())},[]);
+ useEffect(()=>{setShopProducts([...products].sort(()=>Math.random()-.5))},[]);
  useEffect(()=>{if(currency.code==="USD"){setRate(1);return;} let cancelled=false; fetch("https://api.frankfurter.app/latest?from=USD&to="+currency.code).then(r=>r.ok?r.json():Promise.reject()).then(d=>{if(!cancelled&&d?.rates?.[currency.code])setRate(Number(d.rates[currency.code]))}).catch(()=>{if(!cancelled)setRate(FALLBACK_RATES[currency.code]||1)}); return()=>{cancelled=true}},[currency.code]);
  useEffect(()=>{const onScroll=()=>setScrolled(window.scrollY>12);onScroll();window.addEventListener("scroll",onScroll,{passive:true});return()=>window.removeEventListener("scroll",onScroll)},[]);
- const shown=useMemo(()=>filter==="ALL"?products:products.filter(p=>p.mood===filter),[filter]);
+ const shown=useMemo(()=>filter==="ALL"?shopProducts:shopProducts.filter(p=>p.mood===filter),[filter,shopProducts]);
  const totalUSD=Object.entries(cart).reduce((s,[name,q])=>s+(products.find(p=>p.name===name)?.priceUSD||0)*q,0);
  const total=totalUSD*rate;
  const count=Object.values(cart).reduce((a,b)=>a+b,0);
