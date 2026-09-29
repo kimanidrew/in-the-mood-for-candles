@@ -67,7 +67,7 @@ export default function Home(){
         <Image src="/tm-logo.svg" alt="In The Mood Candles TM logo" width={48} height={48} priority className="h-10 w-10 object-contain transition-transform duration-500 group-hover:scale-105" />
       </span>
       <span className={"leading-none transition-colors duration-500 "+(scrolled?"text-[#211d19]":"text-white drop-shadow-[0_1px_8px_rgba(0,0,0,.25)]")}>
-        <span className="mood-brand block text-[18px] leading-none tracking-[.04em] sm:text-[20px]">in the <strong className="font-bold">mood</strong> for</span>
+        <span className="serif block text-[18px] leading-none tracking-[.04em] italic sm:text-[20px]">in the <strong className="font-bold not-italic">mood</strong> for</span>
         <span className={"mt-1 block text-[8px] font-semibold uppercase tracking-[.34em] "+(scrolled?"text-[#776f67]":"text-white/75")}>candles</span>
       </span>
     </button>
