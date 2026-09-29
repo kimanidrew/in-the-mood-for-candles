@@ -140,6 +140,12 @@ export default function Home() {
   const collectionRailRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const openBag = () => setBag(true);
+    window.addEventListener("imc:open-bag", openBag);
+    return () => window.removeEventListener("imc:open-bag", openBag);
+  }, []);
+
+  useEffect(() => {
     setCurrency(detectCurrency());
     Promise.all([fetch("/api/storefront"), fetch("/api/moods"), fetch("/api/favorites")])
       .then(async ([storeResponse, moodsResponse, favoritesResponse]) => {
@@ -286,87 +292,6 @@ export default function Home() {
           {favoriteNotice}
         </div>
       )}
-      <header className="site-header sticky top-0 z-50 border-b border-[#211d19]/10 bg-[#f6f1e9]/95 backdrop-blur-md">
-        <div className="mx-auto flex h-[82px] max-w-[1440px] items-center justify-between px-5 md:px-14">
-          <button
-            aria-label="In The Mood Candles home"
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="flex items-center gap-3 text-left"
-          >
-            <Image src="/tm-logo.svg" alt="In The Mood Candles logo" width={56} height={56} priority unoptimized className="h-12 w-12 object-contain" />
-            <span className="leading-none">
-              <span className="serif block text-[15px] tracking-[.11em] sm:text-[17px]">IN THE MOOD</span>
-              <span className="mt-1 block text-[9px] font-semibold uppercase tracking-[.39em] text-[#776f67]">FOR CANDLES</span>
-            </span>
-          </button>
-
-          <nav className="hidden items-center gap-2 md:flex">
-            {[
-              ["home", "#top"],
-              ["shop", "#collection"],
-              ["our story", "#story"],
-              ["journal", "#journal"],
-            ].map(([label, href]) => (
-              <a
-                key={label}
-                href={href}
-                className={"nav-link relative px-4 py-2.5 text-[10px] font-bold uppercase tracking-[.22em] text-[#211d19] transition-opacity hover:opacity-50 " +
-                  (label === "home" ? "nav-link-active" : "")}
-              >
-                {label}
-              </a>
-            ))}
-          </nav>
-
-          <div className="flex items-center gap-0.5">
-            <button aria-label="Search" className="hidden p-2.5 transition-opacity hover:opacity-50 md:block"><Search size={18} strokeWidth={1.5} /></button>
-            <button aria-label="Account" onClick={() => window.location.href = "/account"} className="hidden p-2.5 transition-opacity hover:opacity-50 md:block"><UserRound size={18} strokeWidth={1.5} /></button>
-            <a href="/account#favourites" aria-label="Favourites" className="hidden p-2.5 transition-opacity hover:opacity-50 md:hidden">
-              <Heart size={24} strokeWidth={1.6} />
-            </a>
-            <button aria-label="Shopping bag" className="relative p-2.5 transition-opacity hover:opacity-50" onClick={() => setBag(true)}>
-              <ShoppingBag size={24} strokeWidth={1.6} />
-              {count > 0 && <span className="absolute right-0.5 top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-[#211d19] text-[12px] font-bold text-white">{count}</span>}
-            </button>
-            <button aria-label={menu ? "Close menu" : "Open menu"} className="p-2.5 md:hidden" onClick={() => setMenu((open) => !open)}>
-              {menu ? <X size={27} strokeWidth={1.6} /> : <Menu size={27} strokeWidth={1.6} />}
-            </button>
-          </div>
-        </div>
-
-        <AnimatePresence>
-          {menu && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              className="overflow-hidden border-t border-black/10 bg-[#f6f1e9] md:hidden"
-            >
-              <div className="flex flex-col px-5 py-4">
-                {[
-                  ["shop", "#collection"],
-                  ["our story", "#story"],
-                  ["journal", "#journal"],
-                  ["account", "/account"],
-                  ["instagram", "https://www.instagram.com/inthemoodfor_candles"],
-                ].map(([label, href]) => (
-                  <a
-                    key={label}
-                    href={href}
-                    target={label === "instagram" ? "_blank" : undefined}
-                    rel={label === "instagram" ? "noreferrer" : undefined}
-                    onClick={() => setMenu(false)}
-                    className="border-b border-black/10 py-4 text-[12px] font-bold uppercase tracking-[.22em]"
-                  >
-                    {label}
-                  </a>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </header>
-
       <section id="top" className="hero-section relative min-h-[680px] overflow-hidden md:min-h-[690px]">
         <Image
           src={normalizeImageUrl(heroImage)}
@@ -462,13 +387,6 @@ export default function Home() {
           </div>
         </section>
       )}
-
-      <footer className="bg-[#f6f1e9] px-5 py-10 md:px-14">
-        <div className="mx-auto flex max-w-[1400px] flex-col justify-between gap-5 border-t border-black/10 pt-7 text-[12px] font-semibold uppercase tracking-[.18em] md:flex-row">
-          <span>© {new Date().getFullYear()} In The Mood For Candles</span>
-          <span>Made for slow moments</span>
-        </div>
-      </footer>
 
       <AnimatePresence>
         {bag && (
