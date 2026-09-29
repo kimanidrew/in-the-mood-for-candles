@@ -227,7 +227,7 @@ export default function Home() {
 
       <section id="top" className="hero-section relative min-h-[680px] overflow-hidden md:min-h-[690px]">
         <Image
-          src="https://images.unsplash.com/photo-1603006905003-be475563bc59?auto=format&fit=crop&w=2400&q=90"
+          src="/hero.webp"
           alt="Warm candlelit room with a scented candle"
           fill
           priority
