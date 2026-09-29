@@ -4,7 +4,7 @@
 :root{--cream:#f7f3ec;--ink:#211d19;--muted:#776f67;--line:#ddd5ca;--accent:#9c5638}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;background:var(--cream);color:var(--ink);font-family:"Manrope",sans-serif;letter-spacing:-.01em}
+body{margin:0;background:var(--cream);color:var(--ink);font-family:"Manrope",sans-serif;letter-spacing:normal}
 button,a{font-family:inherit}
 .serif{font-family:"Playfair Display",serif}
 .grain{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E")}
