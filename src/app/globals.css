@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Dancing+Script:wght@500;600;700&family=Playfair+Display:ital,wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 :root{--cream:#f7f3ec;--ink:#211d19;--muted:#776f67;--line:#ddd5ca;--accent:#9c5638}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--cream);color:var(--ink);font-family:"DM Sans",sans-serif}.serif{font-family:"Playfair Display",serif}.grain{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E")}.hide-scroll::-webkit-scrollbar{display:none}.hide-scroll{scrollbar-width:none}
+.mood-brand{font-family:"Dancing Script",cursive}
