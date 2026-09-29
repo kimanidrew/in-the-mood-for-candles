@@ -169,6 +169,43 @@ export default function Home() {
     return () => { cancelled = true; };
   }, [currency.code]);
 
+  useEffect(() => {
+    const rail = collectionRailRef.current;
+    if (!rail) return;
+
+    const cards = Array.from(rail.querySelectorAll<HTMLElement>("[data-collection-card]"));
+    if (!cards.length) return;
+
+    const updateActive = () => {
+      const center = rail.getBoundingClientRect().left + rail.clientWidth / 2;
+      let closest = 0;
+      let distance = Number.POSITIVE_INFINITY;
+      cards.forEach((card, index) => {
+        const rect = card.getBoundingClientRect();
+        const cardCenter = rect.left + rect.width / 2;
+        const nextDistance = Math.abs(cardCenter - center);
+        if (nextDistance < distance) {
+          distance = nextDistance;
+          closest = index;
+        }
+      });
+      setActiveCollection(closest);
+    };
+
+    const observer = new IntersectionObserver(updateActive, {
+      root: rail,
+      threshold: [0.45, 0.65, 0.85],
+    });
+    cards.forEach((card) => observer.observe(card));
+    updateActive();
+
+    rail.addEventListener("scroll", updateActive, { passive: true });
+    return () => {
+      observer.disconnect();
+      rail.removeEventListener("scroll", updateActive);
+    };
+  }, [storeCollections.length]);
+
   const shown = useMemo(
     () => filter === "ALL" ? shopProducts : shopProducts.filter((p) => p.mood === filter),
     [filter, shopProducts],
@@ -335,12 +372,13 @@ export default function Home() {
             </a>
           </div>
 
-          <div className="collection-grid">
+          <div ref={collectionRailRef} className="collection-grid">
             {(storeCollections.length ? storeCollections : collectionCards.map((card) => ({slug:card.label.toLowerCase().replace(/\\s+/g,"-"),title:card.label,subtitle:card.sub,imageUrl:card.img,mood:null}))).map((card, index) => (
               <a
                 href="#products"
                 key={card.slug}
-                className={"collection-card group " + (index === 0 ? "collection-card-featured" : "")}
+                data-collection-card
+                className={"collection-card group " + (activeCollection === index ? "collection-card-active " : "") + (index === 0 ? "collection-card-featured" : "")}
               >
                 <div className="relative aspect-[1.05] overflow-hidden border border-white/20 bg-black/20">
                   <Image
