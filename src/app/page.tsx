@@ -40,6 +40,10 @@ const collectionCards = [
 
 type Cart = Record<string, number>;
 type CurrencyInfo = { code: string; locale: string; label: string };
+type StoreProduct = typeof products[number];
+type StoreContent = { key: string; title?: string|null; eyebrow?: string|null; body?: string|null; imageUrl?: string|null; buttonText?: string|null; buttonUrl?: string|null };
+type StoreCollection = { slug:string; title:string; subtitle?:string|null; imageUrl:string; mood?:string|null };
+type Social = { platform:string; url:string; label?:string|null };
 
 const CURRENCY_BY_ZONE: Record<string, CurrencyInfo> = {
   "Africa/Nairobi": { code: "KES", locale: "en-KE", label: "Kenya" },
@@ -105,11 +109,34 @@ export default function Home() {
   const [menu, setMenu] = useState(false);
   const [currency, setCurrency] = useState<CurrencyInfo>(FALLBACK_CURRENCY);
   const [rate, setRate] = useState(1);
+  const [storeProducts, setStoreProducts] = useState<StoreProduct[]>(products);
+  const [storeContent, setStoreContent] = useState<StoreContent[]>([]);
+  const [storeCollections, setStoreCollections] = useState<StoreCollection[]>([]);
+  const [socials, setSocials] = useState<Social[]>([]);
 
-  useEffect(() => { setCurrency(detectCurrency()); }, []);
   useEffect(() => {
-    setShopProducts([...products].sort(() => Math.random() - 0.5));
+    setCurrency(detectCurrency());
+    fetch("/api/storefront")
+      .then((r) => r.ok ? r.json() : Promise.reject())
+      .then((data) => {
+        if (Array.isArray(data.products) && data.products.length) {
+          setStoreProducts(data.products.map((p: any) => ({
+            name: p.name,
+            mood: p.mood,
+            priceUSD: Number(p.priceUSD || 0),
+            desc: p.shortDescription || p.description,
+            img: p.images?.[0]?.url || "/hero.webp",
+          })));
+        }
+        if (Array.isArray(data.content)) setStoreContent(data.content);
+        if (Array.isArray(data.collections)) setStoreCollections(data.collections);
+        if (Array.isArray(data.socials)) setSocials(data.socials);
+      })
+      .catch(() => {});
   }, []);
+  useEffect(() => {
+    setShopProducts([...storeProducts].sort(() => Math.random() - 0.5));
+  }, [storeProducts]);
   useEffect(() => {
     if (currency.code === "USD") { setRate(1); return; }
     let cancelled = false;
@@ -125,11 +152,18 @@ export default function Home() {
     [filter, shopProducts],
   );
   const totalUSD = Object.entries(cart).reduce(
-    (sum, [name, quantity]) => sum + (products.find((p) => p.name === name)?.priceUSD || 0) * quantity,
+    (sum, [name, quantity]) => sum + (storeProducts.find((p) => p.name === name)?.priceUSD || 0) * quantity,
     0,
   );
   const total = totalUSD * rate;
   const count = Object.values(cart).reduce((sum, value) => sum + value, 0);
+  const content = (key: string) => storeContent.find((item) => item.key === key);
+  const hero = content("hero");
+  const story = content("story");
+  const mission = content("mission");
+  const vision = content("vision");
+  const journal = content("journal");
+  const instagram = socials.find((item) => item.platform === "instagram")?.url || "https://www.instagram.com/inthemoodfor_candles";
 
   const add = (name: string) => setCart((current) => ({ ...current, [name]: (current[name] || 0) + 1 }));
   const change = (name: string, amount: number) => setCart((current) => {
@@ -227,8 +261,8 @@ export default function Home() {
 
       <section id="top" className="hero-section relative min-h-[680px] overflow-hidden md:min-h-[690px]">
         <Image
-          src="/hero.webp"
-          alt="Warm candlelit room with a scented candle"
+          src={hero?.imageUrl || "/hero.webp"}
+          alt={hero?.imageAlt || "Warm candlelit room with a scented candle"}
           fill
           priority
           sizes="100vw"
@@ -245,23 +279,20 @@ export default function Home() {
             className="max-w-[590px] text-white"
           >
             <p className="mb-7 text-[12px] font-semibold uppercase tracking-[.34em] text-white/80 md:text-[9px]">
-              Candles &nbsp;•&nbsp; Linen sprays &nbsp;•&nbsp; Memories
+              {hero?.eyebrow || "Candles • Linen sprays • Memories"}
             </p>
             <h1 className="serif text-[3.35rem] leading-[.94] tracking-[-.035em] sm:text-[4.25rem] md:text-[5.45rem]">
-              Set the mood.
-              <br />
-              <span className="italic">Leave a scent worth remembering.</span>
+              {hero?.title || "Set the mood. Leave a scent worth remembering."}
             </h1>
             <span className="mt-7 block h-px w-10 bg-white/80" />
             <p className="mt-6 max-w-[370px] text-[9px] leading-6 text-white/85 md:text-[12px]">
-              Beautifully scented candles and linen sprays designed to transform your space,
-              creating a feeling that stays with you.
+              {hero?.body || "Beautifully scented candles and linen sprays designed to transform your space, creating a feeling that stays with you."}
             </p>
             <a
-              href="#collection"
+              href={hero?.buttonUrl || "#collection"}
               className="mt-8 inline-flex items-center gap-3 border border-white/75 px-5 py-3.5 text-[12px] font-bold uppercase tracking-[.2em] transition hover:bg-white hover:text-[#211d19]"
             >
-              explore the collection <ArrowRight size={14} />
+              {hero?.buttonText || "explore the collection"} <ArrowRight size={14} />
             </a>
           </motion.div>
         </div>
@@ -280,16 +311,16 @@ export default function Home() {
           </div>
 
           <div className="collection-grid">
-            {collectionCards.map((card, index) => (
+            {(storeCollections.length ? storeCollections : collectionCards.map((card) => ({slug:card.label.toLowerCase().replace(/\\s+/g,"-"),title:card.label,subtitle:card.sub,imageUrl:card.img,mood:null}))).map((card, index) => (
               <a
                 href="#products"
-                key={card.label}
+                key={card.slug}
                 className={"collection-card group " + (index === 0 ? "collection-card-featured" : "")}
               >
                 <div className="relative aspect-[1.05] overflow-hidden border border-white/20 bg-black/20">
                   <Image
-                    src={card.img}
-                    alt={card.label}
+                    src={card.imageUrl}
+                    alt={card.title}
                     fill
                     sizes="(max-width: 768px) 70vw, 240px"
                     className="object-cover transition duration-700 group-hover:scale-105"
@@ -297,8 +328,8 @@ export default function Home() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
                 </div>
                 <div className="pt-4 text-center">
-                  <p className="text-[12px] font-semibold uppercase tracking-[.32em]">{card.label}</p>
-                  <p className="mt-2 text-[9px] uppercase tracking-[.22em] text-[#d5b5a0]">{card.sub}</p>
+                  <p className="text-[12px] font-semibold uppercase tracking-[.32em]">{card.title}</p>
+                  <p className="mt-2 text-[9px] uppercase tracking-[.22em] text-[#d5b5a0]">{card.subtitle}</p>
                 </div>
               </a>
             ))}
@@ -391,9 +422,8 @@ export default function Home() {
             <h2 className="serif text-5xl leading-[.95] md:text-7xl">A scent is<br /><span className="italic">a memory.</span></h2>
           </div>
           <div className="max-w-xl text-[13px] leading-7 text-[#665c54]">
-            <p>There is magic in lighting a candle and letting a familiar fragrance fill the room. Scent can take us back to places, people and little moments we thought we had forgotten.</p>
-            <p className="mt-5">Inspired by travel, food and the spaces that stay with us, every candle is made to become part of your story.</p>
-            <a href="https://www.instagram.com/inthemoodfor_candles" target="_blank" rel="noreferrer" className="mt-7 inline-flex items-center gap-3 border-b border-[#211d19]/40 pb-2 text-[12px] font-bold uppercase tracking-[.2em]">
+            <p>{journal?.body || "There is magic in lighting a candle and letting a familiar fragrance fill the room."}
+            <a href={instagram} target="_blank" rel="noreferrer" className="mt-7 inline-flex items-center gap-3 border-b border-[#211d19]/40 pb-2 text-[12px] font-bold uppercase tracking-[.2em]">
               follow the journey <Instagram size={14} />
             </a>
           </div>
@@ -405,17 +435,13 @@ export default function Home() {
           <p className="mb-5 text-[12px] font-bold uppercase tracking-[.35em] text-[#d2a38c]">Our Story</p>
           <div className="grid gap-12 md:grid-cols-[.85fr_1.15fr] md:items-start">
             <div>
-              <h2 className="serif text-4xl leading-[.95] md:text-7xl">More than a candle.<br /><span className="italic">It’s a feeling.</span></h2>
+              <h2 className="serif text-4xl leading-[.95] md:text-7xl">{story?.title || "More than a candle. It’s a feeling."}</h2>
               <div className="mt-8 h-px w-20 bg-[#d2a38c]/60" />
             </div>
             <div className="max-w-2xl space-y-6 text-[13px] leading-7 text-white/75 md:text-[15px] md:leading-8">
-              <p>It started with a simple love for beautiful scents and the magic they create.</p>
-              <p>There’s something special about lighting a candle and watching a space transform. The soft glow, the warmth, and most importantly, the scent that slowly fills the room and becomes part of the moment.</p>
-              <p>At In The Mood For Candles, we believe fragrance has the power to create memories. A scent can welcome you into a room, make you feel at home, remind you of someone you love, or take you back to a moment you thought you had forgotten.</p>
-              <p>Because when everything else fades, a scent can stay with you.</p>
-              <p>We created In The Mood For Candles to bring beautiful fragrances into everyday moments, whether you’re unwinding after a long day, setting the tone for a date night, celebrating yourself, or simply making your home feel a little more like you.</p>
-              <p>Our candles are made to be experienced, remembered, and associated with the moments that matter.</p>
-              <p className="serif pt-2 text-3xl italic text-[#d2a38c]">Light it. Feel it. Remember it.</p>
+              {(story?.body || "It started with a simple love for beautiful scents and the magic they create.").split("\\n\\n").map((paragraph, index) => (
+                <p key={index} className={index === 6 ? "serif pt-2 text-3xl italic text-[#d2a38c]" : ""}>{paragraph}</p>
+              ))}
             </div>
           </div>
         </div>
@@ -429,12 +455,12 @@ export default function Home() {
           </div>
           <div className="grid gap-6 md:grid-cols-2">
             <article className="rounded-[2rem] bg-[#211d19] p-8 text-[#f7f3ec] md:p-12">
-              <p className="mb-5 text-[9px] font-bold uppercase tracking-[.3em] text-[#d2a38c]">Our mission</p>
-              <p className="serif text-2xl leading-tight md:text-4xl">To create beautifully scented candles that transform everyday spaces into memorable experiences, bringing warmth, comfort and a little luxury into every moment.</p>
+              <p className="mb-5 text-[9px] font-bold uppercase tracking-[.3em] text-[#d2a38c]">{mission?.title || "Our mission"}</p>
+              <p className="serif text-2xl leading-tight md:text-4xl">{mission?.body || "To create beautifully scented candles that transform everyday spaces into memorable experiences, bringing warmth, comfort and a little luxury into every moment."}</p>
             </article>
             <article className="rounded-[2rem] border border-black/10 bg-[#e9dfd4] p-8 md:p-12">
-              <p className="mb-5 text-[9px] font-bold uppercase tracking-[.3em] text-[#9c5638]">Our vision</p>
-              <p className="serif text-2xl leading-tight md:text-4xl">To become a beloved fragrance brand known for creating scents that become part of people’s stories, spaces and most cherished memories.</p>
+              <p className="mb-5 text-[9px] font-bold uppercase tracking-[.3em] text-[#9c5638]">{vision?.title || "Our vision"}</p>
+              <p className="serif text-2xl leading-tight md:text-4xl">{vision?.body || "To become a beloved fragrance brand known for creating scents that become part of people’s stories, spaces and most cherished memories."}</p>
             </article>
           </div>
         </div>
@@ -472,7 +498,7 @@ export default function Home() {
                 ) : (
                   <div className="space-y-5">
                     {Object.entries(cart).map(([name, quantity]) => {
-                      const product = products.find((item) => item.name === name)!;
+                      const product = storeProducts.find((item) => item.name === name)!;
                       return (
                         <div key={name} className="flex gap-4 border-b border-black/10 pb-5">
                           <Image src={product.img} width={80} height={96} sizes="80px" className="h-24 w-20 object-cover" alt="" />
