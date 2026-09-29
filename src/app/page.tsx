@@ -304,7 +304,7 @@ export default function Home() {
             <p className="mb-7 text-[12px] font-semibold uppercase tracking-[.34em] text-white/80 md:text-[9px]">
               {hero?.eyebrow || "Candles • Linen sprays • Memories"}
             </p>
-            <h1 className="serif italic text-[3.35rem] leading-[.94] tracking-[-.035em] sm:text-[4.25rem] md:text-[5.45rem]">
+            <h1 className="serif italic font-bold text-[4rem] leading-[.9] tracking-[-.04em] sm:text-[5rem] md:text-[6.5rem] lg:text-[7.25rem]">
               {hero?.title || "Set the mood. Leave a scent worth remembering."}
             </h1>
             <span className="mt-7 block h-px w-10 bg-white/80" />
