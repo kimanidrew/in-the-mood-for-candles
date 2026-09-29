@@ -241,7 +241,7 @@ export default function AdminPage({ initialTab = "overview" }: { initialTab?: Ta
             <span className="hidden leading-none sm:block"><span className="serif block text-[19px] tracking-[.12em]">IN THE MOOD</span><span className="mt-1 block text-[8px] font-bold uppercase tracking-[.36em] text-[#776f67]">FOR CANDLES</span></span>
           </Link>
           <div className="hidden items-center gap-1 lg:flex">
-            {(["overview","content","collections","products","social"] as Tab[]).map(item=><Link key={item} href={item==="overview"?"/admin":"/admin/"+item} className={"rounded-full px-4 py-2 text-[10px] font-bold uppercase tracking-[.18em] transition "+(tab===item?"bg-[#211d19] text-white":"hover:bg-black/5")}>{item}</button>)}
+            {(["overview","content","collections","products","social"] as Tab[]).map(item=><Link key={item} href={item==="overview"?"/admin":"/admin/"+item} className={"rounded-full px-4 py-2 text-[10px] font-bold uppercase tracking-[.18em] transition "+(tab===item?"bg-[#211d19] text-white":"hover:bg-black/5")}>{item}</Link>)}
           </div>
           <div className="flex items-center gap-2">
             <Link href="/" className="hidden rounded-full px-4 py-2 text-[10px] font-bold uppercase tracking-[.16em] hover:bg-black/5 md:inline-flex"><ExternalLink size={13}/> Store</Link>
