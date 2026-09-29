@@ -37,10 +37,15 @@ export default function Home(){
  const [cart,setCart]=useState<Cart>({});
  const [bag,setBag]=useState(false);
  const [menu,setMenu]=useState(false);
- const [scrolled,setScrolled]=useState(false);\n const [currency,setCurrency]=useState<CurrencyInfo>(FALLBACK_CURRENCY);\n const [rate,setRate]=useState(1);
- useEffect(()=>{setCurrency(detectCurrency())},[]);\n useEffect(()=>{if(currency.code==="USD"){setRate(1);return;} let cancelled=false; fetch("https://api.frankfurter.app/latest?from=USD&to="+currency.code).then(r=>r.ok?r.json():Promise.reject()).then(d=>{if(!cancelled&&d?.rates?.[currency.code])setRate(Number(d.rates[currency.code]))}).catch(()=>{if(!cancelled)setRate(FALLBACK_RATES[currency.code]||1)}); return()=>{cancelled=true}},[currency.code]);\n useEffect(()=>{const onScroll=()=>setScrolled(window.scrollY>12);onScroll();window.addEventListener("scroll",onScroll,{passive:true});return()=>window.removeEventListener("scroll",onScroll)},[]);
+ const [scrolled,setScrolled]=useState(false);
+ const [currency,setCurrency]=useState<CurrencyInfo>(FALLBACK_CURRENCY);
+ const [rate,setRate]=useState(1);
+ useEffect(()=>{setCurrency(detectCurrency())},[]);
+ useEffect(()=>{if(currency.code==="USD"){setRate(1);return;} let cancelled=false; fetch("https://api.frankfurter.app/latest?from=USD&to="+currency.code).then(r=>r.ok?r.json():Promise.reject()).then(d=>{if(!cancelled&&d?.rates?.[currency.code])setRate(Number(d.rates[currency.code]))}).catch(()=>{if(!cancelled)setRate(FALLBACK_RATES[currency.code]||1)}); return()=>{cancelled=true}},[currency.code]);
+ useEffect(()=>{const onScroll=()=>setScrolled(window.scrollY>12);onScroll();window.addEventListener("scroll",onScroll,{passive:true});return()=>window.removeEventListener("scroll",onScroll)},[]);
  const shown=useMemo(()=>filter==="ALL"?products:products.filter(p=>p.mood===filter),[filter]);
- const total=Object.entries(cart).reduce((s,[name,q])=>s+(products.find(p=>p.name===name)?.price||0)*q,0);
+ const totalUSD=Object.entries(cart).reduce((s,[name,q])=>s+(products.find(p=>p.name===name)?.priceUSD||0)*q,0);
+ const total=totalUSD*rate;
  const count=Object.values(cart).reduce((a,b)=>a+b,0);
  const add=(name:string)=>setCart(c=>({...c,[name]:(c[name]||0)+1}));
  const change=(name:string,n:number)=>setCart(c=>{const x={...c,[name]:Math.max(0,(c[name]||0)+n)};if(!x[name])delete x[name];return x});
