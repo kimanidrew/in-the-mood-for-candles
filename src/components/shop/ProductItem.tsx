@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Heart } from "lucide-react";
 import { useEffect, useState } from "react";
+import { dbText } from "@/lib/db-text";
 
 export type CustomerProduct = {
   id: string;
@@ -86,7 +87,7 @@ export default function ProductItem({
         <div className="relative aspect-[.82] overflow-hidden bg-[#e2d8cb]">
           <Image
             src={product.img}
-            alt={product.name}
+            alt={dbText(product.name)}
             fill
             sizes={sizes}
             unoptimized={product.img.startsWith("data:image/")}
@@ -95,7 +96,7 @@ export default function ProductItem({
 
           {product.mood && (
             <div className="absolute left-3 top-3 bg-[#f6f1e9]/90 px-3 py-2 text-[10px] font-bold uppercase tracking-[.18em]">
-              {product.mood}
+              {dbText(product.mood)}
             </div>
           )}
 
@@ -132,7 +133,7 @@ export default function ProductItem({
         <div className="flex items-start justify-between gap-3">
           <div>
             <Link href={productHref} className="serif text-[21px] transition hover:text-[#9c5638]">
-              {product.name}
+              {dbText(product.name)}
             </Link>
             {product.mood && (
               <p className="mt-1 text-[12px] font-bold uppercase tracking-[.18em] text-[#9c5638]">
@@ -146,7 +147,7 @@ export default function ProductItem({
         </div>
         {(product.shortDescription || product.description) && (
           <p className="mt-3 text-[12px] leading-5 text-[#776f67]">
-            {product.shortDescription || product.description}
+            {dbText(product.shortDescription || product.description)}
           </p>
         )}
       </div>
