@@ -80,7 +80,7 @@ export default function ProductItem({
 
   return (
     <article className="group">
-      <Link href={product.slug ? `/products/${product.slug}` : "#"} className="block">\n      <div className="relative aspect-[.82] overflow-hidden bg-[#e2d8cb]">
+      <Link href={product.slug ? `/products/${product.slug}` : "#"} className="block">\n        <div className="relative aspect-[.82] overflow-hidden bg-[#e2d8cb]">
         <Image
           src={product.img}
           alt={product.name}
