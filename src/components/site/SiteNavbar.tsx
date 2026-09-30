@@ -73,7 +73,7 @@ export default function SiteNavbar() {
           <Link href="/account" aria-label="Account" className="hidden p-2.5 transition-opacity hover:opacity-50 md:block"><UserRound size={18} strokeWidth={1.5} /></Link>
 
           <Link
-            href="/account#favourites"
+            href="/favourites"
             aria-label="Favourites"
             className="group hidden h-12 w-12 items-center justify-center rounded-full border border-[#211d19]/10 bg-white/40 shadow-[0_2px_12px_rgba(33,29,25,0.06)] transition-all hover:-translate-y-0.5 hover:bg-white hover:shadow-[0_6px_18px_rgba(33,29,25,0.1)] md:hidden"
           >
