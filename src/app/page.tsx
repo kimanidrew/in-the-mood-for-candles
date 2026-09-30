@@ -170,12 +170,6 @@ export default function Home() {
   const collectionRailRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const openBag = () => setBag(true);
-    window.addEventListener("imc:open-bag", openBag);
-    return () => window.removeEventListener("imc:open-bag", openBag);
-  }, []);
-
-  useEffect(() => {
     setCurrency(detectCurrency());
     Promise.all([fetch("/api/storefront"), fetch("/api/moods"), fetch("/api/favorites")])
       .then(async ([storeResponse, moodsResponse, favoritesResponse]) => {
