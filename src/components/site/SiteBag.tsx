@@ -8,39 +8,6 @@ import { useEffect, useMemo, useState } from "react";
 type BagProduct = { id:string; name:string; slug?:string; mood?:string; img:string; priceUSD?:number|null };
 type BagLine = BagProduct & { quantity:number };
 
-const CURRENCIES:Record<string,{code:string;locale:string}> = {
-  "Africa/Nairobi":{code:"KES",locale:"en-KE"},
-  "Africa/Kampala":{code:"UGX",locale:"en-UG"},
-  "Africa/Dar_es_Salaam":{code:"TZS",locale:"sw-TZ"},
-  "Africa/Kigali":{code:"RWF",locale:"rw-RW"},
-  "Africa/Lagos":{code:"NGN",locale:"en-NG"},
-  "Africa/Accra":{code:"GHS",locale:"en-GH"},
-  "Africa/Johannesburg":{code:"ZAR",locale:"en-ZA"},
-  "Europe/London":{code:"GBP",locale:"en-GB"},
-  "Europe/Paris":{code:"EUR",locale:"en-FR"},
-  "Europe/Berlin":{code:"EUR",locale:"de-DE"},
-  "Asia/Dubai":{code:"AED",locale:"en-AE"},
-  "Asia/Kolkata":{code:"INR",locale:"en-IN"},
-  "Asia/Tokyo":{code:"JPY",locale:"ja-JP"},
-  "Asia/Singapore":{code:"SGD",locale:"en-SG"},
-  "Asia/Shanghai":{code:"CNY",locale:"zh-CN"},
-  "Australia/Sydney":{code:"AUD",locale:"en-AU"},
-  "America/New_York":{code:"USD",locale:"en-US"},
-  "America/Los_Angeles":{code:"USD",locale:"en-US"},
-  "America/Toronto":{code:"CAD",locale:"en-CA"},
-};
-
-const FALLBACK_RATES:Record<string,number> = { USD:1,KES:129,GBP:.74,EUR:.85,CAD:1.38,AUD:1.52,INR:88,JPY:149,SGD:1.28,AED:3.67,CNY:7.1,ZAR:17.3,NGN:1540,GHS:12.5,UGX:3500,TZS:2600,RWF:1450 };
-
-function currencyForBrowser() {
-  if (typeof window === "undefined") return { code:"USD", locale:"en-US" };
-  return CURRENCIES[Intl.DateTimeFormat().resolvedOptions().timeZone] || { code:"USD", locale:"en-US" };
-}
-
-function money(value:number, currency:{code:string;locale:string}) {
-  return new Intl.NumberFormat(currency.locale,{style:"currency",currency:currency.code,maximumFractionDigits:currency.code==="JPY"?0:2}).format(value);
-}
-
 const STORAGE_KEY = "imc-bag";
 
 export default function SiteBag() {
@@ -62,7 +29,6 @@ export default function SiteBag() {
   },[lines]);
 
   const count = useMemo(()=>lines.reduce((sum,line)=>sum+line.quantity,0),[lines]);
-  const totalUSD = useMemo(()=>lines.reduce((sum,line)=>sum+(line.priceUSD||0)*line.quantity,0),[lines]);
 
   function change(id:string,amount:number) {
     setLines(current=>current.map(line=>line.id===id?{...line,quantity:Math.max(0,line.quantity+amount)}:line).filter(line=>line.quantity>0));
