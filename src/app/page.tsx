@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { DynamicSection, type DynamicSectionData } from "@/components/home/DynamicSection";
 import ProductItem from "@/components/shop/ProductItem";
+import { dbText } from "@/lib/db-text";
 import {
   ArrowRight,
   ChevronDown,
@@ -185,10 +186,10 @@ export default function Home() {
         if (Array.isArray(data.products) && data.products.length) {
           setStoreProducts(data.products.map((p: any) => ({
             id: p.id,
-            name: p.name,
-            mood: p.mood,
+            name: dbText(p.name),
+            mood: dbText(p.mood),
             priceUSD: Number(p.priceUSD || 0),
-            desc: p.shortDescription || p.description,
+            desc: dbText(p.shortDescription || p.description),
             img: p.images?.[0]?.url || "/hero.jpg",
           })));
         }
@@ -343,22 +344,22 @@ export default function Home() {
             className="max-w-[75%] text-white"
           >
             <p className="mb-6 text-[10px] font-semibold uppercase tracking-[.3em] text-white/80 md:text-[10px]">
-              {hero?.eyebrow || "Candles • Linen sprays • Memories"}
+              {dbText(hero?.eyebrow || "Candles • Linen sprays • Memories")}
             </p>
             <h1 className="serif font-bold text-[3.7rem] leading-[.92] tracking-[-.035em] sm:text-[4.5rem] md:text-[5.5rem] lg:text-[6.15rem]">
               <em className="not-italic" style={{ fontStyle: "italic" }}>
-                {hero?.title || "Set the mood. Leave a scent worth remembering."}
+                {dbText(hero?.title || "Set the mood. Leave a scent worth remembering.")}
               </em>
             </h1>
             <span className="mt-7 block h-px w-10 bg-white/80" />
             <p className="mt-6 max-w-[520px] text-[13px] leading-7 text-white/90 md:text-[15px] md:leading-7.5">
-              {hero?.body || "Beautifully scented candles and linen sprays designed to transform your space, creating a feeling that stays with you."}
+              {dbText(hero?.body || "Beautifully scented candles and linen sprays designed to transform your space, creating a feeling that stays with you.")}
             </p>
             <a
               href={hero?.buttonUrl || "#collection"}
               className="mt-8 inline-flex items-center gap-3 border border-white/75 px-5 py-3 text-[10px] font-bold uppercase tracking-[.18em] transition hover:bg-white hover:text-[#211d19]"
             >
-              {hero?.buttonText || "explore the collection"} <ArrowRight size={14} />
+              {dbText(hero?.buttonText || "explore the collection")} <ArrowRight size={14} />
             </a>
           </motion.div>
         </div>
@@ -371,9 +372,9 @@ export default function Home() {
             {moodTabs.slice(0, 5).map((mood, index) => (
               <a href={"/moods/" + mood.slug} key={mood.id} data-mood-card className={"collection-card group " + (activeCollection === index ? "collection-card-active" : "")}>
                 <div className="relative aspect-[1.05] overflow-hidden border border-white/20 bg-black/20">
-                  {mood.imageUrl ? <Image src={normalizeImageUrl(mood.imageUrl)} alt={mood.name} fill unoptimized={isDataImage(mood.imageUrl)} sizes="(max-width: 768px) 70vw, 240px" className="object-cover transition duration-700 group-hover:scale-105"/> : <div className="absolute inset-0 bg-gradient-to-br from-[#6f4937] via-[#3a2117] to-[#160d09]"/>}
+                  {mood.imageUrl ? <Image src={normalizeImageUrl(mood.imageUrl)} alt={dbText(mood.name)} fill unoptimized={isDataImage(mood.imageUrl)} sizes="(max-width: 768px) 70vw, 240px" className="object-cover transition duration-700 group-hover:scale-105"/> : <div className="absolute inset-0 bg-gradient-to-br from-[#6f4937] via-[#3a2117] to-[#160d09]"/>}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"/>
-                  <div className="absolute inset-x-0 bottom-0 p-5 text-center"><p className="text-[12px] font-semibold uppercase tracking-[.32em]">{mood.name}</p><p className="mt-2 text-[9px] uppercase tracking-[.22em] text-[#d5b5a0]">Explore this feeling</p></div>
+                  <div className="absolute inset-x-0 bottom-0 p-5 text-center"><p className="text-[12px] font-semibold uppercase tracking-[.32em]">{dbText(mood.name)}</p><p className="mt-2 text-[9px] uppercase tracking-[.22em] text-[#d5b5a0]">Explore this feeling</p></div>
                 </div>
               </a>
             ))}
@@ -392,9 +393,9 @@ export default function Home() {
         <div className="mx-auto max-w-[1400px]">
           <div className="mb-10"><p className="mb-3 text-[12px] font-bold uppercase tracking-[.36em] text-[#9c5638]">The candle collection</p><h2 className="serif text-5xl leading-none md:text-7xl">Choose your <span className="italic">collection.</span></h2></div>
           <div className="hide-scroll mb-12 flex justify-start gap-7 overflow-x-auto border-b border-black/10 pb-4 md:justify-start md:overflow-visible">
-            {storeCollections.map((collection) => <button key={collection.slug} onClick={() => setActiveProductCollection(collection.slug)} className={"shrink-0 pb-3 text-[12px] font-bold uppercase tracking-[.25em] transition " + (activeProductCollection === collection.slug ? "border-b border-[#211d19] text-[#211d19]" : "text-[#776f67] hover:text-[#211d19]")}>{collection.title}</button>)}
+            {storeCollections.map((collection) => <button key={collection.slug} onClick={() => setActiveProductCollection(collection.slug)} className={"shrink-0 pb-3 text-[12px] font-bold uppercase tracking-[.25em] transition " + (activeProductCollection === collection.slug ? "border-b border-[#211d19] text-[#211d19]" : "text-[#776f67] hover:text-[#211d19]")}>{dbText(collection.title)}</button>)}
           </div>
-          {selectedProductCollection && <div className="mb-8 flex items-center justify-between gap-4"><div><p className="serif text-2xl">{selectedProductCollection.title}</p><p className="mt-1 text-xs text-[#776f67]">{selectedProductCollection.subtitle}</p></div><a href={"/collections/" + activeProductCollection} className="inline-flex shrink-0 items-center gap-2 border-b border-black/30 pb-1 text-[10px] font-bold uppercase tracking-[.18em]">view all <ArrowRight size={13}/></a></div>}
+          {selectedProductCollection && <div className="mb-8 flex items-center justify-between gap-4"><div><p className="serif text-2xl">{dbText(selectedProductCollection.title)}</p><p className="mt-1 text-xs text-[#776f67]">{dbText(selectedProductCollection.subtitle)}</p></div><a href={"/collections/" + activeProductCollection} className="inline-flex shrink-0 items-center gap-2 border-b border-black/30 pb-1 text-[10px] font-bold uppercase tracking-[.18em]">view all <ArrowRight size={13}/></a></div>}
           <div className="grid grid-cols-1 gap-x-7 gap-y-14 sm:grid-cols-2 lg:grid-cols-4">
             {shown.slice(0,4).map((product,index) => (
               <motion.div key={product.id || product.name} initial={{opacity:0,y:18}} whileInView={{opacity:1,y:0}} viewport={{once:true,margin:"-50px"}} transition={{delay:index*.035,duration:.5}}>
@@ -410,7 +411,7 @@ export default function Home() {
               </motion.div>
             ))}
           </div>
-          {selectedProductCollection && <div className="mt-12 text-center"><a href={"/collections/" + activeProductCollection} className="inline-flex items-center gap-3 border border-[#211d19] px-6 py-3 text-[10px] font-bold uppercase tracking-[.2em] transition hover:bg-[#211d19] hover:text-white">view all {selectedProductCollection?.title || "candles"} <ArrowRight size={14}/></a></div>}
+          {selectedProductCollection && <div className="mt-12 text-center"><a href={"/collections/" + activeProductCollection} className="inline-flex items-center gap-3 border border-[#211d19] px-6 py-3 text-[10px] font-bold uppercase tracking-[.2em] transition hover:bg-[#211d19] hover:text-white">view all {dbText(selectedProductCollection?.title || "candles")} <ArrowRight size={14}/></a></div>}
         </div>
       </section>
 
