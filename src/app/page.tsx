@@ -92,7 +92,7 @@ function detectCurrency(): CurrencyInfo {
 }
 
 function normalizeImageUrl(src?: string | null) {
-  if (!src) return "/hero.jpg";
+  if (!src) return "";
   try {
     const parsed = new URL(src, typeof window !== "undefined" ? window.location.origin : "https://in-the-mood-for-candles.vercel.app");
     if (parsed.pathname === "/hero.jpg" || parsed.pathname === "/hero.webp") return "/hero.jpg";
@@ -135,7 +135,7 @@ export default function Home() {
   const [favoriteProductIds, setFavoriteProductIds] = useState<string[]>([]);
   const [favoriteMoodIds, setFavoriteMoodIds] = useState<string[]>([]);
   const [favoriteNotice, setFavoriteNotice] = useState("");
-  const [heroImage, setHeroImage] = useState("/hero.jpg");
+  const [heroImage, setHeroImage] = useState<string | null>(null);
   const [activeCollection, setActiveCollection] = useState(0);
   const [activeProductCollection, setActiveProductCollection] = useState("");
   const collectionRailRef = useRef<HTMLDivElement>(null);
@@ -295,16 +295,20 @@ export default function Home() {
         </div>
       )}
       <section id="top" className="hero-section relative min-h-[680px] overflow-hidden md:min-h-[690px]">
-        <Image
-          src={normalizeImageUrl(heroImage)}
-          onError={() => setHeroImage("/hero.jpg")}
-          alt={hero?.imageAlt || "Warm candlelit room with a scented candle"}
-          fill
-          priority
-          sizes="100vw"
-          unoptimized={isDataImage(heroImage)}
-          className="object-cover object-center"
-        />
+        {heroImage ? (
+          <Image
+            src={normalizeImageUrl(heroImage)}
+            onError={() => setHeroImage(null)}
+            alt={hero?.imageAlt || "Warm candlelit room with a scented candle"}
+            fill
+            priority
+            sizes="100vw"
+            unoptimized={isDataImage(heroImage)}
+            className="object-cover object-center"
+          />
+        ) : (
+          <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-[#211d19] via-[#3a2a22] to-[#211d19]" />
+        )}
         <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/20 to-black/5" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-black/10" />
 
