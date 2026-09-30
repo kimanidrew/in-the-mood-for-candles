@@ -13,19 +13,56 @@ const STORAGE_KEY = "imc-bag";
 export default function SiteBag() {
   const [open,setOpen] = useState(false);
   const [lines,setLines] = useState<BagLine[]>([]);
-  const [currency,setCurrency] = useState({code:"USD",locale:"en-US"});
-  const [rate,setRate] = useState(1);
 
   useEffect(() => {
-    try {
-      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-      if (Array.isArray(saved)) setLines(saved);
-    } catch {}
+    const load = () => {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+        if (Array.isArray(saved)) setLines(saved);
+      } catch {}
+    };
+
+    const handleOpen = () => {
+      load();
+      setOpen(true);
+    };
+
+    const handleAdd = (event: Event) => {
+      const detail = (event as CustomEvent<{ product?: BagProduct }>).detail;
+      const product = detail?.product;
+      if (!product?.id || !product.name || !product.img) return;
+
+      setLines(current => {
+        const existing = current.find(line => line.id === product.id);
+        if (existing) {
+          return current.map(line =>
+            line.id === product.id ? { ...line, quantity: line.quantity + 1 } : line
+          );
+        }
+        return [...current, { ...product, quantity: 1 }];
+      });
+      setOpen(true);
+    };
+
+    load();
+    window.addEventListener("imc:open-bag", handleOpen);
+    window.addEventListener("imc:add-to-bag", handleAdd);
+    window.addEventListener("storage", load);
+
+    return () => {
+      window.removeEventListener("imc:open-bag", handleOpen);
+      window.removeEventListener("imc:add-to-bag", handleAdd);
+      window.removeEventListener("storage", load);
+    };
   }, []);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY,JSON.stringify(lines));
-    window.dispatchEvent(new CustomEvent("imc:bag-changed",{detail:{count:lines.reduce((sum,line)=>sum+line.quantity,0)}}));
+    try {
+      localStorage.setItem(STORAGE_KEY,JSON.stringify(lines));
+    } catch {}
+    window.dispatchEvent(new CustomEvent("imc:bag-changed",{
+      detail:{count:lines.reduce((sum,line)=>sum+line.quantity,0)}
+    }));
   },[lines]);
 
   const count = useMemo(()=>lines.reduce((sum,line)=>sum+line.quantity,0),[lines]);
@@ -61,8 +98,8 @@ export default function SiteBag() {
                     <div key={line.id} className="flex gap-4 border-b border-black/10 pb-5">
                       <Image src={line.img} width={80} height={96} sizes="80px" unoptimized={line.img.startsWith("data:image/")} className="h-24 w-20 object-cover" alt={line.name}/>
                       <div className="flex flex-1 flex-col">
-                        <div className="flex justify-between gap-3"><span className="serif text-lg">{line.name}</span></div>
-                        <div className="mt-auto flex items-center gap-3">
+                        <div><span className="serif text-lg">{line.name}</span></div>
+                        <div className="mt-auto flex items-center gap-3 pt-5">
                           <button onClick={()=>change(line.id,-1)} className="rounded-full border border-black/15 p-1" aria-label="Decrease quantity"><Minus size={12}/></button>
                           <span className="text-xs">{line.quantity}</span>
                           <button onClick={()=>change(line.id,1)} className="rounded-full border border-black/15 p-1" aria-label="Increase quantity"><Plus size={12}/></button>
