@@ -166,6 +166,7 @@ export default function Home() {
   const [favoriteMoodIds, setFavoriteMoodIds] = useState<string[]>([]);
   const [favoriteNotice, setFavoriteNotice] = useState("");
   const [heroImage, setHeroImage] = useState<string | null>(null);
+  const [heroItalicRange, setHeroItalicRange] = useState<[number, number] | null>(null);
   const [activeCollection, setActiveCollection] = useState(0);
   const [activeProductCollection, setActiveProductCollection] = useState("");
   const collectionRailRef = useRef<HTMLDivElement>(null);
@@ -261,6 +262,22 @@ export default function Home() {
   const count = Object.values(cart).reduce((sum, value) => sum + value, 0);
   const content = (key: string) => storeContent.find((item) => item.key === key);
   const hero = content("hero");
+  const heroTitle = dbText(hero?.title || "Set the mood. Leave a scent worth remembering.");
+  const heroWords = heroTitle.split(/(\\s+)/);
+  useEffect(() => {
+    const wordIndexes = heroWords.reduce<number[]>((indexes, part, index) => {
+      if (/\\S/.test(part)) indexes.push(index);
+      return indexes;
+    }, []);
+    if (wordIndexes.length < 2) {
+      setHeroItalicRange(null);
+      return;
+    }
+    const possibleLengths = wordIndexes.length >= 4 ? [2, 3] : [2];
+    const length = possibleLengths[Math.floor(Math.random() * possibleLengths.length)];
+    const start = Math.floor(Math.random() * (wordIndexes.length - length + 1));
+    setHeroItalicRange([wordIndexes[start], wordIndexes[start + length - 1]]);
+  }, [heroTitle]);
   const story = content("story");
   const mission = content("mission");
   const vision = content("vision");
@@ -348,9 +365,10 @@ export default function Home() {
               {dbText(hero?.eyebrow || "Candles • Linen sprays • Memories")}
             </p>
             <h1 className="serif font-bold text-[3.7rem] leading-[.92] tracking-[-.035em] sm:text-[4.5rem] md:text-[5.5rem] lg:text-[6.15rem]">
-              <em className="not-italic" style={{ fontStyle: "italic" }}>
-                {dbText(hero?.title || "Set the mood. Leave a scent worth remembering.")}
-              </em>
+              {heroWords.map((part, index) => {
+                const isItalic = heroItalicRange && index >= heroItalicRange[0] && index <= heroItalicRange[1];
+                return isItalic ? <em key={index} style={{ fontStyle: "italic" }}>{part}</em> : <span key={index}>{part}</span>;
+              })}
             </h1>
             <span className="mt-7 block h-px w-10 bg-white/80" />
             <p className="mt-6 max-w-[520px] text-[13px] leading-7 text-white/90 md:text-[15px] md:leading-7.5">
