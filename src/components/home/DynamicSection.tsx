@@ -27,6 +27,7 @@ export const SAMPLE_SECTION:DynamicSectionData={key:"sample-section",type:"GENER
 const AUTO_LAYOUTS:SectionLayout[]=["CINEMATIC","SPLIT_LEFT","STATEMENT","SPLIT_RIGHT","COLLAGE","QUOTE","FULL_BLEED","PRODUCT_SHOWCASE","FLOATING_CARD","MINIMAL"];
 function resolveLayout(layout:DynamicSectionData["layout"],index:number){if(layout&&layout!=="AUTO"&&AUTO_LAYOUTS.includes(layout as SectionLayout))return layout as SectionLayout;return AUTO_LAYOUTS[index%AUTO_LAYOUTS.length]}
 function paragraphs(body?:string|null){return dbText(body).split(/\n\n/).filter(Boolean)}
+function renderBrandText(text:string){const parts=text.split(/(In The Mood For Candles)/g);return parts.map((part,index)=>part==="In The Mood For Candles"?<strong key={index} className="font-bold italic">{part}</strong>:<React.Fragment key={index}>{part}</React.Fragment>)}
 const CANDLE_IMAGE_POOL = [
   "https://images.pexels.com/photos/6755743/pexels-photo-6755743.jpeg?auto=compress&cs=tinysrgb&w=1600",
   "https://images.pexels.com/photos/10771904/pexels-photo-10771904.jpeg?auto=compress&cs=tinysrgb&w=1600",
