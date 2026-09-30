@@ -14,6 +14,7 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
       {!isAdmin && <SiteNavbar />}
       {children}
       <SiteFooter />
+      {!isAdmin && <SiteBag />}
     </>
   );
 }
