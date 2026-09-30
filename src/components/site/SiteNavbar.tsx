@@ -64,7 +64,8 @@ export default function SiteNavbar() {
           <Link href="/account" aria-label="Account" className="hidden p-2.5 transition-opacity hover:opacity-50 md:block"><UserRound size={18} strokeWidth={1.5} /></Link>
           <Link href="/account#favourites" aria-label="Favourites" className="hidden p-2.5 transition-opacity hover:opacity-50 md:hidden"><Heart size={24} strokeWidth={1.6} /></Link>
           <button aria-label="Shopping bag" className="relative p-2.5 transition-opacity hover:opacity-50" onClick={openBag}>
-            <ShoppingBag size={24} strokeWidth={1.6} />\n            {bagCount > 0 && <span className="absolute right-0.5 top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#211d19] px-1 text-[9px] font-bold text-white">{bagCount}</span>}
+            <ShoppingBag size={24} strokeWidth={1.6} />
+            {bagCount > 0 && <span className="absolute right-0.5 top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#211d19] px-1 text-[9px] font-bold text-white">{bagCount}</span>}
           </button>
           <button aria-label={menu ? "Close menu" : "Open menu"} className="p-2.5 md:hidden" onClick={() => setMenu((open) => !open)}>
             {menu ? <X size={27} strokeWidth={1.6} /> : <Menu size={27} strokeWidth={1.6} />}
