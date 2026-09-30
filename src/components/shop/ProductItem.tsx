@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { Heart, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -79,7 +80,7 @@ export default function ProductItem({
 
   return (
     <article className="group">
-      <div className="relative aspect-[.82] overflow-hidden bg-[#e2d8cb]">
+      <Link href={product.slug ? `/products/${product.slug}` : "#"} className="block">\n      <div className="relative aspect-[.82] overflow-hidden bg-[#e2d8cb]">
         <Image
           src={product.img}
           alt={product.name}
@@ -97,7 +98,7 @@ export default function ProductItem({
 
         <button
           type="button"
-          onClick={toggleFavorite}
+          onClick={(event) => { event.preventDefault(); event.stopPropagation(); toggleFavorite(); }}
           disabled={busy}
           aria-label={(favorite ? "Remove " : "Save ") + product.name + " to favourites"}
           aria-pressed={favorite}
@@ -108,7 +109,7 @@ export default function ProductItem({
 
         <button
           type="button"
-          onClick={addToBag}
+          onClick={(event) => { event.preventDefault(); event.stopPropagation(); addToBag(); }}
           className="absolute bottom-0 left-0 right-0 bg-[#211d19] py-4 text-[11px] font-bold uppercase tracking-[.2em] text-white opacity-100 transition hover:bg-[#9c5638] md:opacity-0 md:group-hover:opacity-100"
         >
           add to bag <span className="ml-1">+</span>
@@ -118,7 +119,7 @@ export default function ProductItem({
       <div className="pt-4">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <h3 className="serif text-[21px]">{product.name}</h3>
+            <Link href={product.slug ? `/products/${product.slug}` : "#"} className="serif text-[21px] transition hover:text-[#9c5638]">{product.name}</Link>
             {product.mood && (
               <p className="mt-1 text-[12px] font-bold uppercase tracking-[.18em] text-[#9c5638]">
                 {product.mood}
