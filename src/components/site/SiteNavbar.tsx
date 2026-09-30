@@ -41,7 +41,7 @@ export default function SiteNavbar() {
 
   const links = [
     ["home", "/#top"],
-    ["collections", "/collections/candles"],
+    ["collections", "/collections"],
     ["moods", "/moods"],
   ];
 
@@ -91,7 +91,7 @@ export default function SiteNavbar() {
           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden border-t border-black/10 bg-[#f6f1e9] md:hidden">
             <div className="flex flex-col px-5 py-4">
               {[
-                ["shop", "/collections/candles"],
+                ["shop", "/collections"],
                 ["moods", "/moods"],
                 ["our story", "/#story"],
                 ["journal", "/#journal"],
