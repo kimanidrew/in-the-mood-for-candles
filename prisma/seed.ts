@@ -93,7 +93,7 @@ async function main() {
   for (const p of products) {
     const product = await prisma.product.upsert({
       where:{sku:p.sku},
-      update:{name:p.name,slug:p.slug,mood:p.mood,moodId:p.moodId,description:p.description,priceUSD:p.priceUSD,stock:p.stock,status:"ACTIVE",collections:{set:(p.collections||[]).map((slug:string)=>({slug}))}},
+      update:{name:p.name,slug:p.slug,mood:p.mood,moodRef:{connect:{id:p.moodId}},description:p.description,priceUSD:p.priceUSD,stock:p.stock,status:"ACTIVE",collections:{set:(p.collections||[]).map((slug:string)=>({slug}))}},
       create:{sku:p.sku,slug:p.slug,name:p.name,mood:p.mood,moodId:p.moodId,description:p.description,priceUSD:p.priceUSD,stock:p.stock,status:"ACTIVE",waxType:"Soy wax",wickType:"Cotton wick",sizeLabel:"Standard jar",scentIntensity:"Medium",category:"Candles",collections:{connect:(p.collections||[]).map((slug:string)=>({slug}))}},
     });
     await prisma.productImage.deleteMany({where:{productId:product.id}});
