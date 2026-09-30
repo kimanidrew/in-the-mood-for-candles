@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Minus, Plus, ShoppingBag, Heart } from "lucide-react";
 import { useEffect, useState } from "react";
+import { dbText } from "@/lib/db-text";
 
 type ProductImage = { id: string; url: string; alt: string | null };
 type Product = {
@@ -20,7 +21,7 @@ type Product = {
 
 function Field({ label, value }: { label: string; value?: string | number | null }) {
   if (value === null || value === undefined || value === "") return null;
-  return <div className="border-t border-[#211d19]/10 py-4"><dt className="text-[9px] font-bold uppercase tracking-[.22em] text-[#9c5638]">{label}</dt><dd className="mt-1 text-sm leading-6 text-[#4e4640]">{value}</dd></div>;
+  return <div className="border-t border-[#211d19]/10 py-4"><dt className="text-[9px] font-bold uppercase tracking-[.22em] text-[#9c5638]">{label}</dt><dd className="mt-1 text-sm leading-6 text-[#4e4640]">{className="whitespace-pre-line">{dbText(String(value))}</dd></div>;
 }
 
 export default function ProductPage({ product }: { product: Product }) {
@@ -65,19 +66,19 @@ export default function ProductPage({ product }: { product: Product }) {
           <div className="lg:sticky lg:top-[110px] lg:self-start">
             <div className="relative aspect-[.9] overflow-hidden bg-[#e2d8cb] md:aspect-square">
               <Image src={images[selected].url} alt={images[selected].alt || product.name} fill priority unoptimized={images[selected].url.startsWith("data:image/")} className="object-cover"/>
-              {product.mood && <div className="absolute left-5 top-5 bg-[#f6f1e9]/90 px-4 py-2 text-[9px] font-bold uppercase tracking-[.2em]">{product.mood}</div>}
+              {product.mood && <div className="absolute left-5 top-5 bg-[#f6f1e9]/90 px-4 py-2 text-[9px] font-bold uppercase tracking-[.2em]">{dbText(product.mood)}</div>}
             </div>
             {images.length > 1 && <div className="mt-3 grid grid-cols-5 gap-3">{images.map((image, i) => <button key={image.id} onClick={() => setSelected(i)} className={"relative aspect-square overflow-hidden " + (i === selected ? "ring-2 ring-[#211d19]" : "opacity-65 hover:opacity-100")}><Image src={image.url} alt={image.alt || product.name} fill unoptimized={image.url.startsWith("data:image/")} className="object-cover"/></button>)}</div>}
           </div>
 
           <div className="flex flex-col justify-center py-2 lg:py-10">
-            <p className="text-[10px] font-bold uppercase tracking-[.34em] text-[#9c5638]">{product.category}</p>
+            <p className="text-[10px] font-bold uppercase tracking-[.34em] text-[#9c5638]">{dbText(product.category)}</p>
             <div className="mt-4 flex items-start justify-between gap-5">
-              <h1 className="serif max-w-2xl text-5xl leading-[.9] md:text-7xl">{product.name}</h1>
+              <h1 className="serif max-w-2xl text-5xl leading-[.9] md:text-7xl">{dbText(product.name)}</h1>
               <button onClick={toggleFavorite} aria-label="Favourite product" className={"shrink-0 rounded-full border border-[#211d19]/10 p-3 transition " + (favorite ? "bg-[#211d19] text-white" : "bg-white/60 hover:bg-white")}><Heart size={19} fill={favorite ? "currentColor" : "none"}/></button>
             </div>
-            {product.mood && <p className="mt-4 text-[10px] font-bold uppercase tracking-[.22em] text-[#9c5638]">{product.mood} mood</p>}
-            <p className="mt-7 max-w-xl text-sm leading-7 text-[#5e554e]">{product.shortDescription || product.description}</p>
+            {product.mood && <p className="mt-4 text-[10px] font-bold uppercase tracking-[.22em] text-[#9c5638]">{dbText(product.mood)} mood</p>}
+            <p className="mt-7 max-w-xl text-sm leading-7 text-[#5e554e]">{dbText(product.shortDescription || product.description)}</p>
 
             <div className="mt-8 border-y border-[#211d19]/10 py-6">
               <p className="serif text-2xl italic text-[#9c5638]">Price coming soon</p>
@@ -96,7 +97,7 @@ export default function ProductPage({ product }: { product: Product }) {
 
             <div className="mt-9">
               <p className="text-[10px] font-bold uppercase tracking-[.3em] text-[#9c5638]">The scent</p>
-              <p className="mt-4 whitespace-pre-line text-sm leading-8 text-[#4e4640]">{product.description}</p>
+              <p className="mt-4 whitespace-pre-line text-sm leading-8 text-[#4e4640]">{dbText(product.description)}</p>
             </div>
 
             <dl className="mt-9 grid gap-x-10 sm:grid-cols-2">
