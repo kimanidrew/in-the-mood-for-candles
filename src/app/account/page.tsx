@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, Check, LogOut, ShieldCheck, UserRound } from "lucide-react";
+import ProductItem from "@/components/shop/ProductItem";
 
 type User = { id:string; name:string|null; email:string; role:"CUSTOMER"|"ADMIN" };
 type FavoriteProduct = { id:string; name:string; slug:string; mood:string; images:{url:string}[] };
@@ -116,15 +117,16 @@ export default function AccountPage() {
           {favoriteProducts.length > 0 ? (
             <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {favoriteProducts.map((product) => (
-                <Link key={product.id} href={"/#products"} className="group overflow-hidden rounded-2xl bg-[#f6f1e9]">
-                  <div className="relative aspect-square overflow-hidden bg-[#e2d8cb]">
-                    {product.images?.[0]?.url ? <Image src={product.images[0].url} alt={product.name} fill unoptimized={product.images[0].url.startsWith("data:image/")} className="object-cover transition duration-500 group-hover:scale-105" /> : null}
-                  </div>
-                  <div className="p-4">
-                    <h3 className="serif text-2xl">{product.name}</h3>
-                    <p className="mt-1 text-[9px] font-bold uppercase tracking-[.18em] text-[#9c5638]">{product.mood}</p>
-                  </div>
-                </Link>
+                <ProductItem
+                  key={product.id}
+                  product={{
+                    id: product.id,
+                    name: product.name,
+                    slug: product.slug,
+                    mood: product.mood,
+                    img: product.images?.[0]?.url || "/hero.jpg",
+                  }}
+                />
               ))}
             </div>
           ) : (
