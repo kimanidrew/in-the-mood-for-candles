@@ -42,8 +42,8 @@ type Product = {
 export type Mood = { id:string; name:string; slug:string; imageUrl:string|null; sortOrder:number; isActive:boolean; _count?:{products:number} };
 export type Tab = "overview"|"content"|"collections"|"products"|"moods"|"social";
 
-function normalizeImageUrl(src?: string | null) {
-  if (!src) return src;
+function normalizeImageUrl(src?: string | null): string {
+  if (!src) return "";
   try {
     const parsed = new URL(src, "https://in-the-mood-for-candles.vercel.app");
     if (parsed.pathname === "/hero.jpg" || parsed.pathname === "/hero.webp") return "/hero.jpg";
