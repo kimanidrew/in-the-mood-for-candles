@@ -108,7 +108,7 @@ export default function ProductItem({
               toggleFavorite();
             }}
             disabled={busy}
-            aria-label={(favorite ? "Remove " : "Save ") + product.name + " to favourites"}
+            aria-label={(favorite ? "Remove " : "Save ") + dbText(product.name) + " to favourites"}
             aria-pressed={favorite}
             className={"absolute right-3 top-3 bg-[#f6f1e9]/90 p-2.5 transition hover:bg-white " + (favorite ? "text-[#9c5638]" : "text-[#211d19]")}
           >
