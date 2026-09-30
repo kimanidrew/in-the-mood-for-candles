@@ -183,25 +183,29 @@ export default function AdminPage({ initialTab = "overview" }: { initialTab?: Ta
   const [editingMood,setEditingMood]=useState<Mood|null>(null);
   const [notice,setNotice]=useState("");
   const [search,setSearch]=useState("");
+  const [customerCount,setCustomerCount]=useState(0);
 
   async function loadData() {
     const me=await fetch("/api/auth/me");
     const md=await me.json();
     if(md.user?.role!=="ADMIN"){router.replace("/account");return;}
     setUser(md.user);
-    const [c,p,m]=await Promise.all([
+    const [c,p,m,s]=await Promise.all([
       fetch("/api/admin/content"),
       fetch("/api/admin/products"),
       fetch("/api/admin/moods"),
+      fetch("/api/admin/stats"),
     ]);
-    const [cd,pd,mdm]=await Promise.all([
+    const [cd,pd,mdm,sd]=await Promise.all([
       c.json().catch(()=>({})),
       p.json().catch(()=>({})),
       m.json().catch(()=>({})),
+      s.json().catch(()=>({})),
     ]);
     setContent(Array.isArray(cd.content) ? cd.content : []);
     setCollections(Array.isArray(cd.collections) ? cd.collections : []);
     setSocials(Array.isArray(cd.socials) ? cd.socials : []);
+    setCustomerCount(typeof sd.customers === "number" ? sd.customers : 0);
     setMoodList(Array.isArray(mdm.moods) ? mdm.moods : []);
     const adminMoods = Array.isArray(mdm.moods) ? mdm.moods : [];
     setProducts((Array.isArray(pd.products) ? pd.products : []).map((product:any) => ({
@@ -297,7 +301,7 @@ export default function AdminPage({ initialTab = "overview" }: { initialTab?: Ta
                 <div><p className="text-[10px] font-bold uppercase tracking-[.34em] text-[#d2a38c]">The studio</p><h1 className="serif mt-4 max-w-3xl text-5xl leading-[.92] md:text-7xl">Shape the feeling behind every candle.</h1><p className="mt-6 max-w-xl text-sm leading-7 text-white/70">Manage the same visual language as the storefront — quietly editorial, warm, image-led and simple to maintain.</p><div className="mt-7 flex flex-wrap gap-3"><Button onClick={()=>router.push("/admin/products")}><Plus size={14}/> Add candle</Button><Button kind="light" onClick={()=>router.push("/admin/content")}><Pencil size={14}/> Edit homepage</Button></div></div>
                 <div className="grid grid-cols-2 gap-3">{[
                   ["Products",products.length,"products"],["Moods",moodList.length,"moods"],["Homepage blocks",content.length,"content"],["Collections",collections.length,"collections"],["Social links",socials.length,"social"]
-                ].map(([label,count,target])=><button key={label} onClick={()=>router.push(target==="overview"?"/admin":"/admin/"+(target==="collections"?"collection":target))} className="rounded-[1.5rem] bg-white/10 p-5 text-left transition hover:bg-white/15"><p className="text-[9px] font-bold uppercase tracking-[.2em] text-white/50">{label}</p><p className="serif mt-2 text-4xl">{count}</p><p className="mt-2 text-[10px] uppercase tracking-[.16em] text-white/50">Manage →</p></button>)}</div>
+                ].map(([label,count,target])=><button key={label} onClick={()=>router.push(target==="overview"?"/admin":target==="customers"?"/admin":"/admin/"+(target==="collections"?"collection":target))} className="rounded-[1.5rem] bg-white/10 p-5 text-left transition hover:bg-white/15"><p className="text-[9px] font-bold uppercase tracking-[.2em] text-white/50">{label}</p><p className="serif mt-2 text-4xl">{count}</p><p className="mt-2 text-[10px] uppercase tracking-[.16em] text-white/50">Manage →</p></button>)}</div>
               </div>
             </section>
             <section><SectionHeading eyebrow="Quick edit" title="Homepage at a glance" action={<Button kind="light" onClick={()=>setTab("content")}>Open content</Button>}/><div className="grid gap-5 md:grid-cols-2">{orderedContent.slice(0,4).map(item=><button key={item.id} onClick={()=>router.push("/admin/content")} className="group overflow-hidden rounded-[1.7rem] bg-white p-5 text-left ring-1 ring-black/5 transition hover:-translate-y-0.5 hover:shadow-xl">{item.imageUrl&&<div className="relative mb-5 aspect-[2/1] overflow-hidden rounded-[1.25rem] bg-[#e8dfd5]"><Image src={normalizeImageUrl(item.imageUrl)!} alt={item.imageAlt||item.key} fill unoptimized={isDataImage(item.imageUrl)} sizes="(max-width: 768px) 100vw, 600px" className="object-cover transition duration-700 group-hover:scale-[1.03]"/></div>}<p className="text-[9px] font-bold uppercase tracking-[.24em] text-[#9c5638]">{item.type}</p><div className="mt-1 flex items-center justify-between gap-4"><h3 className="serif text-3xl">{item.title||item.key}</h3><Pencil size={16}/></div></button>)}</div></section>
