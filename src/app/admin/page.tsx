@@ -78,7 +78,7 @@ function newProduct():Product {
   };
 }
 
-async function imageToDataUrl(file:File) {
+async function prepareImage(file:File): Promise<Blob> {
   if (!file.type.startsWith("image/")) throw new Error("Please choose an image file.");
   if (file.size > 10 * 1024 * 1024) throw new Error("Please choose an image smaller than 10MB.");
 
@@ -93,11 +93,41 @@ async function imageToDataUrl(file:File) {
   ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
   bitmap.close();
 
-  const data = canvas.toDataURL("image/webp", 0.82);
-  if (data.length > 2_200_000) {
-    return canvas.toDataURL("image/jpeg", 0.72);
+  const blob = await new Promise<Blob>((resolve, reject) => {
+    canvas.toBlob(
+      result => result ? resolve(result) : reject(new Error("Could not prepare the image.")),
+      "image/webp",
+      0.82,
+    );
+  });
+
+  if (blob.size > 2_200_000) {
+    return new Promise<Blob>((resolve, reject) => {
+      canvas.toBlob(
+        result => result ? resolve(result) : reject(new Error("Could not compress the image.")),
+        "image/jpeg",
+        0.72,
+      );
+    });
   }
-  return data;
+
+  return blob;
+}
+
+async function uploadImage(file:File): Promise<string> {
+  const blob = await prepareImage(file);
+  const form = new FormData();
+  form.append("file", blob, file.name.replace(/\.[^.]+$/, "") + ".webp");
+
+  const response = await fetch("/api/admin/upload-image", {
+    method: "POST",
+    body: form,
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok || !data.url) {
+    throw new Error(data.error || "Could not upload image.");
+  }
+  return String(data.url);
 }
 
 function ImagePicker({
@@ -122,7 +152,7 @@ function ImagePicker({
     e.target.value="";
     if(!file) return;
     setBusy(true); setError("");
-    try { onChange(await imageToDataUrl(file)); }
+    try { onChange(await uploadImage(file)); }
     catch(err) { setError(err instanceof Error ? err.message : "Could not read image."); }
     finally { setBusy(false); }
   }
@@ -589,7 +619,7 @@ function DeviceGalleryPicker({onAdd}:{onAdd:(urls:string[])=>void}) {
     if(!files.length) return;
     setBusy(true);
     try {
-      const urls=await Promise.all(files.map(imageToDataUrl));
+      const urls=await Promise.all(files.map(uploadImage));
       onAdd(urls);
     } catch { /* individual picker errors are surfaced by the browser if needed */ }
     finally { setBusy(false); }
