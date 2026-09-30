@@ -128,6 +128,7 @@ export default function Home() {
   const [rate, setRate] = useState(1);
   const [storeProducts, setStoreProducts] = useState<StoreProduct[]>(products);
   const [storeContent, setStoreContent] = useState<StoreContent[]>([]);
+  const [storefrontLoading, setStorefrontLoading] = useState(true);
   const [storeCollections, setStoreCollections] = useState<StoreCollection[]>([]);
   const [socials, setSocials] = useState<Social[]>([]);
   const [moods, setMoods] = useState<StoreMood[]>([]);
@@ -181,7 +182,8 @@ export default function Home() {
         }
         if (Array.isArray(data.socials)) setSocials(data.socials);
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setStorefrontLoading(false));
   }, []);
   useEffect(() => {
     setShopProducts([...storeProducts].sort(() => Math.random() - 0.5));
@@ -374,9 +376,19 @@ export default function Home() {
         </div>
       </section>
 
-      {((storeContent.length ? storeContent.filter((item) => item.key !== "hero") : [{"key":"journal","type":"GENERAL","layout":"STATEMENT","eyebrow":"The journal","title":"A scent is a memory.","body":"There is magic in lighting a candle and letting a familiar fragrance fill the room. Scent can take us back to places, people and little moments we thought we had forgotten.","buttonText":"discover the collection","buttonUrl":"#products"},{"key":"story","type":"STORY","layout":"SPLIT_LEFT","eyebrow":"Our story","title":"More than a candle. It’s a feeling.","body":"It started with a simple love for beautiful scents and the magic they create.\\n\\nAt In The Mood For Candles, we believe fragrance has the power to create memories.","imageUrl":"/section-samples/split-left.svg","imageAlt":"Warm candle editorial"},{"key":"mission","type":"MISSION","layout":"PRODUCT_SHOWCASE","eyebrow":"Our mission","title":"Create beautifully scented moments.","body":"To create beautifully scented candles that transform everyday spaces into memorable experiences, bringing warmth, comfort and a little luxury into every moment.","imageUrl":"/section-samples/product-showcase.svg","imageAlt":"Candle product detail"},{"key":"vision","type":"VISION","layout":"QUOTE","eyebrow":"Our vision","title":"Make fragrance part of the stories people remember.","body":"To become a beloved fragrance brand known for creating scents that become part of people’s stories, spaces and most cherished memories."}]).filter((item) => item.isActive !== false) as StoreContent[]).map((section, index) => (
-        <DynamicSection key={section.key} section={section as DynamicSectionData} index={index} />
-      ))}
+      {storefrontLoading ? (
+        <div className="space-y-0" aria-label="Loading sections">
+          {[1, 2, 3].map((item) => (
+            <div key={item} className="h-[420px] animate-pulse bg-gradient-to-r from-[#eee5da] via-[#f7f2eb] to-[#eee5da] md:h-[560px]" />
+          ))}
+        </div>
+      ) : (
+        storeContent
+          .filter((item) => item.key !== "hero" && item.isActive !== false)
+          .map((section, index) => (
+            <DynamicSection key={section.key} section={section as DynamicSectionData} index={index} />
+          ))
+      )}
 
       {storeContent.length > 0 && instagram && (
         <section className="border-t border-black/10 bg-[#f6f1e9] px-5 py-8 md:px-14">
