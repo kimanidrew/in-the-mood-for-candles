@@ -21,7 +21,7 @@ type Product = {
 
 function Field({ label, value }: { label: string; value?: string | number | null }) {
   if (value === null || value === undefined || value === "") return null;
-  return <div className="border-t border-[#211d19]/10 py-4"><dt className="text-[9px] font-bold uppercase tracking-[.22em] text-[#9c5638]">{label}</dt><dd className="mt-1 text-sm leading-6 text-[#4e4640]">{className="whitespace-pre-line">{dbText(String(value))}</dd></div>;
+  return <div className="border-t border-[#211d19]/10 py-4"><dt className="text-[9px] font-bold uppercase tracking-[.22em] text-[#9c5638]">{label}</dt><dd className="mt-1 whitespace-pre-line text-sm leading-6 text-[#4e4640]">{dbText(String(value))}</dd></div>;
 }
 
 export default function ProductPage({ product }: { product: Product }) {
