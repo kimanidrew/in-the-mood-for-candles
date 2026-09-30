@@ -10,9 +10,9 @@ export async function GET() {
     where: { id: user.id },
     select: {
       favoriteProducts: {
-        select: { id: true, name: true, slug: true, mood: true, images: { where: { isPrimary: true }, take: 1, select: { url: true } } },
+        select: { id: true, name: true, slug: true, mood: true, shortDescription: true, description: true, images: { where: { isPrimary: true }, take: 1, select: { url: true } } },
       },
-      favoriteMoods: { select: { id: true, name: true, slug: true } },
+      favoriteMoods: { select: { id: true, name: true, slug: true, imageUrl: true } },
     },
   });
 
