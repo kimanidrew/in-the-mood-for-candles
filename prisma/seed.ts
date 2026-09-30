@@ -100,6 +100,27 @@ async function main() {
     await prisma.productImage.create({data:{productId:product.id,url:p.img,alt:p.name,sortOrder:0,isPrimary:true}});
   }
 
+  // Keep collection membership deterministic. This makes every seed run
+  // rebuild the collection -> product relationships from the seed data.
+  const collectionProducts: Record<string, string[]> = {
+    candles: products.map((p) => p.slug),
+    "linen-sprays": ["autumn-glow"],
+    "gift-sets": ["festive-cinnamon", "rustic-retreat", "ginger-rose"],
+    "new-arrivals": ["lavender", "rosemary-spice", "spa-serenity"],
+    "the-edit": ["kootenay-pine-fig", "warm-amber", "mount-revelstoke"],
+  };
+
+  for (const [collectionSlug, productSlugs] of Object.entries(collectionProducts)) {
+    await prisma.collection.update({
+      where: { slug: collectionSlug },
+      data: {
+        products: {
+          set: productSlugs.map((slug) => ({ slug })),
+        },
+      },
+    });
+  }
+
   console.log("Seed complete. Admin:", adminEmail);
   console.log("Use ADMIN_PASSWORD from your environment; the fallback is only for first-time development.");
 }
