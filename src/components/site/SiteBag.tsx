@@ -50,7 +50,6 @@ export default function SiteBag() {
   const [rate,setRate] = useState(1);
 
   useEffect(() => {
-    setCurrency(currencyForBrowser());
     try {
       const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
       if (Array.isArray(saved)) setLines(saved);
@@ -62,39 +61,8 @@ export default function SiteBag() {
     window.dispatchEvent(new CustomEvent("imc:bag-changed",{detail:{count:lines.reduce((sum,line)=>sum+line.quantity,0)}}));
   },[lines]);
 
-  useEffect(() => {
-    const add = (event:Event) => {
-      const product = (event as CustomEvent<{product:BagProduct}>).detail?.product;
-      if (!product) return;
-      setLines(current => {
-        const existing = current.find(line => line.id === product.id);
-        if (existing) return current.map(line => line.id===product.id ? {...line,quantity:line.quantity+1} : line);
-        return [...current,{...product,quantity:1}];
-      });
-      setOpen(true);
-    };
-    const openBag = () => setOpen(true);
-    window.addEventListener("imc:add-to-bag",add);
-    window.addEventListener("imc:open-bag",openBag);
-    return () => {
-      window.removeEventListener("imc:add-to-bag",add);
-      window.removeEventListener("imc:open-bag",openBag);
-    };
-  },[]);
-
-  useEffect(() => {
-    if (currency.code==="USD") { setRate(1); return; }
-    let cancelled=false;
-    fetch("https://api.frankfurter.app/latest?from=USD&to="+currency.code)
-      .then(r=>r.ok?r.json():Promise.reject())
-      .then(data=>{if(!cancelled && data?.rates?.[currency.code]) setRate(Number(data.rates[currency.code]));})
-      .catch(()=>{if(!cancelled) setRate(FALLBACK_RATES[currency.code]||1);});
-    return()=>{cancelled=true};
-  },[currency.code]);
-
   const count = useMemo(()=>lines.reduce((sum,line)=>sum+line.quantity,0),[lines]);
   const totalUSD = useMemo(()=>lines.reduce((sum,line)=>sum+(line.priceUSD||0)*line.quantity,0),[lines]);
-  const total = totalUSD*rate;
 
   function change(id:string,amount:number) {
     setLines(current=>current.map(line=>line.id===id?{...line,quantity:Math.max(0,line.quantity+amount)}:line).filter(line=>line.quantity>0));
@@ -104,7 +72,7 @@ export default function SiteBag() {
     const number = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "254700000000";
     const message = "Hello In The Mood For! ✨\nI'd like to order:\n" +
       lines.map(line=>"• "+line.name+" × "+line.quantity).join("\n") +
-      "\n\nEstimated total: "+money(total,currency)+".";
+      "\n\nPlease confirm the final price, availability and delivery details with me.";
     window.open("https://wa.me/"+number+"?text="+encodeURIComponent(message),"_blank");
   }
 
@@ -127,7 +95,7 @@ export default function SiteBag() {
                     <div key={line.id} className="flex gap-4 border-b border-black/10 pb-5">
                       <Image src={line.img} width={80} height={96} sizes="80px" unoptimized={line.img.startsWith("data:image/")} className="h-24 w-20 object-cover" alt={line.name}/>
                       <div className="flex flex-1 flex-col">
-                        <div className="flex justify-between gap-3"><span className="serif text-lg">{line.name}</span>{line.priceUSD != null && <span className="text-sm">{money(line.priceUSD*rate*line.quantity,currency)}</span>}</div>
+                        <div className="flex justify-between gap-3"><span className="serif text-lg">{line.name}</span></div>
                         <div className="mt-auto flex items-center gap-3">
                           <button onClick={()=>change(line.id,-1)} className="rounded-full border border-black/15 p-1" aria-label="Decrease quantity"><Minus size={12}/></button>
                           <span className="text-xs">{line.quantity}</span>
@@ -141,7 +109,6 @@ export default function SiteBag() {
             </div>
             {lines.length>0 && (
               <div className="border-t border-black/10 p-6">
-                {totalUSD>0 && <div className="mb-5 flex justify-between text-sm"><span>Estimated total</span><span className="font-semibold">{money(total,currency)}</span></div>}
                 <button onClick={whatsapp} className="w-full bg-[#211d19] py-4 text-[12px] font-bold uppercase tracking-[.2em] text-white transition hover:bg-[#9c5638]">order via WhatsApp</button>
                 <p className="mt-3 text-center text-[12px] text-[#776f67]">We'll confirm availability, delivery and payment with you on WhatsApp.</p>
               </div>
