@@ -5,11 +5,26 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { Heart, Instagram, Menu, Search, ShoppingBag, UserRound, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function SiteNavbar() {
   const pathname = usePathname();
   const [menu, setMenu] = useState(false);
+  const [bagCount, setBagCount] = useState(0);
+  useEffect(() => {
+    const update = (event?: Event) => {
+      const detail = (event as CustomEvent<{count?:number}> | undefined)?.detail;
+      if (typeof detail?.count === "number") { setBagCount(detail.count); return; }
+      try {
+        const lines = JSON.parse(localStorage.getItem("imc-bag") || "[]");
+        setBagCount(Array.isArray(lines) ? lines.reduce((sum, line) => sum + Number(line.quantity || 0), 0) : 0);
+      } catch { setBagCount(0); }
+    };
+    update();
+    window.addEventListener("imc:bag-changed", update);
+    return () => window.removeEventListener("imc:bag-changed", update);
+  }, []);
+
   if (pathname.startsWith("/admin")) return null;
 
   const openBag = () => {
@@ -49,7 +64,7 @@ export default function SiteNavbar() {
           <Link href="/account" aria-label="Account" className="hidden p-2.5 transition-opacity hover:opacity-50 md:block"><UserRound size={18} strokeWidth={1.5} /></Link>
           <Link href="/account#favourites" aria-label="Favourites" className="hidden p-2.5 transition-opacity hover:opacity-50 md:hidden"><Heart size={24} strokeWidth={1.6} /></Link>
           <button aria-label="Shopping bag" className="relative p-2.5 transition-opacity hover:opacity-50" onClick={openBag}>
-            <ShoppingBag size={24} strokeWidth={1.6} />
+            <ShoppingBag size={24} strokeWidth={1.6} />\n            {bagCount > 0 && <span className="absolute right-0.5 top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#211d19] px-1 text-[9px] font-bold text-white">{bagCount}</span>}
           </button>
           <button aria-label={menu ? "Close menu" : "Open menu"} className="p-2.5 md:hidden" onClick={() => setMenu((open) => !open)}>
             {menu ? <X size={27} strokeWidth={1.6} /> : <Menu size={27} strokeWidth={1.6} />}
