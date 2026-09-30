@@ -349,7 +349,124 @@ export default function AdminPage({ initialTab = "overview" }: { initialTab?: Ta
         )}
       </div>
 
-      {editingContent && <div className="fixed inset-0 z-[80] overflow-y-auto bg-[#211d19]/55 p-4 backdrop-blur-sm md:p-8"><div className="mx-auto max-w-5xl rounded-[2rem] bg-[#f6f1e9] p-6 shadow-2xl md:p-9"><div className="flex items-start justify-between"><div><p className="text-[10px] font-bold uppercase tracking-[.3em] text-[#9c5638]">Homepage section builder</p><h2 className="serif mt-1 text-4xl">{editingContent.id?"Edit section":"New section"}</h2><p className="mt-2 max-w-2xl text-xs leading-5 text-[#776f67]">Choose the visual style first. Every preview uses built-in sample copy and artwork from <code className="rounded bg-black/5 px-1">/public</code>.</p></div><button onClick={()=>setEditingContent(null)}><X/></button></div><div className="mt-7"><div className="mb-6 flex items-center gap-3"><div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[.2em]"><span className={"grid h-7 w-7 place-items-center rounded-full "+(sectionStep===1?"bg-[#211d19] text-white":"bg-black/10")}>1</span><span className={sectionStep===1?"text-[#211d19]":"text-[#776f67]"}>Choose style</span></div><div className="h-px flex-1 bg-black/10"/><div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[.2em]"><span className={"grid h-7 w-7 place-items-center rounded-full "+(sectionStep===2?"bg-[#211d19] text-white":"bg-black/10")}>2</span><span className={sectionStep===2?"text-[#211d19]":"text-[#776f67]"}>Add content</span></div></div>{sectionStep===1 && <><p className="mb-3 text-[10px] font-bold uppercase tracking-[.25em] text-[#9c5638]">Step 1 · Choose section style</p><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{SECTION_STYLES.map(style=><button type="button" key={style.value} onClick={()=>setEditingContent({...editingContent,layout:style.value})} className={"text-left transition "+(editingContent.layout===style.value?"rounded-[1.5rem] ring-2 ring-[#9c5638]":"rounded-[1.5rem] ring-1 ring-black/5 hover:ring-black/20")}><SectionStylePreview layout={style.value}/></button>)}</div><div className="mt-7 flex justify-end"><Button onClick={()=>setSectionStep(2)}>Continue to content <ExternalLink size={13}/></Button></div></>}</div>{sectionStep===2 && <div className="mt-9 border-t border-black/10 pt-8"><p className="mb-4 text-[10px] font-bold uppercase tracking-[.25em] text-[#9c5638]">Step 2 · Add your content</p><div className="grid gap-4 sm:grid-cols-2"><Field label="Key"><input value={editingContent.key} disabled={Boolean(editingContent.id)} onChange={e=>setEditingContent({...editingContent,key:e.target.value})} className="input"/></Field><Field label="Type"><select value={editingContent.type} onChange={e=>setEditingContent({...editingContent,type:e.target.value})} className="input">{["HERO","STORY","MISSION","VISION","GENERAL","SOCIAL"].map(x=><option key={x}>{x}</option>)}</select></Field></div><div className="mt-5 grid gap-5 lg:grid-cols-[1.1fr_.9fr]"><div className="space-y-5"><Field label="Eyebrow"><input value={editingContent.eyebrow||""} onChange={e=>setEditingContent({...editingContent,eyebrow:e.target.value})} className="input"/></Field><Field label="Title"><input value={editingContent.title||""} onChange={e=>setEditingContent({...editingContent,title:e.target.value})} className="input"/></Field><Field label="Body"><textarea rows={7} value={editingContent.body||""} onChange={e=>setEditingContent({...editingContent,body:e.target.value})} className="input resize-y"/></Field><div className="grid gap-4 sm:grid-cols-2"><Field label="Button text"><input value={editingContent.buttonText||""} onChange={e=>setEditingContent({...editingContent,buttonText:e.target.value})} className="input"/></Field><Field label="Button destination"><input value={editingContent.buttonUrl||""} onChange={e=>setEditingContent({...editingContent,buttonUrl:e.target.value})} className="input"/></Field></div><label className="flex items-center gap-3 text-xs font-semibold"><input type="checkbox" checked={editingContent.isActive} onChange={e=>setEditingContent({...editingContent,isActive:e.target.checked})}/> Visible on storefront</label></div><div><ImagePicker value={editingContent.imageUrl} alt={editingContent.imageAlt} onChange={value=>setEditingContent({...editingContent,imageUrl:value||null})} label="Section image"/><div className="mt-4"><Field label="Image alt text"><input value={editingContent.imageAlt||""} onChange={e=>setEditingContent({...editingContent,imageAlt:e.target.value})} className="input"/></Field></div></div></div></div><div className="mt-8 flex justify-between gap-2"><Button kind="light" onClick={()=>setSectionStep(1)}>Back to style</Button><div className="flex gap-2"><Button kind="light" onClick={()=>setEditingContent(null)}>Cancel</Button><Button onClick={async()=>{const ok=await mutateContent(editingContent.id?"PUT":"POST",{kind:"content",...editingContent});if(ok)setEditingContent(null)}}><Save size={14}/> Save section</Button></div></div></div></div></div>}
+      {editingContent && (
+        <div className="fixed inset-0 z-[80] overflow-y-auto bg-[#211d19]/55 p-4 backdrop-blur-sm md:p-8">
+          <div className="mx-auto max-w-5xl rounded-[2rem] bg-[#f6f1e9] p-6 shadow-2xl md:p-9">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-[.3em] text-[#9c5638]">Homepage section builder</p>
+                <h2 className="serif mt-1 text-4xl">{editingContent.id ? "Edit section" : "New section"}</h2>
+                <p className="mt-2 max-w-2xl text-xs leading-5 text-[#776f67]">Choose the visual style first. Every preview uses built-in sample copy and artwork from <code className="rounded bg-black/5 px-1">/public</code>.</p>
+              </div>
+              <button type="button" onClick={() => setEditingContent(null)}><X /></button>
+            </div>
+
+            <div className="mt-7">
+              <div className="mb-6 flex items-center gap-3">
+                <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[.2em]">
+                  <span className={"grid h-7 w-7 place-items-center rounded-full " + (sectionStep === 1 ? "bg-[#211d19] text-white" : "bg-black/10")}>1</span>
+                  <span className={sectionStep === 1 ? "text-[#211d19]" : "text-[#776f67]"}>Choose style</span>
+                </div>
+                <div className="h-px flex-1 bg-black/10" />
+                <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[.2em]">
+                  <span className={"grid h-7 w-7 place-items-center rounded-full " + (sectionStep === 2 ? "bg-[#211d19] text-white" : "bg-black/10")}>2</span>
+                  <span className={sectionStep === 2 ? "text-[#211d19]" : "text-[#776f67]"}>Add content</span>
+                </div>
+              </div>
+
+              {sectionStep === 1 && (
+                <>
+                  <p className="mb-3 text-[10px] font-bold uppercase tracking-[.25em] text-[#9c5638]">Step 1 · Choose section style</p>
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    {SECTION_STYLES.map(style => (
+                      <button
+                        type="button"
+                        key={style.value}
+                        onClick={() => setEditingContent({...editingContent, layout:style.value})}
+                        className={"text-left transition " + (editingContent.layout === style.value ? "rounded-[1.5rem] ring-2 ring-[#9c5638]" : "rounded-[1.5rem] ring-1 ring-black/5 hover:ring-black/20")}
+                      >
+                        <SectionStylePreview layout={style.value} />
+                      </button>
+                    ))}
+                  </div>
+                  <div className="mt-7 flex justify-end">
+                    <Button onClick={() => setSectionStep(2)}>Continue to content <ExternalLink size={13}/></Button>
+                  </div>
+                </>
+              )}
+
+              {sectionStep === 2 && (
+                <div className="mt-9 border-t border-black/10 pt-8">
+                  <p className="mb-4 text-[10px] font-bold uppercase tracking-[.25em] text-[#9c5638]">Step 2 · Add your content</p>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <Field label="Key">
+                      <input value={editingContent.key} disabled={Boolean(editingContent.id)} onChange={e => setEditingContent({...editingContent,key:e.target.value})} className="input"/>
+                    </Field>
+                    <Field label="Type">
+                      <select value={editingContent.type} onChange={e => setEditingContent({...editingContent,type:e.target.value})} className="input">
+                        {["HERO","STORY","MISSION","VISION","GENERAL","SOCIAL"].map(x => <option key={x}>{x}</option>)}
+                      </select>
+                    </Field>
+                  </div>
+
+                  <div className="mt-5 grid gap-5 lg:grid-cols-[1.1fr_.9fr]">
+                    <div className="space-y-5">
+                      <Field label="Eyebrow">
+                        <input value={editingContent.eyebrow || ""} onChange={e => setEditingContent({...editingContent,eyebrow:e.target.value})} className="input"/>
+                      </Field>
+                      <Field label="Title">
+                        <input value={editingContent.title || ""} onChange={e => setEditingContent({...editingContent,title:e.target.value})} className="input"/>
+                      </Field>
+                      <Field label="Body">
+                        <textarea rows={7} value={editingContent.body || ""} onChange={e => setEditingContent({...editingContent,body:e.target.value})} className="input resize-y"/>
+                      </Field>
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        <Field label="Button text">
+                          <input value={editingContent.buttonText || ""} onChange={e => setEditingContent({...editingContent,buttonText:e.target.value})} className="input"/>
+                        </Field>
+                        <Field label="Button destination">
+                          <input value={editingContent.buttonUrl || ""} onChange={e => setEditingContent({...editingContent,buttonUrl:e.target.value})} className="input"/>
+                        </Field>
+                      </div>
+                      <label className="flex items-center gap-3 text-xs font-semibold">
+                        <input type="checkbox" checked={editingContent.isActive} onChange={e => setEditingContent({...editingContent,isActive:e.target.checked})}/>
+                        Visible on storefront
+                      </label>
+                    </div>
+
+                    <div>
+                      <ImagePicker
+                        value={editingContent.imageUrl}
+                        alt={editingContent.imageAlt}
+                        onChange={value => setEditingContent({...editingContent,imageUrl:value || null})}
+                        label="Section image"
+                      />
+                      <div className="mt-4">
+                        <Field label="Image alt text">
+                          <input value={editingContent.imageAlt || ""} onChange={e => setEditingContent({...editingContent,imageAlt:e.target.value})} className="input"/>
+                        </Field>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-8 flex justify-between gap-2">
+                    <Button kind="light" onClick={() => setSectionStep(1)}>Back to style</Button>
+                    <div className="flex gap-2">
+                      <Button kind="light" onClick={() => setEditingContent(null)}>Cancel</Button>
+                      <Button onClick={async () => {
+                        const ok = await mutateContent(editingContent.id ? "PUT" : "POST", {kind:"content",...editingContent});
+                        if (ok) setEditingContent(null);
+                      }}>
+                        <Save size={14}/> Save section
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {editingCollection && (
         <div className="fixed inset-0 z-[80] overflow-y-auto bg-[#211d19]/55 p-4 backdrop-blur-sm md:p-8">
