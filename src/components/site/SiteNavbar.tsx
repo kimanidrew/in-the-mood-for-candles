@@ -69,7 +69,7 @@ export default function SiteNavbar() {
         </nav>
 
         <div className="flex items-center gap-3 sm:gap-4 md:gap-0.5">
-          <Link href="/collections/candles?search=" aria-label="Search candles" className="hidden p-2.5 transition-opacity hover:opacity-50 md:block"><Search size={19} strokeWidth={1.5} /></Link>
+          <Link href="/search" aria-label="Search candles" className="hidden p-2.5 transition-opacity hover:opacity-50 md:block"><Search size={19} strokeWidth={1.5} /></Link>
           <Link href="/account" aria-label="Account" className="hidden p-2.5 transition-opacity hover:opacity-50 md:block"><UserRound size={18} strokeWidth={1.5} /></Link>
 
           <Link href="/favourites" aria-label="Favourites" className="hidden p-2.5 transition-opacity hover:opacity-50 md:block">
