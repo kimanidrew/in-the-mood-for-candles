@@ -43,7 +43,7 @@ const collectionCards = [
 
 type Cart = Record<string, number>;
 type CurrencyInfo = { code: string; locale: string; label: string };
-type StoreProduct = typeof products[number] & { id?: string };
+type StoreProduct = typeof products[number] & { id?: string; slug?: string | null };
 type StoreContent = { key: string; type?: string; layout?: string|null; title?: string|null; eyebrow?: string|null; body?: string|null; imageUrl?: string|null; imageAlt?: string|null; buttonText?: string|null; buttonUrl?: string|null; sortOrder?: number; isActive?: boolean };
 type StoreCollection = { slug:string; title:string; subtitle?:string|null; imageUrl:string; mood?:string|null; products?:StoreProduct[] };
 type Social = { platform:string; url:string; label?:string|null };
@@ -186,6 +186,7 @@ export default function Home() {
         if (Array.isArray(data.products) && data.products.length) {
           setStoreProducts(data.products.map((p: any) => ({
             id: p.id,
+            slug: p.slug,
             name: dbText(p.name),
             mood: dbText(p.mood),
             priceUSD: Number(p.priceUSD || 0),
@@ -402,7 +403,7 @@ export default function Home() {
                 <ProductItem product={{
                   id: product.id || product.name,
                   name: product.name,
-                  slug: (product as any).slug,
+                  slug: product.slug,
                   mood: product.mood,
                   img: normalizeImageUrl(product.img),
                   priceUSD: Number(product.priceUSD || 0),
