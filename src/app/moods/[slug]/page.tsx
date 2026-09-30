@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import ProductItem from "@/components/shop/ProductItem";
 
 export default async function MoodPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -21,7 +22,7 @@ export default async function MoodPage({ params }: { params: Promise<{ slug: str
         </div>
         <div className="mt-16 flex items-end justify-between"><div><p className="text-[10px] font-bold uppercase tracking-[.3em] text-[#9c5638]">The candles</p><h2 className="serif mt-2 text-5xl md:text-6xl">Made for {mood.name.toLowerCase()} moments.</h2></div></div>
         <div className="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {mood.products.map((product) => { const image=product.images[0]?.url || "/hero.jpg"; return <article key={product.id} className="group"><div className="relative aspect-[.82] overflow-hidden bg-[#e2d8cb]"><Image src={image} alt={product.name} fill unoptimized={image.startsWith("data:image/")} sizes="(max-width:640px) 100vw,(max-width:1024px)50vw,25vw" className="object-cover transition duration-700 group-hover:scale-[1.04]"/></div><div className="pt-4"><h3 className="serif text-2xl">{product.name}</h3><p className="mt-1 text-[10px] font-bold uppercase tracking-[.18em] text-[#9c5638]">{mood.name}</p><p className="mt-3 text-xs leading-5 text-[#776f67]">{product.shortDescription || product.description}</p></div></article>; })}
+          {mood.products.map((product) => <ProductItem key={product.id} product={{ id: product.id, name: product.name, slug: product.slug, mood: mood.name, img: product.images[0]?.url || "/hero.jpg", priceUSD: Number(product.priceUSD), shortDescription: product.shortDescription, description: product.description }} />)}
         </div>
       </section>
     </main>
