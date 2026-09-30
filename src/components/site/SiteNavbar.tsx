@@ -69,20 +69,20 @@ export default function SiteNavbar() {
         </nav>
 
         <div className="flex items-center gap-3 sm:gap-4 md:gap-0.5">
-          <Link href="/#products" aria-label="Search" className="hidden p-2.5 transition-opacity hover:opacity-50 md:block"><Search size={18} strokeWidth={1.5} /></Link>
+          <Link href="/collections/candles?search=" aria-label="Search candles" className="hidden p-2.5 transition-opacity hover:opacity-50 md:block"><Search size={19} strokeWidth={1.5} /></Link>
           <Link href="/account" aria-label="Account" className="hidden p-2.5 transition-opacity hover:opacity-50 md:block"><UserRound size={18} strokeWidth={1.5} /></Link>
 
-          <Link href="/favourites" aria-label="Favourites" className="group hidden h-12 w-12 items-center justify-center rounded-full border border-[#211d19]/10 bg-white/40 shadow-[0_2px_12px_rgba(33,29,25,0.06)] transition-all hover:-translate-y-0.5 hover:bg-white hover:shadow-[0_6px_18px_rgba(33,29,25,0.1)] md:flex">
-            <Heart size={27} strokeWidth={1.55} className="transition-transform duration-200 group-hover:scale-105" />
+          <Link href="/favourites" aria-label="Favourites" className="hidden p-2.5 transition-opacity hover:opacity-50 md:block">
+            <Heart size={20} strokeWidth={1.5} />
           </Link>
 
-          <button aria-label="Shopping bag" className="group relative flex h-12 w-12 items-center justify-center rounded-full border border-[#211d19]/10 bg-white/40 shadow-[0_2px_12px_rgba(33,29,25,0.06)] transition-all hover:-translate-y-0.5 hover:bg-white hover:shadow-[0_6px_18px_rgba(33,29,25,0.1)]" onClick={openBag}>
+          <button aria-label="Shopping bag" className="group relative flex h-11 w-11 items-center justify-center rounded-full border border-[#211d19]/10 bg-white/40 shadow-[0_2px_12px_rgba(33,29,25,0.06)] transition-all hover:-translate-y-0.5 hover:bg-white hover:shadow-[0_6px_18px_rgba(33,29,25,0.1)]" onClick={openBag}>
             <ShoppingBag size={27} strokeWidth={1.55} className="transition-transform duration-200 group-hover:scale-105" />
             {bagCount > 0 && <span className="absolute -right-0.5 -top-0.5 flex h-[19px] min-w-[19px] items-center justify-center rounded-full bg-[#211d19] px-1 text-[9px] font-bold text-white shadow-sm">{bagCount}</span>}
           </button>
 
-          <button aria-label={menu ? "Close menu" : "Open menu"} className="group flex h-12 w-12 items-center justify-center rounded-full border border-[#211d19]/10 bg-white/40 shadow-[0_2px_12px_rgba(33,29,25,0.06)] transition-all hover:-translate-y-0.5 hover:bg-white hover:shadow-[0_6px_18px_rgba(33,29,25,0.1)] md:hidden" onClick={() => setMenu((open) => !open)}>
-            {menu ? <X size={29} strokeWidth={1.55} className="transition-transform duration-200 group-hover:scale-105" /> : <Menu size={29} strokeWidth={1.55} className="transition-transform duration-200 group-hover:scale-105" />}</button>
+          <button aria-label={menu ? "Close menu" : "Open menu"} className="group flex items-center justify-center p-2.5 transition-opacity hover:opacity-50 md:hidden" onClick={() => setMenu((open) => !open)}>
+            {menu ? <X size={26} strokeWidth={1.5} /> : <Menu size={27} strokeWidth={1.5} />}</button>
         </div>
       </div>
 
