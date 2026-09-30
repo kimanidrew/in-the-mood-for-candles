@@ -4,21 +4,27 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { Heart, Instagram, Menu, Search, ShoppingBag, UserRound, X } from "lucide-react";
+import { Heart, Menu, Search, ShoppingBag, UserRound, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export default function SiteNavbar() {
   const pathname = usePathname();
   const [menu, setMenu] = useState(false);
   const [bagCount, setBagCount] = useState(0);
+
   useEffect(() => {
     const update = (event?: Event) => {
-      const detail = (event as CustomEvent<{count?:number}> | undefined)?.detail;
-      if (typeof detail?.count === "number") { setBagCount(detail.count); return; }
+      const detail = (event as CustomEvent<{ count?: number }> | undefined)?.detail;
+      if (typeof detail?.count === "number") {
+        setBagCount(detail.count);
+        return;
+      }
       try {
         const lines = JSON.parse(localStorage.getItem("imc-bag") || "[]");
         setBagCount(Array.isArray(lines) ? lines.reduce((sum, line) => sum + Number(line.quantity || 0), 0) : 0);
-      } catch { setBagCount(0); }
+      } catch {
+        setBagCount(0);
+      }
     };
     update();
     window.addEventListener("imc:bag-changed", update);
@@ -35,9 +41,8 @@ export default function SiteNavbar() {
 
   const links = [
     ["home", "/#top"],
-    ["shop", "/#collection"],
+    ["collections", "/collections"],
     ["our story", "/#story"],
-    ["journal", "/#journal"],
   ];
 
   return (
@@ -53,7 +58,11 @@ export default function SiteNavbar() {
 
         <nav className="hidden items-center gap-2 md:flex">
           {links.map(([label, href]) => (
-            <Link key={label} href={href} className={"nav-link relative px-4 py-2.5 text-[10px] font-bold uppercase tracking-[.22em] text-[#211d19] transition-opacity hover:opacity-50 " + (label === "home" && pathname === "/" ? "nav-link-active" : "")}>
+            <Link
+              key={label}
+              href={href}
+              className={"nav-link relative px-4 py-2.5 text-[10px] font-bold uppercase tracking-[.22em] text-[#211d19] transition-opacity hover:opacity-50 " + (label === "home" && pathname === "/" ? "nav-link-active" : "")}
+            >
               {label}
             </Link>
           ))}
