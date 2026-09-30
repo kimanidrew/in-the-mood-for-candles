@@ -41,7 +41,7 @@ export default function SiteNavbar() {
 
   const links = [
     ["home", "/#top"],
-    ["collections", "/collections"],
+    ["collections", "/#products"],
     ["our story", "/#story"],
   ];
 
@@ -72,32 +72,16 @@ export default function SiteNavbar() {
           <Link href="/#products" aria-label="Search" className="hidden p-2.5 transition-opacity hover:opacity-50 md:block"><Search size={18} strokeWidth={1.5} /></Link>
           <Link href="/account" aria-label="Account" className="hidden p-2.5 transition-opacity hover:opacity-50 md:block"><UserRound size={18} strokeWidth={1.5} /></Link>
 
-          <Link
-            href="/favourites"
-            aria-label="Favourites"
-            className="group hidden h-12 w-12 items-center justify-center rounded-full border border-[#211d19]/10 bg-white/40 shadow-[0_2px_12px_rgba(33,29,25,0.06)] transition-all hover:-translate-y-0.5 hover:bg-white hover:shadow-[0_6px_18px_rgba(33,29,25,0.1)] md:hidden"
-          >
+          <Link href="/favourites" aria-label="Favourites" className="group hidden h-12 w-12 items-center justify-center rounded-full border border-[#211d19]/10 bg-white/40 shadow-[0_2px_12px_rgba(33,29,25,0.06)] transition-all hover:-translate-y-0.5 hover:bg-white hover:shadow-[0_6px_18px_rgba(33,29,25,0.1)] md:hidden">
             <Heart size={27} strokeWidth={1.55} className="transition-transform duration-200 group-hover:scale-105" />
           </Link>
 
-          <button
-            aria-label="Shopping bag"
-            className="group relative flex h-12 w-12 items-center justify-center rounded-full border border-[#211d19]/10 bg-white/40 shadow-[0_2px_12px_rgba(33,29,25,0.06)] transition-all hover:-translate-y-0.5 hover:bg-white hover:shadow-[0_6px_18px_rgba(33,29,25,0.1)]"
-            onClick={openBag}
-          >
+          <button aria-label="Shopping bag" className="group relative flex h-12 w-12 items-center justify-center rounded-full border border-[#211d19]/10 bg-white/40 shadow-[0_2px_12px_rgba(33,29,25,0.06)] transition-all hover:-translate-y-0.5 hover:bg-white hover:shadow-[0_6px_18px_rgba(33,29,25,0.1)]" onClick={openBag}>
             <ShoppingBag size={27} strokeWidth={1.55} className="transition-transform duration-200 group-hover:scale-105" />
-            {bagCount > 0 && (
-              <span className="absolute -right-0.5 -top-0.5 flex h-[19px] min-w-[19px] items-center justify-center rounded-full bg-[#211d19] px-1 text-[9px] font-bold text-white shadow-sm">
-                {bagCount}
-              </span>
-            )}
+            {bagCount > 0 && <span className="absolute -right-0.5 -top-0.5 flex h-[19px] min-w-[19px] items-center justify-center rounded-full bg-[#211d19] px-1 text-[9px] font-bold text-white shadow-sm">{bagCount}</span>}
           </button>
 
-          <button
-            aria-label={menu ? "Close menu" : "Open menu"}
-            className="group flex h-12 w-12 items-center justify-center rounded-full border border-[#211d19]/10 bg-white/40 shadow-[0_2px_12px_rgba(33,29,25,0.06)] transition-all hover:-translate-y-0.5 hover:bg-white hover:shadow-[0_6px_18px_rgba(33,29,25,0.1)] md:hidden"
-            onClick={() => setMenu((open) => !open)}
-          >
+          <button aria-label={menu ? "Close menu" : "Open menu"} className="group flex h-12 w-12 items-center justify-center rounded-full border border-[#211d19]/10 bg-white/40 shadow-[0_2px_12px_rgba(33,29,25,0.06)] transition-all hover:-translate-y-0.5 hover:bg-white hover:shadow-[0_6px_18px_rgba(33,29,25,0.1)] md:hidden" onClick={() => setMenu((open) => !open)}>
             {menu ? <X size={29} strokeWidth={1.55} className="transition-transform duration-200 group-hover:scale-105" /> : <Menu size={29} strokeWidth={1.55} className="transition-transform duration-200 group-hover:scale-105" />}
           </button>
         </div>
@@ -112,12 +96,10 @@ export default function SiteNavbar() {
                 ["our story", "/#story"],
                 ["journal", "/#journal"],
                 ["account", "/account"],
-                ["favourites", "/account#favourites"],
+                ["favourites", "/favourites"],
                 ["instagram", "https://www.instagram.com/inthemoodfor_candles"],
               ].map(([label, href]) => (
-                <Link key={label} href={href} target={label === "instagram" ? "_blank" : undefined} rel={label === "instagram" ? "noreferrer" : undefined} onClick={() => setMenu(false)} className="border-b border-black/10 py-4 text-[12px] font-bold uppercase tracking-[.22em]">
-                  {label}
-                </Link>
+                <Link key={label} href={href} target={label === "instagram" ? "_blank" : undefined} rel={label === "instagram" ? "noreferrer" : undefined} onClick={() => setMenu(false)} className="border-b border-black/10 py-4 text-[12px] font-bold uppercase tracking-[.22em]">{label}</Link>
               ))}
             </div>
           </motion.div>
