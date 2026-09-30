@@ -118,6 +118,34 @@ function formatMoney(amount: number, info: CurrencyInfo) {
   }
 }
 
+const SECTION_ANIMATIONS = [
+  { initial: { opacity: 0, y: 70, scale: 0.98 }, transition: { duration: 0.85, ease: [0.22, 1, 0.36, 1] } },
+  { initial: { opacity: 0, x: -90 }, transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] } },
+  { initial: { opacity: 0, x: 90 }, transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] } },
+  { initial: { opacity: 0, scale: 0.9, y: 35 }, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } },
+  { initial: { opacity: 0, y: -55, rotate: -1.5 }, transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] } },
+  { initial: { opacity: 0, scale: 1.08 }, transition: { duration: 1.05, ease: [0.22, 1, 0.36, 1] } },
+  { initial: { opacity: 0, x: -70, scale: 0.96 }, transition: { duration: 0.95, ease: [0.22, 1, 0.36, 1] } },
+  { initial: { opacity: 0, x: 70, scale: 0.96 }, transition: { duration: 0.95, ease: [0.22, 1, 0.36, 1] } },
+];
+
+function AnimatedHomeSection({ section, index }: { section: DynamicSectionData; index: number }) {
+  const animation = SECTION_ANIMATIONS[index % SECTION_ANIMATIONS.length];
+  const delay = (index % 3) * 0.08;
+
+  return (
+    <motion.div
+      initial={animation.initial}
+      whileInView={{ opacity: 1, x: 0, y: 0, scale: 1, rotate: 0 }}
+      viewport={{ once: true, amount: 0.14, margin: "0px 0px -8% 0px" }}
+      transition={{ ...animation.transition, delay }}
+      style={{ willChange: "transform, opacity" }}
+    >
+      <DynamicSection section={section} index={index} />
+    </motion.div>
+  );
+}
+
 export default function Home() {
   const [filter, setFilter] = useState("ALL");
   const [shopProducts, setShopProducts] = useState<StoreProduct[]>(products);
@@ -387,11 +415,13 @@ export default function Home() {
           ))}
         </div>
       ) : (
-        storeContent
-          .filter((item) => item.key !== "hero" && item.isActive !== false)
-          .map((section, index) => (
-            <DynamicSection key={section.key} section={section as DynamicSectionData} index={index} />
-          ))
+        <div className="overflow-hidden">
+          {storeContent
+            .filter((item) => item.key !== "hero" && item.isActive !== false)
+            .map((section, index) => (
+              <AnimatedHomeSection key={section.key} section={section as DynamicSectionData} index={index} />
+            ))}
+        </div>
       )}
 
       {storeContent.length > 0 && instagram && (
