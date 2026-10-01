@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
-import { Minus, Plus, ShoppingBag, X } from "lucide-react";
+import { Minus, Plus, ShoppingBag, X, Trash2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 type BagProduct = { id:string; name:string; slug?:string; mood?:string; img:string; priceUSD?:number|null };
@@ -71,6 +71,10 @@ export default function SiteBag() {
     setLines(current=>current.map(line=>line.id===id?{...line,quantity:Math.max(0,line.quantity+amount)}:line).filter(line=>line.quantity>0));
   }
 
+  function removeItem(id:string) {
+    setLines(current => current.filter(line => line.id !== id));
+  }
+
   function whatsapp() {
     const number = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "254700000000";
     const message = "Hello In The Mood For! ✨\nI'd like to order:\n" +
@@ -97,8 +101,19 @@ export default function SiteBag() {
                   {lines.map(line=>(
                     <div key={line.id} className="flex gap-4 border-b border-black/10 pb-5">
                       <Image src={line.img} width={80} height={96} sizes="80px" unoptimized={line.img.startsWith("data:image/")} className="h-24 w-20 object-cover" alt={line.name}/>
-                      <div className="flex flex-1 flex-col">
-                        <div><span className="serif text-lg">{line.name}</span></div>
+                      <div className="flex min-w-0 flex-1 flex-col">
+                        <div className="flex items-start justify-between gap-3">
+                          <span className="serif text-lg">{line.name}</span>
+                          <button
+                            type="button"
+                            onClick={()=>removeItem(line.id)}
+                            className="shrink-0 rounded-full p-2 text-[#776f67] transition hover:bg-black/5 hover:text-[#211d19]"
+                            aria-label={`Remove ${line.name} from bag`}
+                            title="Remove item"
+                          >
+                            <Trash2 size={16} strokeWidth={1.6}/>
+                          </button>
+                        </div>
                         <div className="mt-auto flex items-center gap-3 pt-5">
                           <button onClick={()=>change(line.id,-1)} className="rounded-full border border-black/15 p-1" aria-label="Decrease quantity"><Minus size={12}/></button>
                           <span className="text-xs">{line.quantity}</span>
